@@ -401,7 +401,7 @@
       <button type="button" id="btnDeleteDetailExpense" class="nfs-btn-red text-xs font-nfs px-3 py-2.5 rounded-xl font-black">🗑️ 刪除</button>
       <div class="flex space-x-2">
         <button type="button" onclick="closeExpenseDetailModal()" class="py-2.5 px-4 text-xs font-black bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-300 rounded-xl border-2 border-black">取消</button>
-        <button type="submit" form="editExpenseForm" class="nfs-btn-green text-xs font-nfs px-4 py-2.5 rounded-xl font-black">💾 儲存修改</button>
+        <button type="submit" form="editExpenseForm" id="btnSaveDetail" class="nfs-btn-green text-xs font-nfs px-4 py-2.5 rounded-xl font-black">💾 儲存修改</button>
       </div>
     </div>
   </aside>
@@ -509,7 +509,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
       
       <div class="flex space-x-2">
         <button onclick="closeSettleModal()" class="w-1/2 py-2 text-xs font-black bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-300 rounded-xl border-2 border-black">取消</button>
-        <button onclick="confirmSettle()" class="nfs-btn-green w-1/2 py-2 text-xs font-nfs text-lg font-black rounded-xl">確認還款</button>
+        <button onclick="confirmSettle()" id="btnConfirmSettle" class="nfs-btn-green w-1/2 py-2 text-xs font-nfs text-lg font-black rounded-xl">確認還款</button>
       </div>
     </div>
   </div>
@@ -883,7 +883,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
             <div class="flex justify-between items-center p-2.5 bg-slate-100 dark:bg-slate-800 border-2 border-black rounded-xl shadow-[2px_2px_0px_#000]">
               <span class="font-black text-xs text-slate-900 dark:text-white">🏎️ ${member}</span>
               ${memberId ? `
-                <button onclick="handleRemoveMember('${memberId}', '${member}')" class="nfs-btn-red text-[10px] font-black px-2 py-1 rounded-lg">
+                <button onclick="handleRemoveMember('${memberId}', '${member}', this)" class="nfs-btn-red text-[10px] font-black px-2 py-1 rounded-lg">
                   🗑️ 踢出
                 </button>
               ` : ''}
@@ -897,9 +897,10 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
 
     function closeManageCrewModal() { document.getElementById('manageCrewModal').classList.add('hidden'); }
 
-    function handleRemoveMember(memberId, memberName) {
+    function handleRemoveMember(memberId, memberName, btnElem) {
       if (!confirm(`確定要將車手【${memberName}】移除出此車隊嗎？`)) return;
 
+      if (btnElem) btnElem.disabled = true;
       showLoading();
       callGas('removeMemberFromGroup', {
         adminToken: currentToken,
@@ -908,11 +909,13 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
       })
       .then(data => {
         hideLoading();
+        if (btnElem) btnElem.disabled = false;
         renderApp(data);
         openManageCrewModal();
       })
       .catch(err => {
         hideLoading();
+        if (btnElem) btnElem.disabled = false;
         alert('移除成員失敗：' + err.message);
       });
     }
@@ -1202,6 +1205,9 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
         amount = totalSharesSum;
       }
 
+      const submitBtn = document.getElementById('btnSubmit');
+      if (submitBtn) submitBtn.disabled = true;
+
       showLoading();
 
       const payload = {
@@ -1221,6 +1227,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
       callGas('addTransaction', payload)
         .then((data) => {
           hideLoading();
+          if (submitBtn) submitBtn.disabled = false;
           closeExpenseDrawer();
           renderApp(data);
           document.getElementById('expenseForm').reset();
@@ -1229,19 +1236,32 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
           calcExpr = '0';
           renderFormOptions(data.members);
         })
-        .catch((err) => { hideLoading(); alert('新增消費失敗：' + err.message); });
+        .catch((err) => { 
+          hideLoading(); 
+          if (submitBtn) submitBtn.disabled = false;
+          alert('新增消費失敗：' + err.message); 
+        });
     }
 
     function handleDeleteExpense(expenseId) {
       if (!confirm('確定要刪除這筆開銷紀錄？')) return;
+      
+      const deleteBtn = document.getElementById('btnDeleteDetailExpense');
+      if (deleteBtn) deleteBtn.disabled = true;
+
       showLoading();
       callGas('deleteExpense', { token: currentToken, groupId: currentGroupId, expenseId })
         .then((data) => {
           hideLoading();
+          if (deleteBtn) deleteBtn.disabled = false;
           closeExpenseDetailModal();
           renderApp(data);
         })
-        .catch((err) => { hideLoading(); alert('刪除失敗：' + err.message); });
+        .catch((err) => { 
+          hideLoading(); 
+          if (deleteBtn) deleteBtn.disabled = false;
+          alert('刪除失敗：' + err.message); 
+        });
     }
 
     function fillRemainingForUser(memberName) {
@@ -1421,6 +1441,9 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
         amount = totalSharesSum;
       }
 
+      const saveBtn = document.getElementById('btnSaveDetail');
+      if (saveBtn) saveBtn.disabled = true;
+
       showLoading();
       callGas('updateExpenseShares', {
         token: currentToken,
@@ -1436,11 +1459,13 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
       })
       .then((data) => {
         hideLoading();
+        if (saveBtn) saveBtn.disabled = false;
         closeExpenseDetailModal();
         renderApp(data);
       })
       .catch((err) => {
         hideLoading();
+        if (saveBtn) saveBtn.disabled = false;
         alert('更新失敗：' + err.message);
       });
     }
@@ -1498,6 +1523,10 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
       if (!amount || amount <= 0) return alert('請輸入有效的還款金額！');
 
       const { from, to } = activeSettleData;
+      
+      const settleBtn = document.getElementById('btnConfirmSettle');
+      if (settleBtn) settleBtn.disabled = true;
+
       closeSettleModal();
 
       showLoading();
@@ -1513,9 +1542,14 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
       })
       .then((data) => {
         hideLoading();
+        if (settleBtn) settleBtn.disabled = false;
         renderApp(data);
       })
-      .catch((err) => { hideLoading(); alert('還款失敗：' + err.message); });
+      .catch((err) => { 
+        hideLoading(); 
+        if (settleBtn) settleBtn.disabled = false;
+        alert('還款失敗：' + err.message); 
+      });
     }
 
     function renderFeed(expenses) {
