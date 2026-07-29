@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Need for Split 分賬系統</title>
 
   <!-- PWA Manifest & Theme Color -->
@@ -304,95 +304,111 @@
     </div>
   </aside>
 
-  <!-- MODALS -->
-  <div id="expenseDetailModal" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4 hidden">
-    <div class="bg-white dark:bg-slate-900 w-full max-w-md max-h-[92vh] flex flex-col rounded-3xl border-4 border-black shadow-[8px_8px_0px_#3b82f6]">
-      <div class="p-4 border-b-2 border-slate-200 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-900 rounded-t-3xl">
-        <div class="flex items-center space-x-2">
-          <h3 class="text-base font-nfs font-black bg-blue-600 text-white px-3 py-1 rounded-lg border-2 border-black shadow-[2px_2px_0px_#000]">
-            RACE LOG / 明細詳情
-          </h3>
-          <span id="detailStatusBadge" class="text-xs font-bold px-2 py-0.5 rounded-lg border border-black shadow-[1px_1px_0px_#000]"></span>
-        </div>
-        <button onclick="closeExpenseDetailModal()" class="text-slate-800 dark:text-white font-black text-2xl hover:text-red-500 transition-colors">✕</button>
-      </div>
+  <!-- ================================================================= -->
+  <!-- 查看/編輯明細 底部彈出抽屜 (Expense Detail Bottom Sheet)         -->
+  <!-- ================================================================= -->
 
-      <form id="editExpenseForm" onsubmit="saveDetailShares(event)" class="p-4 space-y-4 overflow-y-auto flex-1">
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">消費類別</label>
-            <select id="detailCategory" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-yellow-400 focus:outline-none shadow-[2px_2px_0px_#000]">
-              <option value="🍔 餐飲">🍔 燃料餐飲</option>
-              <option value="🚗 交通">🚗 競速過路費</option>
-              <option value="🏠 住宿">🏠 賽道維修廠</option>
-              <option value="🎟️ 娛樂">🎟️ 氮氣補給</option>
-              <option value="🛒 購物">🛒 改裝零件</option>
-              <option value="💡 雜項">💡 雜項開銷</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">買單車手 (Payer)</label>
-            <select id="detailPayer" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]"></select>
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">項目說明 (Desc)</label>
-          <input type="text" id="detailDesc" required class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]">
-        </div>
-
-        <div>
-          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">備註說明 (Remark)</label>
-          <input type="text" id="detailRemark" placeholder="無備註" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]">
-        </div>
-
-        <div>
-          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">總消費金額 ($)</label>
-          <div class="relative">
-            <input type="text" id="detailAmountDisplay" readonly value="0" onclick="openCalcModal('detailAmountDisplay')" 
-                   class="w-full border-3 border-black rounded-2xl p-3 text-right font-mono text-3xl font-black bg-yellow-400 text-black cursor-pointer shadow-[4px_4px_0px_#ea3526] focus:outline-none">
-            <span class="absolute left-3 top-4 text-xs font-black text-black/70">點擊開啟計算機 🔢</span>
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">單據照片</label>
-          <input type="file" id="detailReceiptImg" accept="image/*" onchange="previewImage(event, 'detailImgPreview', 'detailImgPreviewContainer')" class="w-full text-xs text-slate-500 dark:text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-2 file:border-black file:text-xs file:font-black file:bg-red-600 file:text-white cursor-pointer">
-          <div id="detailImgPreviewContainer" class="hidden mt-2 relative w-24 h-24">
-            <a id="detailImgLink" href="#" target="_blank">
-              <img id="detailImgPreview" class="w-full h-full object-cover rounded-xl border-2 border-black shadow-[2px_2px_0px_#000]">
-            </a>
-            <button type="button" onclick="removeImage('detailImgPreview', 'detailImgPreviewContainer', 'detailReceiptImg')" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs w-6 h-6 rounded-full border-2 border-black font-black flex items-center justify-center shadow">✕</button>
-          </div>
-        </div>
-
-        <div>
-          <div class="flex justify-between items-center mb-2">
-            <div class="flex items-center space-x-2">
-              <label class="block text-xs font-black text-slate-500 dark:text-slate-400">分攤明細</label>
-              <div class="text-[10px] font-black px-2 py-0.5 rounded-lg border border-black shadow-[1px_1px_0px_#000]" id="detailRemainingBadge">
-                剩餘：<span id="detailRemainingAmount" class="font-mono">$0</span>
-              </div>
-            </div>
-            <div class="space-x-2">
-              <button type="button" onclick="splitEvenly('detailAmountDisplay', 'detailParts', 'detail-share-input-')" class="nfs-btn-yellow text-[10px] font-black px-2 py-1 rounded-lg">⚡ 一鍵均分</button>
-              <button type="button" onclick="selectAllParts('detailParts', 'detail-share-input-')" class="text-xs font-black text-slate-500 dark:text-slate-400 underline">全選</button>
-            </div>
-          </div>
-          <div id="detailParticipantsGroup" class="space-y-2"></div>
-        </div>
-      </form>
-
-      <div class="p-4 border-t-2 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 flex justify-between items-center space-x-2 rounded-b-3xl">
-        <button type="button" id="btnDeleteDetailExpense" class="nfs-btn-red text-xs font-nfs px-3 py-2.5 rounded-xl font-black">🗑️ 刪除</button>
-        <div class="flex space-x-2">
-          <button type="button" onclick="closeExpenseDetailModal()" class="py-2.5 px-4 text-xs font-black bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-300 rounded-xl border-2 border-black">取消</button>
-          <button type="submit" form="editExpenseForm" class="nfs-btn-green text-xs font-nfs px-4 py-2.5 rounded-xl font-black">💾 儲存修改</button>
-        </div>
-      </div>
-    </div>
+  <!-- 明細抽屜 背景遮罩 -->
+  <div 
+    id="expenseDetailOverlay" 
+    onclick="closeExpenseDetailModal()" 
+    class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 opacity-0 pointer-events-none transition-opacity duration-300">
   </div>
 
+  <!-- 明細抽屜 本體 (從底部彈出) -->
+  <aside 
+    id="expenseDetailDrawer" 
+    class="fixed z-50 bg-white dark:bg-slate-900 text-slate-900 dark:text-white
+           bottom-0 inset-x-0 rounded-t-3xl max-h-[92vh] max-w-md mx-auto translate-y-full
+           border-t-4 border-x-4 border-black shadow-[0px_-8px_0px_#3b82f6]
+           transition-transform duration-300 ease-in-out flex flex-col"
+  >
+    <div class="p-4 border-b-2 border-slate-200 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-900 rounded-t-3xl">
+      <div class="flex items-center space-x-2">
+        <h3 class="text-base font-nfs font-black bg-blue-600 text-white px-3 py-1 rounded-lg border-2 border-black shadow-[2px_2px_0px_#000]">
+          RACE LOG / 明細詳情
+        </h3>
+        <span id="detailStatusBadge" class="text-xs font-bold px-2 py-0.5 rounded-lg border border-black shadow-[1px_1px_0px_#000]"></span>
+      </div>
+      <button onclick="closeExpenseDetailModal()" class="text-slate-800 dark:text-white font-black text-2xl hover:text-red-500 transition-colors p-1">✕</button>
+    </div>
+
+    <form id="editExpenseForm" onsubmit="saveDetailShares(event)" class="p-4 space-y-4 overflow-y-auto flex-1">
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">消費類別</label>
+          <select id="detailCategory" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-yellow-400 focus:outline-none shadow-[2px_2px_0px_#000]">
+            <option value="🍔 餐飲">🍔 燃料餐飲</option>
+            <option value="🚗 交通">🚗 競速過路費</option>
+            <option value="🏠 住宿">🏠 賽道維修廠</option>
+            <option value="🎟️ 娛樂">🎟️ 氮氣補給</option>
+            <option value="🛒 購物">🛒 改裝零件</option>
+            <option value="💡 雜項">💡 雜項開銷</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">買單車手 (Payer)</label>
+          <select id="detailPayer" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]"></select>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">項目說明 (Desc)</label>
+        <input type="text" id="detailDesc" required class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]">
+      </div>
+
+      <div>
+        <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">備註說明 (Remark)</label>
+        <input type="text" id="detailRemark" placeholder="無備註" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]">
+      </div>
+
+      <div>
+        <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">總消費金額 ($)</label>
+        <div class="relative">
+          <input type="text" id="detailAmountDisplay" readonly value="0" onclick="openCalcModal('detailAmountDisplay')" 
+                 class="w-full border-3 border-black rounded-2xl p-3 text-right font-mono text-3xl font-black bg-yellow-400 text-black cursor-pointer shadow-[4px_4px_0px_#ea3526] focus:outline-none">
+          <span class="absolute left-3 top-4 text-xs font-black text-black/70">點擊開啟計算機 🔢</span>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">單據照片</label>
+        <input type="file" id="detailReceiptImg" accept="image/*" onchange="previewImage(event, 'detailImgPreview', 'detailImgPreviewContainer')" class="w-full text-xs text-slate-500 dark:text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-2 file:border-black file:text-xs file:font-black file:bg-red-600 file:text-white cursor-pointer">
+        <div id="detailImgPreviewContainer" class="hidden mt-2 relative w-24 h-24">
+          <a id="detailImgLink" href="#" target="_blank">
+            <img id="detailImgPreview" class="w-full h-full object-cover rounded-xl border-2 border-black shadow-[2px_2px_0px_#000]">
+          </a>
+          <button type="button" onclick="removeImage('detailImgPreview', 'detailImgPreviewContainer', 'detailReceiptImg')" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs w-6 h-6 rounded-full border-2 border-black font-black flex items-center justify-center shadow">✕</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="flex justify-between items-center mb-2">
+          <div class="flex items-center space-x-2">
+            <label class="block text-xs font-black text-slate-500 dark:text-slate-400">分攤明細</label>
+            <div class="text-[10px] font-black px-2 py-0.5 rounded-lg border border-black shadow-[1px_1px_0px_#000]" id="detailRemainingBadge">
+              剩餘：<span id="detailRemainingAmount" class="font-mono">$0</span>
+            </div>
+          </div>
+          <div class="space-x-2">
+            <button type="button" onclick="splitEvenly('detailAmountDisplay', 'detailParts', 'detail-share-input-')" class="nfs-btn-yellow text-[10px] font-black px-2 py-1 rounded-lg">⚡ 一鍵均分</button>
+            <button type="button" onclick="selectAllParts('detailParts', 'detail-share-input-')" class="text-xs font-black text-slate-500 dark:text-slate-400 underline">全選</button>
+          </div>
+        </div>
+        <div id="detailParticipantsGroup" class="space-y-2"></div>
+      </div>
+    </form>
+
+    <div class="p-4 border-t-2 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 flex justify-between items-center space-x-2">
+      <button type="button" id="btnDeleteDetailExpense" class="nfs-btn-red text-xs font-nfs px-3 py-2.5 rounded-xl font-black">🗑️ 刪除</button>
+      <div class="flex space-x-2">
+        <button type="button" onclick="closeExpenseDetailModal()" class="py-2.5 px-4 text-xs font-black bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-300 rounded-xl border-2 border-black">取消</button>
+        <button type="submit" form="editExpenseForm" class="nfs-btn-green text-xs font-nfs px-4 py-2.5 rounded-xl font-black">💾 儲存修改</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MODALS -->
   <div id="manageCrewModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
     <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 border-4 border-black shadow-[6px_6px_0px_#ff1e27] max-h-[85vh] flex flex-col">
       <div class="flex justify-between items-center mb-3">
@@ -805,7 +821,10 @@
     }
 
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeExpenseDrawer();
+      if (e.key === 'Escape') {
+        closeExpenseDrawer();
+        closeExpenseDetailModal();
+      }
     });
 
     function openManageCrewModal() {
@@ -1269,7 +1288,13 @@
       };
 
       updateRemainingCalculation();
-      document.getElementById('expenseDetailModal').classList.remove('hidden');
+
+      // 開啟 Bottom Sheet 動畫
+      const overlay = document.getElementById('expenseDetailOverlay');
+      const drawer = document.getElementById('expenseDetailDrawer');
+      overlay.classList.remove('opacity-0', 'pointer-events-none');
+      drawer.classList.remove('translate-y-full');
+      drawer.classList.add('translate-y-0');
     }
 
     function updateRemainingCalculation() {
@@ -1302,7 +1327,13 @@
     }
 
     function closeExpenseDetailModal() {
-      document.getElementById('expenseDetailModal').classList.add('hidden');
+      const overlay = document.getElementById('expenseDetailOverlay');
+      const drawer = document.getElementById('expenseDetailDrawer');
+
+      overlay.classList.add('opacity-0', 'pointer-events-none');
+      drawer.classList.remove('translate-y-0');
+      drawer.classList.add('translate-y-full');
+
       currentEditingExpenseId = null;
     }
 
