@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Need for Split 分賬系統</title>
+  
+  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/keliguru/need-for-split/refs/heads/main/split-icon.png">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Need for Split 分賬系統">
+  <meta property="og:description" content="Need for Split 分賬系統">
+  <meta property="og:image" content="https://raw.githubusercontent.com/keliguru/need-for-split/refs/heads/main/split-icon.png"> 
+  <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/keliguru/need-for-split/refs/heads/main/split-icon.png">
+
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Need for Split 分賬系統">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode: 'class' }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Teko:wght@600;700&family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Fredoka', system-ui, sans-serif; transition: background-color 0.3s, color 0.3s; }
+    
+    body.dark {
+      background-color: #0f172a;
+      background-image: radial-gradient(rgba(234, 179, 8, 0.15) 2px, transparent 2px), linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 24px 24px, 40px 40px; color: #f8fafc;
+    }
+
+    body.light {
+      background-color: #f1f5f9;
+      background-image: radial-gradient(rgba(15, 23, 42, 0.1) 2px, transparent 2px), linear-gradient(to right, rgba(0,0,0,0.03) 1px, transparent 1px);
+      background-size: 24px 24px, 40px 40px; color: #0f172a;
+    }
+
+    .font-nfs { font-family: 'Teko', sans-serif; letter-spacing: 1px; text-transform: uppercase; }
+    .nfs-skew { transform: skewX(-6deg); }
+    .nfs-skew-inside { transform: skewX(6deg); }
+
+    .nfs-btn-red { background: linear-gradient(135deg, #ff1e27 0%, #b91c1c 100%); color: #fff; border: 3px solid #000; box-shadow: 4px 4px 0px #000; }
+    .nfs-btn-red:active { transform: translateY(2px) skewX(-6deg); box-shadow: 2px 2px 0px #000; }
+
+    .nfs-btn-yellow { background: linear-gradient(135deg, #facc15 0%, #ca8a04 100%); color: #000; border: 3px solid #000; box-shadow: 4px 4px 0px #000; }
+    .nfs-btn-yellow:active { transform: translateY(2px) skewX(-6deg); box-shadow: 2px 2px 0px #000; }
+
+    .nfs-btn-green { background: linear-gradient(135deg, #22c55e 0%, #15803d 100%); color: #fff; border: 3px solid #000; box-shadow: 4px 4px 0px #000; }
+    .nfs-btn-blue { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: #fff; border: 3px solid #000; box-shadow: 4px 4px 0px #000; }
+
+    .fab-btn { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .fab-btn:hover { transform: scale(1.08) skewX(-6deg); }
+    .fab-btn:active { transform: scale(0.95) skewX(-6deg); }
+
+    @keyframes revEngine { 0%, 100% { transform: scale(1) rotate(-2deg); } 50% { transform: scale(1.08) rotate(2deg); } }
+    .animate-rev { animation: revEngine 0.4s infinite ease-in-out; }
+  </style>
+</head>
+<body class="dark min-h-screen pb-24 select-none">
+
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="fixed inset-0 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center z-50 hidden">
+    <div class="bg-yellow-400 border-4 border-black p-4 rounded-2xl shadow-[6px_6px_0px_#ff1e27] animate-rev mb-4 text-center">
+      <span class="text-4xl">🏎️💨</span>
+      <div class="font-nfs text-2xl font-black text-black leading-none mt-1">REVVING ENGINE</div>
+    </div>
+    <span class="bg-red-600 text-white font-nfs text-sm tracking-widest px-4 py-1 rounded-xl border-2 border-black animate-pulse">CONNECTING TO NOS SERVER... ⚡</span>
+  </div>
+
+  <!-- PAGE 0: LOGIN VIEW -->
+  <div id="loginView" class="max-w-md mx-auto p-4 flex flex-col justify-center min-h-screen relative">
+    <header class="text-center mb-6">
+      <div class="bg-red-600 text-white font-nfs text-4xl font-black py-2 px-6 rounded-2xl border-4 border-black shadow-[6px_6px_0px_#facc15] inline-block nfs-skew italic">
+        <span class="nfs-skew-inside inline-block">🏎️ NEED FOR SPLIT</span>
+      </div>
+      
+      <div class="mt-3 flex justify-center">
+        <button onclick="toggleTheme()" class="bg-slate-800 dark:bg-slate-800 text-yellow-400 dark:text-yellow-400 border-2 border-black px-3 py-1 rounded-xl shadow-[3px_3px_0px_#000] font-black text-xs hover:opacity-90 active:translate-y-0.5">
+          <span id="themeIconLogin">🌙 賽道暗黑</span>
+        </button>
+      </div>
+
+      <p class="text-xs font-black text-yellow-500 mt-2 tracking-widest uppercase font-nfs text-lg">🏁 SPEED CHAMPIONS EDITION 🏁</p>
+    </header>
+
+    <div class="bg-white dark:bg-slate-900 rounded-3xl border-4 border-black p-6 shadow-[8px_8px_0px_#000] relative">
+      <div class="flex justify-between items-center mb-3">
+        <h2 class="text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">🔑 請輸入 20 位 MEMBER TOKEN</h2>
+        <button onclick="openApiModal()" class="text-[10px] font-bold bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-yellow-400 border border-slate-400 dark:border-slate-600 px-2 py-0.5 rounded-lg">⚙️ API 網址</button>
+      </div>
+      
+      <input type="text" id="tokenInput" maxlength="20" placeholder="TK8A9B2C3D4E5F6G7H8I" 
+             class="w-full border-3 border-black rounded-2xl p-3 text-center font-mono text-sm font-black bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-yellow-400 placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none shadow-[inset_0px_2px_4px_rgba(0,0,0,0.2)] dark:shadow-[inset_0px_2px_4px_rgba(0,0,0,0.8)] mb-5 uppercase tracking-wider">
+      
+      <button onclick="handleLogin()" id="btnLogin" class="nfs-btn-red nfs-skew w-full py-3.5 font-nfs text-2xl font-black rounded-2xl tracking-wider">
+        <span class="nfs-skew-inside inline-block">START ENGINE 🏎️</span>
+      </button>
+
+      <p id="loginError" class="text-xs text-red-500 font-black text-center mt-3 hidden"></p>
+    </div>
+  </div>
+
+  <!-- PAGE 1: GROUP SELECTION -->
+  <div id="groupSelectionView" class="max-w-md mx-auto p-4 hidden relative">
+    <header class="my-6 text-center relative">
+      <div class="bg-red-600 text-white font-nfs text-3xl font-black py-2 px-6 rounded-2xl border-4 border-black shadow-[5px_5px_0px_#facc15] inline-block nfs-skew italic">
+        <span class="nfs-skew-inside inline-block">🏎️ NEED FOR SPLIT</span>
+      </div>
+
+      <div class="mt-3 flex justify-center">
+        <button onclick="toggleTheme()" class="bg-slate-800 dark:bg-slate-800 text-yellow-400 dark:text-yellow-400 border-2 border-black px-3 py-1 rounded-xl shadow-[3px_3px_0px_#000] font-black text-xs hover:opacity-90 active:translate-y-0.5">
+          <span id="themeIconGroup">🌙 賽道暗黑</span>
+        </button>
+      </div>
+
+      <div class="mt-3 flex items-center justify-center space-x-3">
+        <span id="welcomeUser" class="text-xs font-black bg-yellow-400 text-black border-2 border-black px-3 py-1 rounded-xl shadow-[2px_2px_0px_#000]"></span>
+        <button onclick="handleLogout()" class="text-xs font-black text-red-500 hover:text-red-400 underline">EXIT PIT</button>
+      </div>
+    </header>
+
+    <div class="bg-white dark:bg-slate-900 rounded-3xl border-4 border-black p-5 mb-4 shadow-[6px_6px_0px_#000]">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-base font-nfs font-black text-slate-800 dark:text-yellow-400 tracking-wider">GARAGE / 車庫群組</h2>
+        <button onclick="openCreateGroupModal()" class="nfs-btn-yellow nfs-skew font-nfs text-lg font-black px-3 py-1 rounded-xl">
+          <span class="nfs-skew-inside inline-block">+ 建立新車隊</span>
+        </button>
+      </div>
+      <div id="groupList" class="space-y-3">
+        <p class="text-xs text-slate-500 py-4 text-center font-bold">搜尋車隊資料中...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 2: GROUP DASHBOARD -->
+  <div id="groupDashboardView" class="max-w-md mx-auto p-4 hidden">
+    <header class="flex justify-between items-center my-4">
+      <button onclick="backToGroupSelection()" class="nfs-btn-blue nfs-skew text-xs font-nfs text-base font-black px-3 py-1.5 rounded-xl">
+        <span class="nfs-skew-inside inline-block">← GARAGE</span>
+      </button>
+
+      <div id="currentGroupName" class="bg-yellow-400 text-black border-2 border-black font-nfs font-black text-lg px-4 py-1 rounded-xl shadow-[3px_3px_0px_#000] truncate max-w-[140px]"></div>
+      
+      <div class="flex items-center space-x-2">
+        <button onclick="toggleTheme()" class="bg-slate-800 text-yellow-400 border-2 border-black px-2.5 py-1.5 rounded-xl shadow-[2px_2px_0px_#000] font-bold text-xs">
+          <span id="themeIconDash">🌙</span>
+        </button>
+        <!-- 管理車隊成員按鈕 (ADMIN 可見) -->
+        <button id="btnManageCrew" onclick="openManageCrewModal()" class="nfs-btn-red nfs-skew text-xs font-nfs text-base font-black px-3 py-1.5 rounded-xl hidden">
+          <span class="nfs-skew-inside inline-block">⚙️ CREW</span>
+        </button>
+      </div>
+    </header>
+
+    <section class="grid grid-cols-2 gap-3 mb-4">
+      <div class="bg-white dark:bg-slate-900 border-3 border-black p-3.5 rounded-2xl shadow-[4px_4px_0px_#ea3526] relative overflow-hidden">
+        <div class="absolute -right-2 -bottom-2 text-4xl opacity-10">🏁</div>
+        <p class="text-[10px] font-nfs tracking-widest text-slate-500 dark:text-slate-400">TOTAL DISTANCE / 總支出</p>
+        <p id="statTotalExpense" class="text-2xl font-mono font-black text-slate-900 dark:text-yellow-400 mt-0.5">$0</p>
+      </div>
+      <div class="bg-white dark:bg-slate-900 border-3 border-black p-3.5 rounded-2xl shadow-[4px_4px_0px_#3b82f6] relative overflow-hidden">
+        <div class="absolute -right-2 -bottom-2 text-4xl opacity-10">⚡</div>
+        <p class="text-[10px] font-nfs tracking-widest text-slate-500 dark:text-slate-400">NITRO STATUS / 個人戰績</p>
+        <p id="statMyBalance" class="text-sm font-black text-slate-800 dark:text-slate-100 mt-1">CALCULATING...</p>
+      </div>
+    </section>
+
+    <section class="bg-white dark:bg-slate-900 rounded-3xl border-4 border-black p-5 mb-5 shadow-[6px_6px_0px_#000]">
+      <h2 class="text-sm font-nfs font-black bg-blue-600 text-white px-3 py-1 rounded-lg inline-block tracking-widest mb-3 border-2 border-black shadow-[2px_2px_0px_#000]">
+        1. LAP TIME & DRIFT / 結算還款
+      </h2>
+      <div id="balanceList" class="space-y-2 mb-4 text-sm font-bold divide-y-2 divide-slate-200 dark:divide-slate-800">
+        <p class="text-slate-500">載入戰報中...</p>
+      </div>
+
+      <div class="pt-3 border-t-2 border-slate-200 dark:border-slate-800">
+        <h3 class="text-xs font-nfs text-slate-500 dark:text-slate-400 tracking-wider mb-2">最佳甩尾結算路線：</h3>
+        <div id="settlementList" class="space-y-2">
+          <p class="text-xs text-slate-500">計算中...</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-white dark:bg-slate-900 rounded-3xl border-4 border-black p-5 shadow-[6px_6px_0px_#000]">
+      <div class="flex justify-between items-center mb-3">
+        <h2 class="text-sm font-nfs font-black bg-red-600 text-white px-3 py-1 rounded-lg inline-block tracking-widest border-2 border-black shadow-[2px_2px_0px_#000]">
+          2. RACE LOGS / 明細紀錄
+        </h2>
+        <select id="filterCategory" onchange="filterFeed()" class="text-xs border-2 border-black font-bold rounded-xl p-1 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-yellow-400 outline-none shadow-[2px_2px_0px_#000]">
+          <option value="ALL">全部分類</option>
+          <option value="🍔 餐飲">🍔 燃料餐飲</option>
+          <option value="🚗 交通">🚗 競速過路費</option>
+          <option value="🏠 住宿">🏠 賽道維修廠</option>
+          <option value="🎟️ 娛樂">🎟️ 氮氣補給</option>
+          <option value="🛒 購物">🛒 改裝零件</option>
+          <option value="還款">💵 還款紀錄</option>
+        </select>
+      </div>
+      <div id="expensesFeed" class="divide-y-2 divide-slate-200 dark:divide-slate-800 text-sm font-bold">
+        <p class="text-slate-500 py-2">載入紀錄中...</p>
+      </div>
+    </section>
+  </div>
+
+  <!-- 🏎️ 右下角浮動按鈕 FAB -->
+  <button id="fabAddExpense" onclick="openExpenseModal()" class="fixed bottom-6 right-6 z-40 nfs-btn-yellow fab-btn nfs-skew px-4 py-3 rounded-2xl flex items-center space-x-2 border-4 border-black shadow-[6px_6px_0px_#000] hidden">
+    <span class="nfs-skew-inside text-xl font-black">➕ 新增消費</span>
+  </button>
+
+  <!-- MODALS -->
+
+  <!-- 管理車隊成員 Modal (ADMIN 專用) -->
+  <div id="manageCrewModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 border-4 border-black shadow-[6px_6px_0px_#ff1e27] max-h-[85vh] flex flex-col">
+      <div class="flex justify-between items-center mb-3">
+        <h3 class="text-lg font-nfs font-black text-red-500 tracking-wider">⚙️ 車隊成員管理 (CREW)</h3>
+        <button onclick="closeManageCrewModal()" class="text-slate-800 dark:text-white font-black text-xl hover:text-red-500">✕</button>
+      </div>
+
+      <!-- 車隊現有成員列表 -->
+      <div class="mb-4 flex-1 overflow-y-auto pr-1">
+        <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-2">當前車隊成員列表：</label>
+        <div id="crewMembersList" class="space-y-2"></div>
+      </div>
+
+      <!-- 操作按鈕與關閉 -->
+      <div class="pt-3 border-t-2 border-slate-200 dark:border-slate-800 space-y-2">
+        <button onclick="openMemberModal()" class="nfs-btn-yellow w-full py-2 text-xs font-nfs text-lg font-black rounded-xl">+ 招募新車手</button>
+        <button onclick="closeManageCrewModal()" class="w-full py-2 text-xs font-black bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-300 rounded-xl border-2 border-black">關閉</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 查看每單明細 Modal -->
+  <div id="expenseDetailModal" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4 hidden">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-md max-h-[90vh] overflow-y-auto rounded-3xl p-5 border-4 border-black shadow-[8px_8px_0px_#3b82f6]">
+      <div class="flex justify-between items-center mb-3">
+        <span id="detailCategory" class="text-xs font-nfs font-black bg-blue-600 text-white px-3 py-1 rounded-lg border-2 border-black shadow-[2px_2px_0px_#000]"></span>
+        <button onclick="closeExpenseDetailModal()" class="text-slate-800 dark:text-white font-black text-xl hover:text-red-500">✕</button>
+      </div>
+
+      <div class="mb-4 pb-3 border-b-2 border-slate-200 dark:border-slate-800">
+        <h3 id="detailDesc" class="text-xl font-black text-slate-900 dark:text-white mb-1"></h3>
+        <div class="flex justify-between items-end">
+          <div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 font-bold">付款人：<span id="detailPayer" class="text-yellow-500 dark:text-yellow-400 font-black"></span></p>
+            <p id="detailDate" class="text-[10px] text-slate-400 font-bold mt-0.5"></p>
+          </div>
+          <p id="detailAmount" class="text-3xl font-mono font-black text-green-500"></p>
+        </div>
+      </div>
+
+      <div id="detailImageContainer" class="mb-4 hidden">
+        <p class="text-xs font-black text-slate-500 dark:text-slate-400 mb-1">單據照片：</p>
+        <a id="detailImageLink" href="#" target="_blank" class="block">
+          <img id="detailImage" class="w-full h-40 object-cover rounded-2xl border-2 border-black shadow-[3px_3px_0px_#000] hover:opacity-90">
+        </a>
+      </div>
+
+      <div class="mb-5">
+        <h4 class="text-xs font-nfs font-black text-slate-500 dark:text-slate-400 mb-2 tracking-wider">📊 成員分攤明細 (每人應付金額)</h4>
+        <div id="detailSharesList" class="space-y-2"></div>
+      </div>
+
+      <div class="flex justify-between items-center pt-2 border-t-2 border-slate-200 dark:border-slate-800">
+        <button id="btnDeleteDetailExpense" class="nfs-btn-red text-xs font-nfs px-4 py-2 rounded-xl">🗑️ 刪除此單</button>
+        <button onclick="closeExpenseDetailModal()" class="bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-300 font-black text-xs px-5 py-2 rounded-xl border-2 border-black">關閉</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 新增消費 Modal -->
+  <div id="expenseModal" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4 hidden">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-md max-h-[90vh] overflow-y-auto rounded-3xl p-5 border-4 border-black shadow-[8px_8px_0px_#facc15]">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-base font-nfs font-black bg-green-600 text-white px-3 py-1 rounded-lg inline-block tracking-widest border-2 border-black shadow-[2px_2px_0px_#000]">
+          PIT STOP / 補給加油 (新增消費)
+        </h2>
+        <button onclick="closeExpenseModal()" class="text-slate-800 dark:text-white font-black text-xl hover:text-red-500">✕</button>
+      </div>
+
+      <form id="expenseForm" onsubmit="submitExpense(event)" class="space-y-4">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">消費類別</label>
+            <select id="category" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-yellow-400 focus:outline-none shadow-[2px_2px_0px_#000]">
+              <option value="🍔 餐飲">🍔 燃料餐飲</option>
+              <option value="🚗 交通">🚗 競速過路費</option>
+              <option value="🏠 住宿">🏠 賽道維修廠</option>
+              <option value="🎟️ 娛樂">🎟️ 氮氣補給</option>
+              <option value="🛒 購物">🛒 改裝零件</option>
+              <option value="💡 雜項">💡 雜項開銷</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">買單車手 (Payer)</label>
+            <select id="payer" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]"></select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">項目說明</label>
+          <input type="text" id="desc" required placeholder="例如：98 無鉛汽油" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]">
+        </div>
+
+        <div>
+          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">總消費金額 ($)</label>
+          <div class="relative">
+            <input type="text" id="amountDisplay" readonly required value="0" onclick="openCalcModal()" 
+                   class="w-full border-3 border-black rounded-2xl p-3 text-right font-mono text-3xl font-black bg-yellow-400 text-black cursor-pointer shadow-[4px_4px_0px_#ea3526] focus:outline-none">
+            <span class="absolute left-3 top-4 text-xs font-black text-black/70">點擊開啟計算機 🔢</span>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">單據照片 (選填)</label>
+          <input type="file" id="receiptImg" accept="image/*" onchange="previewImage(event)" class="w-full text-xs text-slate-500 dark:text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-2 file:border-black file:text-xs file:font-black file:bg-red-600 file:text-white cursor-pointer">
+          <div id="imgPreviewContainer" class="hidden mt-2 relative w-20 h-20">
+            <img id="imgPreview" class="w-full h-full object-cover rounded-xl border-2 border-black shadow-[2px_2px_0px_#000]">
+            <button type="button" onclick="removeImage()" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs w-6 h-6 rounded-full border-2 border-black font-black flex items-center justify-center shadow">✕</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex justify-between items-center mb-2">
+            <label class="block text-xs font-black text-slate-500 dark:text-slate-400">分攤明細 (自訂金額)</label>
+            <div class="space-x-2">
+              <button type="button" onclick="splitEvenly()" class="nfs-btn-yellow text-[10px] font-black px-2 py-1 rounded-lg">⚡ 一鍵均分</button>
+              <button type="button" onclick="selectAllParts()" class="text-xs font-black text-slate-500 dark:text-slate-400 underline">全選</button>
+            </div>
+          </div>
+          <div id="participantsGroup" class="space-y-2"></div>
+        </div>
+
+        <div class="flex space-x-2 pt-2">
+          <button type="button" onclick="closeExpenseModal()" class="w-1/3 py-2.5 text-xs font-black bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-300 rounded-2xl border-2 border-black">取消</button>
+          <button type="submit" id="btnSubmit" class="nfs-btn-green nfs-skew w-2/3 font-nfs text-2xl font-black py-2 rounded-2xl tracking-wider">
+            <span class="nfs-skew-inside inline-block">RECORD LOG / 寫入</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Create Group Modal -->
+  <div id="createGroupModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 border-4 border-black shadow-[6px_6px_0px_#facc15] max-h-[85vh] flex flex-col">
+      <h3 class="text-lg font-nfs font-black text-slate-900 dark:text-yellow-400 mb-3 tracking-wider">🏎️ 建立新車隊 (GROUP)</h3>
+      
+      <div class="space-y-3 overflow-y-auto pr-1">
+        <div>
+          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">車隊名稱</label>
+          <input type="text" id="newGroupName" placeholder="例如：東京地下甩尾組" class="w-full border-2 border-black rounded-xl p-2.5 text-sm font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white outline-none shadow-[2px_2px_0px_#000]">
+        </div>
+
+        <div>
+          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">選擇加入的既有成員 (MEMBER)</label>
+          <div id="existingMembersList" class="space-y-2 max-h-40 overflow-y-auto border-2 border-black rounded-xl p-2 bg-slate-50 dark:bg-slate-800">
+            <p class="text-xs text-slate-400 font-bold text-center">載入成員中...</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex space-x-2 mt-4 pt-2 border-t-2 border-slate-200 dark:border-slate-800">
+        <button onclick="closeCreateGroupModal()" class="w-1/2 py-2 text-xs font-black bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-300 rounded-xl border-2 border-black">取消</button>
+        <button onclick="submitNewGroup()" class="nfs-btn-yellow w-1/2 py-2 text-xs font-nfs text-lg font-black rounded-xl">建立車隊</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- API Modal -->
+  <div id="apiModal" class="fixed inset-0 bg-black/85 backdrop-blur-md flex items-center justify-center z-50 p-4 hidden">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-6 border-4 border-black shadow-[6px_6px_0px_#facc15]">
+      <h3 class="text-lg font-nfs font-black text-slate-900 dark:text-yellow-400 mb-2">⚙️ 設定 GAS API 網址</h3>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mb-4 font-bold">貼上發佈好的 Google Apps Script Web App URL：</p>
+      <textarea id="apiUrlInput" rows="3" placeholder="https://script.google.com/macros/s/.../exec" 
+                class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-yellow-400 mb-4 focus:outline-none break-all shadow-[2px_2px_0px_#000]"></textarea>
+      <button onclick="saveApiUrl()" class="nfs-btn-yellow w-full py-2 text-base font-nfs font-black rounded-xl">儲存並連接引擎 🏎️</button>
+    </div>
+  </div>
+
+  <!-- Add Member Modal -->
+  <div id="memberModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-xs rounded-3xl p-5 border-4 border-black shadow-[6px_6px_0px_#ff1e27]">
+      <h3 class="text-lg font-nfs font-black text-red-500 mb-3 tracking-wider">👤 招募新車手 (ADMIN)</h3>
+      <input type="text" id="newMemberName" placeholder="車手代號" class="w-full border-2 border-black rounded-xl p-2.5 text-sm font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white mb-4 outline-none shadow-[2px_2px_0px_#000]">
+      <div class="flex space-x-2">
+        <button onclick="closeMemberModal()" class="w-1/2 py-2 text-xs font-black bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-300 rounded-xl border-2 border-black">取消</button>
+        <button onclick="submitNewMember()" class="nfs-btn-red w-1/2 py-2 text-xs font-nfs text-lg font-black rounded-xl">確認招募</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Token Display Modal -->
+  <div id="tokenModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-xs rounded-3xl p-5 border-4 border-black shadow-[6px_6px_0px_#facc15] text-center">
+      <h3 class="text-xl font-nfs font-black text-slate-900 dark:text-yellow-400 mb-1">🏁 車手招募完成！</h3>
+      <p class="text-xs font-bold text-slate-500 dark:text-slate-400 mb-3">請將專屬 Pass Key 傳送給該車手：</p>
+      <div id="newTokenDisplay" class="bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-yellow-400 border-2 border-black font-mono font-black text-xs p-3 rounded-xl mb-3 select-all break-all"></div>
+      <button onclick="copyTokenToClipboard()" id="btnCopyToken" class="nfs-btn-yellow w-full py-2 text-xs font-nfs text-lg font-black rounded-xl mb-2">📋 複製 PASS KEY</button>
+      <button onclick="closeTokenModal()" class="nfs-btn-green w-full py-2 text-xs font-nfs text-lg font-black rounded-xl">完成</button>
+    </div>
+  </div>
+
+  <!-- Settle Modal -->
+  <div id="settleModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-xs rounded-3xl p-5 border-4 border-black shadow-[6px_6px_0px_#22c55e]">
+      <h3 class="text-xl font-nfs font-black text-green-500 mb-3 tracking-wider">💸 DRIFT 還款調整</h3>
+      <p id="settleInfo" class="text-xs font-bold text-slate-700 dark:text-slate-300 mb-3"></p>
+      
+      <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">還款金額 ($)</label>
+      <input type="number" id="settleAmountInput" step="0.1" class="w-full border-2 border-black rounded-xl p-2.5 text-base font-mono font-black bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-yellow-400 mb-4 outline-none shadow-[2px_2px_0px_#000]">
+      
+      <div class="flex space-x-2">
+        <button onclick="closeSettleModal()" class="w-1/2 py-2 text-xs font-black bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-300 rounded-xl border-2 border-black">取消</button>
+        <button onclick="confirmSettle()" class="nfs-btn-green w-1/2 py-2 text-xs font-nfs text-lg font-black rounded-xl">確認還款</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Calc Modal -->
+  <div id="calcModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-end justify-center hidden z-50">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-t-3xl p-5 border-t-4 border-x-4 border-black shadow-[0px_-4px_0px_#ea3526]">
+      <div class="flex justify-between items-center mb-3">
+        <span class="text-xs font-nfs tracking-widest bg-yellow-400 text-black px-2 py-0.5 rounded border border-black font-black">SPEEDOMETER CALC</span>
+        <button onclick="closeCalcModal()" class="text-slate-800 dark:text-white font-black text-xl">✕</button>
+      </div>
+      <div class="bg-black text-right p-4 rounded-2xl border-2 border-slate-700 mb-4 shadow-[inset_0px_2px_6px_rgba(0,0,0,0.9)]">
+        <div id="calcFormula" class="text-xs text-yellow-400 font-mono min-h-[1.2rem]"></div>
+        <div id="calcDisplay" class="text-4xl font-mono font-black text-green-400">0</div>
+      </div>
+      <div class="grid grid-cols-4 gap-2.5 text-xl font-black">
+        <button onclick="calcClear()" class="nfs-btn-red p-3 rounded-2xl">C</button>
+        <button onclick="calcOp('/')" class="nfs-btn-blue p-3 rounded-2xl">÷</button>
+        <button onclick="calcOp('*')" class="nfs-btn-blue p-3 rounded-2xl">×</button>
+        <button onclick="calcOp('-')" class="nfs-btn-blue p-3 rounded-2xl">-</button>
+        <button onclick="calcNum('7')" class="bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-white border-2 border-black rounded-2xl p-3">7</button>
+        <button onclick="calcNum('8')" class="bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-white border-2 border-black rounded-2xl p-3">8</button>
+        <button onclick="calcNum('9')" class="bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-white border-2 border-black rounded-2xl p-3">9</button>
+        <button onclick="calcOp('+')" class="nfs-btn-blue p-3 rounded-2xl row-span-2 flex items-center justify-center">+</button>
+        <button onclick="calcNum('4')" class="bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-white border-2 border-black rounded-2xl p-3">4</button>
+        <button onclick="calcNum('5')" class="bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-white border-2 border-black rounded-2xl p-3">5</button>
+        <button onclick="calcNum('6')" class="bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-white border-2 border-black rounded-2xl p-3">6</button>
+        <button onclick="calcNum('1')" class="bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-white border-2 border-black rounded-2xl p-3">1</button>
+        <button onclick="calcNum('2')" class="bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-white border-2 border-black rounded-2xl p-3">2</button>
+        <button onclick="calcNum('3')" class="bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-white border-2 border-black rounded-2xl p-3">3</button>
+        <button onclick="calcConfirm()" class="nfs-btn-green p-3 rounded-2xl row-span-2 flex items-center justify-center font-black">＝</button>
+        <button onclick="calcNum('0')" class="bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-white border-2 border-black rounded-2xl p-3 col-span-2">0</button>
+        <button onclick="calcNum('.')" class="bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-white border-2 border-black rounded-2xl p-3">.</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let gasApiUrl = localStorage.getItem('GAS_API_URL') || '';
+    let currentToken = localStorage.getItem('MEMBER_TOKEN') || null;
+    let currentTheme = localStorage.getItem('THEME') || 'dark';
+    let currentUser = null;
+    let currentGroupId = null;
+    let appData = null;
+    let calcExpr = '0';
+    let currentBase64Image = "";
+    let activeSettleData = null;
+
+    window.onload = function() {
+      applyTheme(currentTheme);
+      if (!gasApiUrl && typeof google === 'undefined') {
+        openApiModal();
+      } else if (currentToken) {
+        verifyAndLoad(currentToken);
+      }
+    };
+
+    function toggleTheme() {
+      currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('THEME', currentTheme);
+      applyTheme(currentTheme);
+    }
+
+    function applyTheme(theme) {
+      if (theme === 'light') {
+        document.body.classList.remove('dark');
+        document.body.classList.add('light');
+        document.documentElement.classList.remove('dark');
+        updateThemeIcons('☀️ 日光模式');
+      } else {
+        document.body.classList.remove('light');
+        document.body.classList.add('dark');
+        document.documentElement.classList.add('dark');
+        updateThemeIcons('🌙 賽道暗黑');
+      }
+    }
+
+    function updateThemeIcons(text) {
+      const el1 = document.getElementById('themeIconLogin');
+      const el2 = document.getElementById('themeIconGroup');
+      const el3 = document.getElementById('themeIconDash');
+      if(el1) el1.innerText = text;
+      if(el2) el2.innerText = text;
+      if(el3) el3.innerText = currentTheme === 'light' ? '☀️' : '🌙';
+    }
+
+    function callGas(action, payload = {}) {
+      return new Promise((resolve, reject) => {
+        if (typeof google !== 'undefined' && google.script && google.script.run) {
+          google.script.run
+            .withSuccessHandler(resolve)
+            .withFailureHandler(reject)[action](...Object.values(payload));
+        } else {
+          fetch(gasApiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ action, ...payload })
+          })
+          .then(res => res.json())
+          .then(res => {
+            if (res && res.error) reject(new Error(res.error));
+            else resolve(res);
+          })
+          .catch(reject);
+        }
+      });
+    }
+
+    function openApiModal() {
+      document.getElementById('apiUrlInput').value = gasApiUrl;
+      document.getElementById('apiModal').classList.remove('hidden');
+    }
+
+    function saveApiUrl() {
+      const url = document.getElementById('apiUrlInput').value.trim();
+      if (!url.startsWith('https://script.google.com')) {
+        return alert('請輸入有效的 Google Apps Script API 網址！');
+      }
+      gasApiUrl = url;
+      localStorage.setItem('GAS_API_URL', url);
+      document.getElementById('apiModal').classList.add('hidden');
+      if (currentToken) verifyAndLoad(currentToken);
+    }
+
+    function showLoading() { document.getElementById('loadingOverlay').classList.remove('hidden'); }
+    function hideLoading() { document.getElementById('loadingOverlay').classList.add('hidden'); }
+
+    function handleLogin() {
+      if (!gasApiUrl && typeof google === 'undefined') return openApiModal();
+      const token = document.getElementById('tokenInput').value.trim().toUpperCase();
+      if (token.length !== 20) return showError('Token 必須為 20 位字元！');
+      showLoading();
+      verifyAndLoad(token);
+    }
+
+    function verifyAndLoad(token) {
+      callGas('loginWithToken', { token })
+        .then((res) => {
+          hideLoading();
+          if (res.success) {
+            currentToken = token;
+            currentUser = res.member;
+            localStorage.setItem('MEMBER_TOKEN', token);
+            
+            document.getElementById('loginView').classList.add('hidden');
+            document.getElementById('groupSelectionView').classList.remove('hidden');
+            
+            const adminBadge = currentUser.isAdmin ? ' [👑 ADMIN]' : '';
+            document.getElementById('welcomeUser').innerText = `🏎️ DRIVER: ${currentUser.memberName}${adminBadge}`;
+            
+            loadMyGroups();
+          } else {
+            showError(res.message);
+            localStorage.removeItem('MEMBER_TOKEN');
+          }
+        })
+        .catch((err) => {
+          hideLoading();
+          showError('連線失敗，請檢查 API 網址！');
+        });
+    }
+
+    function loadMyGroups() {
+      showLoading();
+      callGas('getGroupsByToken', { token: currentToken })
+        .then((groups) => {
+          hideLoading();
+          renderGroupList(groups || []);
+        })
+        .catch((err) => {
+          hideLoading();
+          alert('載入車隊失敗：' + err.message);
+        });
+    }
+
+    function renderGroupList(groups) {
+      const container = document.getElementById('groupList');
+      if (groups.length === 0) {
+        container.innerHTML = '<p class="text-xs font-bold text-slate-500 py-4 text-center">你目前尚未加入任何車隊群組。</p>';
+        return;
+      }
+      container.innerHTML = groups.map(g => `
+        <div onclick="selectGroup('${g.id}', '${g.name}')" 
+             class="flex justify-between items-center p-4 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border-2 border-black rounded-2xl cursor-pointer shadow-[3px_3px_0px_#facc15] active:translate-y-1">
+          <span class="font-nfs font-black text-slate-900 dark:text-yellow-400 text-lg">🏎️ ${g.name}</span>
+          <span class="text-xs font-nfs text-base font-black bg-red-600 text-white px-3 py-1 rounded-lg border border-black">DRIVE →</span>
+        </div>
+      `).join('');
+    }
+
+    function selectGroup(id, name) {
+      currentGroupId = id;
+      document.getElementById('currentGroupName').innerText = name;
+      document.getElementById('groupSelectionView').classList.add('hidden');
+      document.getElementById('groupDashboardView').classList.remove('hidden');
+      document.getElementById('fabAddExpense').classList.remove('hidden');
+      loadGroupData();
+    }
+
+    function backToGroupSelection() {
+      currentGroupId = null;
+      document.getElementById('groupDashboardView').classList.add('hidden');
+      document.getElementById('fabAddExpense').classList.add('hidden');
+      document.getElementById('groupSelectionView').classList.remove('hidden');
+      loadMyGroups();
+    }
+
+    function loadGroupData() {
+      showLoading();
+      callGas('getGroupData', { token: currentToken, groupId: currentGroupId })
+        .then((data) => {
+          hideLoading();
+          renderApp(data);
+        })
+        .catch((err) => {
+          hideLoading();
+          alert('取得群組資料失敗：' + err.message);
+        });
+    }
+
+    function renderApp(data) {
+      appData = data;
+      
+      if (currentUser && currentUser.isAdmin) {
+        document.getElementById('btnManageCrew').classList.remove('hidden');
+      } else {
+        document.getElementById('btnManageCrew').classList.add('hidden');
+      }
+
+      renderStats(data);
+      renderBalances(data.balances);
+      renderSettlements(data.settlements);
+      renderFormOptions(data.members);
+      renderFeed(data.expenses);
+    }
+
+    function renderStats(data) {
+      document.getElementById('statTotalExpense').innerText = `$${data.totalGroupExpense.toLocaleString()}`;
+      const myBal = data.balances[currentUser.memberName] || 0;
+      const rounded = Math.round(myBal * 10) / 10;
+      const elem = document.getElementById('statMyBalance');
+
+      if (rounded > 0) {
+        elem.innerText = `應收 $${rounded}`;
+        elem.className = 'text-sm font-black text-green-500 mt-1';
+      } else if (rounded < 0) {
+        elem.innerText = `應付 $${Math.abs(rounded)}`;
+        elem.className = 'text-sm font-black text-red-500 mt-1';
+      } else {
+        elem.innerText = `READY / 已結清 ⚡`;
+        elem.className = 'text-sm font-black text-yellow-500 dark:text-yellow-400 mt-1';
+      }
+    }
+
+    function openExpenseModal() { document.getElementById('expenseModal').classList.remove('hidden'); }
+    function closeExpenseModal() { document.getElementById('expenseModal').classList.add('hidden'); }
+    
+    /* 開啟成員管理 modal */
+    function openManageCrewModal() {
+      if (!appData) return;
+      const container = document.getElementById('crewMembersList');
+      container.innerHTML = '';
+
+      callGas('getAllSystemMembers').then(allMembers => {
+        appData.members.forEach(member => {
+          const sysMember = allMembers.find(m => m.name === member);
+          const memberId = sysMember ? sysMember.id : null;
+
+          container.innerHTML += `
+            <div class="flex justify-between items-center p-2.5 bg-slate-100 dark:bg-slate-800 border-2 border-black rounded-xl shadow-[2px_2px_0px_#000]">
+              <span class="font-black text-xs text-slate-900 dark:text-white">🏎️ ${member}</span>
+              ${memberId ? `
+                <button onclick="handleRemoveMember('${memberId}', '${member}')" class="nfs-btn-red text-[10px] font-black px-2 py-1 rounded-lg">
+                  🗑️ 踢出
+                </button>
+              ` : ''}
+            </div>
+          `;
+        });
+      });
+
+      document.getElementById('manageCrewModal').classList.remove('hidden');
+    }
+
+    function closeManageCrewModal() { document.getElementById('manageCrewModal').classList.add('hidden'); }
+
+    function handleRemoveMember(memberId, memberName) {
+      if (!confirm(`確定要將車手【${memberName}】移除出此車隊嗎？`)) return;
+
+      showLoading();
+      callGas('removeMemberFromGroup', {
+        adminToken: currentToken,
+        groupId: currentGroupId,
+        targetMemberId: memberId
+      })
+      .then(data => {
+        hideLoading();
+        renderApp(data);
+        openManageCrewModal(); // 重新整理 Modal 列表
+      })
+      .catch(err => {
+        hideLoading();
+        alert('移除成員失敗：' + err.message);
+      });
+    }
+
+    function openCreateGroupModal() { 
+      document.getElementById('createGroupModal').classList.remove('hidden');
+      const container = document.getElementById('existingMembersList');
+      container.innerHTML = '<p class="text-xs text-slate-400 font-bold text-center">載入成員中...</p>';
+
+      callGas('getAllSystemMembers')
+        .then(members => {
+          if (!members || members.length === 0) {
+            container.innerHTML = '<p class="text-xs text-slate-400 font-bold text-center">尚無其他車手</p>';
+            return;
+          }
+          
+          container.innerHTML = members
+            .filter(m => m.id !== currentUser.id && m.name !== currentUser.memberName)
+            .map(m => `
+              <label class="flex items-center space-x-2 cursor-pointer text-xs font-black p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-white">
+                <input type="checkbox" name="selectedGroupMembers" value="${m.id}" class="w-4 h-4 rounded text-red-600 focus:ring-0 accent-red-600">
+                <span>🏎️ ${m.name}</span>
+              </label>
+            `).join('');
+
+          if(container.innerHTML.trim() === '') {
+            container.innerHTML = '<p class="text-xs text-slate-400 font-bold text-center">無其他可選擇的車手</p>';
+          }
+        })
+        .catch(err => {
+          container.innerHTML = '<p class="text-xs text-red-500 font-bold text-center">載入失敗</p>';
+        });
+    }
+
+    function closeCreateGroupModal() { document.getElementById('createGroupModal').classList.add('hidden'); }
+    function openMemberModal() { document.getElementById('memberModal').classList.remove('hidden'); }
+    function closeMemberModal() { document.getElementById('memberModal').classList.add('hidden'); }
+    function closeTokenModal() {
+      document.getElementById('tokenModal').classList.add('hidden');
+      loadGroupData();
+    }
+
+    function copyTokenToClipboard() {
+      const tokenText = document.getElementById('newTokenDisplay').innerText;
+      navigator.clipboard.writeText(tokenText).then(() => {
+        const btn = document.getElementById('btnCopyToken');
+        btn.innerText = '✅ PASS KEY COPIED!';
+        setTimeout(() => btn.innerText = '📋 複製 PASS KEY', 2000);
+      });
+    }
+
+    function submitNewGroup() {
+      const name = document.getElementById('newGroupName').value.trim();
+      if (!name) return alert('請輸入車隊名稱');
+
+      const checkedBoxes = document.querySelectorAll('input[name="selectedGroupMembers"]:checked');
+      const selectedMemberIds = Array.from(checkedBoxes).map(cb => cb.value);
+
+      showLoading();
+      callGas('createGroupWithCreator', { 
+        groupName: name, 
+        creatorToken: currentToken,
+        selectedMemberIds: selectedMemberIds 
+      })
+        .then((groups) => {
+          hideLoading();
+          renderGroupList(groups);
+          document.getElementById('newGroupName').value = '';
+          closeCreateGroupModal();
+        })
+        .catch((err) => { hideLoading(); alert('建立車隊失敗：' + err.message); });
+    }
+
+    function submitNewMember() {
+      const name = document.getElementById('newMemberName').value.trim();
+      if (!name) return alert('請輸入車手代號');
+
+      showLoading();
+      callGas('addMemberToGroup', { adminToken: currentToken, groupId: currentGroupId, newMemberName: name })
+        .then((res) => {
+          hideLoading();
+          document.getElementById('newTokenDisplay').innerText = res.token;
+          document.getElementById('tokenModal').classList.remove('hidden');
+          document.getElementById('newMemberName').value = '';
+          closeMemberModal();
+        })
+        .catch((err) => { hideLoading(); alert('招募成員失敗：' + err.message); });
+    }
+
+    function openCalcModal() { document.getElementById('calcModal').classList.remove('hidden'); }
+    function closeCalcModal() { document.getElementById('calcModal').classList.add('hidden'); }
+    function calcNum(n) { calcExpr = (calcExpr === '0') ? n : calcExpr + n; updateCalcDisplay(); }
+    function calcOp(op) {
+      if (['+', '-', '*', '/'].includes(calcExpr.slice(-1))) calcExpr = calcExpr.slice(0, -1);
+      calcExpr += op; updateCalcDisplay();
+    }
+    function calcClear() { calcExpr = '0'; updateCalcDisplay(); }
+    function updateCalcDisplay() {
+      document.getElementById('calcFormula').innerText = calcExpr;
+      try {
+        const val = eval(calcExpr);
+        document.getElementById('calcDisplay').innerText = isNaN(val) ? '0' : Math.round(val * 100) / 100;
+      } catch(e) {}
+    }
+    function calcConfirm() {
+      try {
+        const val = eval(calcExpr);
+        const finalVal = isNaN(val) ? 0 : Math.round(val * 100) / 100;
+        document.getElementById('amountDisplay').value = finalVal;
+        closeCalcModal();
+        splitEvenly();
+      } catch(e) { alert('算式不正確'); }
+    }
+
+    function previewImage(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          const maxWidth = 800;
+          let width = img.width, height = img.height;
+          if (width > maxWidth) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          }
+          canvas.width = width; canvas.height = height;
+          ctx.drawImage(img, 0, 0, width, height);
+          currentBase64Image = canvas.toDataURL('image/jpeg', 0.7);
+          document.getElementById('imgPreview').src = currentBase64Image;
+          document.getElementById('imgPreviewContainer').classList.remove('hidden');
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function removeImage() {
+      currentBase64Image = "";
+      document.getElementById('receiptImg').value = "";
+      document.getElementById('imgPreviewContainer').classList.add('hidden');
+    }
+
+    function splitEvenly() {
+      const amount = parseFloat(document.getElementById('amountDisplay').value) || 0;
+      const checkboxes = document.querySelectorAll('input[name="parts"]:checked');
+      if (checkboxes.length === 0) return;
+      const share = (amount / checkboxes.length).toFixed(1);
+
+      document.querySelectorAll('input[name="parts"]').forEach(cb => {
+        const input = document.getElementById(`share-input-${cb.value}`);
+        if (cb.checked && amount > 0) {
+          input.value = share;
+          input.disabled = false;
+        } else {
+          input.value = "0";
+          input.disabled = true;
+        }
+      });
+    }
+
+    function handleCheckboxChange(member) {
+      const cb = document.querySelector(`input[name="parts"][value="${member}"]`);
+      const input = document.getElementById(`share-input-${member}`);
+      if (cb.checked) {
+        input.disabled = false;
+      } else {
+        input.value = "0";
+        input.disabled = true;
+      }
+    }
+
+    function renderFormOptions(members) {
+      const payerSelect = document.getElementById('payer');
+      payerSelect.innerHTML = members.length ? members.map(m => `<option value="${m}">${m}</option>`).join('') : '<option value="">請先招募車手</option>';
+      
+      if (currentUser && members.includes(currentUser.memberName)) {
+        payerSelect.value = currentUser.memberName;
+      }
+
+      const partGroup = document.getElementById('participantsGroup');
+      partGroup.innerHTML = members.length ? members.map(m => `
+        <div class="flex items-center justify-between border-2 border-black p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white shadow-[2px_2px_0px_#000]">
+          <label class="flex items-center space-x-2 cursor-pointer text-xs font-black">
+            <input type="checkbox" name="parts" value="${m}" checked onchange="handleCheckboxChange('${m}')" class="w-4 h-4 rounded text-red-600 focus:ring-0 accent-red-600">
+            <span>${m}</span>
+          </label>
+          <div class="flex items-center space-x-1">
+            <span class="text-xs font-bold text-yellow-500 dark:text-yellow-400">$</span>
+            <input type="number" id="share-input-${m}" step="0.1" value="0" class="w-20 bg-white dark:bg-slate-900 text-slate-900 dark:text-yellow-400 text-xs font-mono font-black border border-black rounded-lg px-2 py-1 text-right focus:outline-none">
+          </div>
+        </div>
+      `).join('') : '<p class="text-xs font-bold text-slate-500">請先招募成員</p>';
+      
+      splitEvenly();
+    }
+
+    function selectAllParts() {
+      document.querySelectorAll('input[name="parts"]').forEach(cb => {
+        cb.checked = true;
+        handleCheckboxChange(cb.value);
+      });
+      splitEvenly();
+    }
+
+    function submitExpense(e) {
+      e.preventDefault();
+      const amount = parseFloat(document.getElementById('amountDisplay').value);
+      if (!amount || amount <= 0) return alert('請透過計算機輸入金額');
+
+      const checkedBoxes = Array.from(document.querySelectorAll('input[name="parts"]:checked'));
+      if (checkedBoxes.length === 0) return alert('請至少選擇一位分攤車手！');
+
+      const shares = {};
+      let totalSharesSum = 0;
+
+      checkedBoxes.forEach(cb => {
+        const val = parseFloat(document.getElementById(`share-input-${cb.value}`).value) || 0;
+        shares[cb.value] = val;
+        totalSharesSum += val;
+      });
+
+      if (Math.abs(totalSharesSum - amount) > 0.5) {
+        if (!confirm(`警告：分攤金額總和 ($${totalSharesSum}) 與總消費金額 ($${amount}) 不符，確定要繼續送出嗎？`)) {
+          return;
+        }
+      }
+
+      showLoading();
+
+      const payload = {
+        token: currentToken,
+        groupId: currentGroupId,
+        category: document.getElementById('category').value,
+        desc: document.getElementById('desc').value,
+        amount: amount,
+        payer: document.getElementById('payer').value,
+        shares: shares,
+        type: 'EXPENSE',
+        date: new Date().toISOString().split('T')[0],
+        imageBase64: currentBase64Image
+      };
+
+      callGas('addTransaction', payload)
+        .then((data) => {
+          hideLoading();
+          closeExpenseModal();
+          renderApp(data);
+          document.getElementById('expenseForm').reset();
+          document.getElementById('amountDisplay').value = '0';
+          removeImage();
+          calcExpr = '0';
+          renderFormOptions(data.members);
+        })
+        .catch((err) => { hideLoading(); alert('新增消費失敗：' + err.message); });
+    }
+
+    function handleDeleteExpense(expenseId) {
+      if (!confirm('確定要刪除這筆開銷紀錄？')) return;
+      showLoading();
+      callGas('deleteExpense', { token: currentToken, groupId: currentGroupId, expenseId })
+        .then((data) => {
+          hideLoading();
+          closeExpenseDetailModal();
+          renderApp(data);
+        })
+        .catch((err) => { hideLoading(); alert('刪除失敗：' + err.message); });
+    }
+
+    function openExpenseDetailModal(expenseId) {
+      const exp = appData.expenses.find(e => e.id === expenseId);
+      if (!exp) return;
+
+      document.getElementById('detailCategory').innerText = exp.category;
+      document.getElementById('detailDesc').innerText = exp.desc;
+      document.getElementById('detailPayer').innerText = exp.payer;
+      document.getElementById('detailDate').innerText = `日期：${exp.date}`;
+      document.getElementById('detailAmount').innerText = `$${exp.amount}`;
+
+      const imgContainer = document.getElementById('detailImageContainer');
+      if (exp.imageUrl) {
+        document.getElementById('detailImage').src = exp.imageUrl;
+        document.getElementById('detailImageLink').href = exp.imageUrl;
+        imgContainer.classList.remove('hidden');
+      } else {
+        imgContainer.classList.add('hidden');
+      }
+
+      const sharesList = document.getElementById('detailSharesList');
+      sharesList.innerHTML = '';
+
+      appData.members.forEach(member => {
+        const shareAmount = parseFloat(exp.shares[member] || 0);
+        const isPayer = member === exp.payer;
+
+        let roleBadge = '';
+        if (isPayer && shareAmount > 0) {
+          roleBadge = `<span class="text-[10px] bg-yellow-400 text-black px-1.5 py-0.5 rounded border border-black font-black">買單人 & 分攤</span>`;
+        } else if (isPayer) {
+          roleBadge = `<span class="text-[10px] bg-green-500 text-white px-1.5 py-0.5 rounded border border-black font-black">全額代付</span>`;
+        } else if (shareAmount > 0) {
+          roleBadge = `<span class="text-[10px] bg-red-500 text-white px-1.5 py-0.5 rounded border border-black font-black">應付</span>`;
+        } else {
+          roleBadge = `<span class="text-[10px] bg-slate-300 dark:bg-slate-700 text-slate-600 dark:text-slate-400 px-1.5 py-0.5 rounded font-bold">未參與</span>`;
+        }
+
+        sharesList.innerHTML += `
+          <div class="flex justify-between items-center p-2.5 bg-slate-100 dark:bg-slate-800 border-2 border-black rounded-xl font-bold text-xs shadow-[2px_2px_0px_#000]">
+            <div class="flex items-center space-x-2">
+              <span class="text-slate-900 dark:text-white font-black">🏎️ ${member}</span>
+              ${roleBadge}
+            </div>
+            <span class="font-mono text-sm font-black ${shareAmount > 0 ? 'text-red-500' : 'text-slate-400'}">
+              $${shareAmount}
+            </span>
+          </div>`;
+      });
+
+      document.getElementById('btnDeleteDetailExpense').onclick = function() {
+        handleDeleteExpense(exp.id);
+      };
+
+      document.getElementById('expenseDetailModal').classList.remove('hidden');
+    }
+
+    function closeExpenseDetailModal() {
+      document.getElementById('expenseDetailModal').classList.add('hidden');
+    }
+
+    function renderBalances(balances) {
+      const container = document.getElementById('balanceList');
+      if (!balances || Object.keys(balances).length === 0) {
+        container.innerHTML = '<p class="text-xs text-slate-500 py-2">尚未招募成員</p>';
+        return;
+      }
+      container.innerHTML = '';
+      for (const [name, val] of Object.entries(balances)) {
+        const rounded = Math.round(val * 10) / 10;
+        let colorClass = 'text-slate-400', statusText = '已結清';
+        if (rounded > 0) { colorClass = 'text-green-500 font-black'; statusText = `應收 $${rounded}`; }
+        else if (rounded < 0) { colorClass = 'text-red-500 font-black'; statusText = `應付 $${Math.abs(rounded)}`; }
+
+        container.innerHTML += `
+          <div class="flex justify-between items-center py-2">
+            <span class="font-black text-slate-800 dark:text-slate-200">${name}</span>
+            <span class="${colorClass}">${statusText}</span>
+          </div>`;
+      }
+    }
+
+    function renderSettlements(settlements) {
+      const container = document.getElementById('settlementList');
+      if (!settlements || settlements.length === 0) {
+        container.innerHTML = '<p class="text-xs text-slate-500 font-bold">目前無欠款，全員平手！✨</p>';
+        return;
+      }
+      container.innerHTML = settlements.map(s => `
+        <div class="flex justify-between items-center bg-slate-100 dark:bg-slate-800 border-2 border-black p-2.5 rounded-xl text-xs font-black shadow-[2px_2px_0px_#000]">
+          <span class="text-slate-800 dark:text-slate-200">🏎️ <b>${s.from}</b> ➔ <b>${s.to}</b> <b class="text-red-500">$${s.amount}</b></span>
+          <button onclick="openSettleModal('${s.from}', '${s.to}', ${s.amount})" class="nfs-btn-green text-[10px] font-nfs px-2 py-1 rounded-lg">DRIFT 還款</button>
+        </div>
+      `).join('');
+    }
+
+    function openSettleModal(from, to, amount) {
+      activeSettleData = { from, to };
+      document.getElementById('settleInfo').innerText = `【${from}】還款給【${to}】`;
+      document.getElementById('settleAmountInput').value = amount;
+      document.getElementById('settleModal').classList.remove('hidden');
+    }
+
+    function closeSettleModal() {
+      document.getElementById('settleModal').classList.add('hidden');
+      activeSettleData = null;
+    }
+
+    function confirmSettle() {
+      if (!activeSettleData) return;
+      const amount = parseFloat(document.getElementById('settleAmountInput').value);
+      if (!amount || amount <= 0) return alert('請輸入有效的還款金額！');
+
+      const { from, to } = activeSettleData;
+      closeSettleModal();
+
+      showLoading();
+      callGas('addTransaction', {
+        token: currentToken,
+        groupId: currentGroupId,
+        desc: `${from} 還款給 ${to}`, 
+        amount: amount, 
+        payer: from, 
+        shares: { [to]: amount },
+        type: 'PAYMENT', 
+        date: new Date().toISOString().split('T')[0]
+      })
+      .then((data) => {
+        hideLoading();
+        renderApp(data);
+      })
+      .catch((err) => { hideLoading(); alert('還款失敗：' + err.message); });
+    }
+
+    function renderFeed(expenses) {
+      const filter = document.getElementById('filterCategory').value;
+      const filtered = filter === 'ALL' ? expenses : expenses.filter(e => e.category === filter);
+      const feed = document.getElementById('expensesFeed');
+      
+      if (!filtered || filtered.length === 0) {
+        feed.innerHTML = '<p class="text-slate-500 py-3 text-center text-xs font-bold">尚無競速日誌紀錄</p>';
+        return;
+      }
+
+      feed.innerHTML = filtered.map(e => {
+        const isPayment = e.type === 'PAYMENT';
+        const imgBadge = e.imageUrl 
+          ? `<span class="inline-flex items-center text-[10px] bg-yellow-400 text-black border border-black font-black px-1.5 py-0.5 rounded-md">🧾 單據</span>` 
+          : '';
+
+        return `
+          <div onclick="openExpenseDetailModal('${e.id}')" class="py-3 cursor-pointer hover:bg-slate-100/50 dark:hover:bg-slate-800/50 rounded-xl px-1 transition-colors">
+            <div class="flex justify-between items-center font-black">
+              <span class="flex items-center space-x-2">
+                <span class="text-[10px] px-2 py-0.5 rounded-md border border-black ${isPayment ? 'bg-purple-600 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-yellow-400'}">${e.category}</span>
+                <span class="text-slate-800 dark:text-slate-100">${e.desc}</span>
+                ${imgBadge}
+              </span>
+              <div class="flex items-center space-x-2">
+                <span class="${isPayment ? 'text-purple-500 dark:text-purple-400' : 'text-green-600 dark:text-green-400'} text-base font-black">$${e.amount}</span>
+                <span class="text-xs text-slate-400">🔍</span>
+              </div>
+            </div>
+            <div class="flex justify-between text-xs text-slate-500 dark:text-slate-400 font-bold mt-1">
+              <span>${e.payer} ${isPayment ? '還給 ' + e.participants[0] : '買單 (' + e.participants.length + ' 人分攤)'}</span>
+              <span>${e.date}</span>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    function filterFeed() { if (appData) renderFeed(appData.expenses); }
+
+    function handleLogout() {
+      localStorage.removeItem('MEMBER_TOKEN');
+      location.reload();
+    }
+
+    function showError(msg) {
+      const err = document.getElementById('loginError');
+      err.innerText = msg;
+      err.classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
