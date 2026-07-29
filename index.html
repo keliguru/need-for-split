@@ -91,7 +91,7 @@
 
     <div class="bg-white dark:bg-slate-900 rounded-3xl border-4 border-black p-6 shadow-[8px_8px_0px_#000] relative">
       <div class="flex justify-between items-center mb-3">
-        <h2 class="text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">🔑 請輸入 20 位 Driver License</h2>
+        <h2 class="text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">🔑 請輸入 Driver License</h2>
         <button onclick="openApiModal()" class="text-[10px] font-bold bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-yellow-400 border border-slate-400 dark:border-slate-600 px-2 py-0.5 rounded-lg">⚙️ API 網址</button>
       </div>
       
@@ -125,7 +125,7 @@
       </div>
 
       <div class="mt-3 flex items-center justify-center space-x-3">
-        <!-- 登入狀態顯示修改：改為顯示 Member Name + Member ID -->
+        <!-- 登入狀態顯示區域 -->
         <span id="welcomeUser" class="text-xs font-black bg-yellow-400 text-black border-2 border-black px-3 py-1 rounded-xl shadow-[2px_2px_0px_#000]"></span>
         <button onclick="handleLogout()" class="text-xs font-black text-red-500 hover:text-red-400 underline">EXIT PIT</button>
       </div>
@@ -712,11 +712,19 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
             
             const adminBadge = currentUser.isAdmin ? ' [👑 ADMIN]' : '';
             
-            // 登入狀態顯示修改：顯示 Member Name + Member ID
+            // 登入狀態顯示修改：新增一鍵複製 Member ID 功能
             const memberName = currentUser.memberName || currentUser.name || 'UNKNOWN';
             const memberId = currentUser.memberId || currentUser.id || token;
             
-            document.getElementById('welcomeUser').innerText = `🏎️ ${memberName} (${memberId})${adminBadge}`;
+            document.getElementById('welcomeUser').innerHTML = `
+              <div class="flex flex-col items-center leading-tight">
+                <span class="font-black text-xs">🏎️ ${memberName}${adminBadge}</span>
+                <div class="flex items-center space-x-1 mt-0.5">
+                  <span class="text-[10px] font-mono opacity-80">ID: ${memberId}</span>
+                  <button onclick="copyMyMemberId('${memberId}', this)" class="text-[10px] hover:scale-125 transition-transform" title="複製 Member ID">📋</button>
+                </div>
+              </div>
+            `;
             
             loadMyGroups();
           } else {
@@ -728,6 +736,15 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
           hideLoading();
           showError('連線失敗，請檢查 API 網址！');
         });
+    }
+
+    // 複製個人 Member ID 的輔助函式
+    function copyMyMemberId(id, btn) {
+      navigator.clipboard.writeText(id).then(() => {
+        const originalText = btn.innerText;
+        btn.innerText = '✅';
+        setTimeout(() => { btn.innerText = originalText; }, 1500);
+      });
     }
 
     function loadMyGroups() {
