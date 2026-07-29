@@ -166,7 +166,7 @@
     <section class="grid grid-cols-2 gap-3 mb-4">
       <div class="bg-white dark:bg-slate-900 border-3 border-black p-3.5 rounded-2xl shadow-[4px_4px_0px_#ea3526] relative overflow-hidden">
         <div class="absolute -right-2 -bottom-2 text-4xl opacity-10">🏁</div>
-        <p class="text-[10px] font-nfs tracking-widest text-slate-500 dark:text-slate-400">TOTAL DISTANCE / 總支出</p>
+        <p class="text-[10px] font-nfs tracking-widest text-slate-500 dark:text-slate-400">TOTAL DISTANCE / 總支出 <br/><span class="text-[9px] opacity-75">(不含雜項)</span></p>
         <p id="statTotalExpense" class="text-2xl font-mono font-black text-slate-900 dark:text-yellow-400 mt-0.5">$0</p>
       </div>
       <div class="bg-white dark:bg-slate-900 border-3 border-black p-3.5 rounded-2xl shadow-[4px_4px_0px_#3b82f6] relative overflow-hidden">
@@ -204,6 +204,7 @@
           <option value="🏠 住宿">🏠 賽道維修廠</option>
           <option value="🎟️ 娛樂">🎟️ 氮氣補給</option>
           <option value="🛒 購物">🛒 改裝零件</option>
+          <option value="💡 雜項">💡 雜項開銷</option>
           <option value="還款">💵 還款紀錄</option>
         </select>
       </div>
@@ -808,6 +809,16 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
     function renderApp(data) {
       appData = data;
       
+      // 計算不包含「💡 雜項」與「PAYMENT」還款的總支出[span_0](start_span)[span_0](end_span)
+      if (data && data.expenses) {
+        data.totalGroupExpense = data.expenses.reduce((sum, e) => {
+          if (e.type !== 'PAYMENT' && (!e.category || !e.category.includes('雜項'))) {
+            return sum + (parseFloat(e.amount) || 0);
+          }
+          return sum;
+        }, 0);
+      }
+
       if (currentUser && currentUser.isAdmin) {
         document.getElementById('btnManageCrew').classList.remove('hidden');
       } else {
@@ -1554,7 +1565,11 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
 
     function renderFeed(expenses) {
       const filter = document.getElementById('filterCategory').value;
-      const filtered = filter === 'ALL' ? expenses : expenses.filter(e => e.category === filter);
+      const filtered = filter === 'ALL' 
+        ? expenses 
+        : (filter === '還款' 
+            ? expenses.filter(e => e.type === 'PAYMENT')
+            : expenses.filter(e => e.category === filter));
       const feed = document.getElementById('expensesFeed');
       
       if (!filtered || filtered.length === 0) {
@@ -1579,7 +1594,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
           <div onclick="openExpenseDetailModal('${e.id}')" class="py-3 cursor-pointer hover:bg-slate-100/50 dark:hover:bg-slate-800/50 rounded-xl px-1 transition-colors">
             <div class="flex justify-between items-center font-black">
               <span class="flex items-center space-x-2">
-                <span class="text-[10px] px-2 py-0.5 rounded-md border border-black ${isPayment ? 'bg-purple-600 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-yellow-400'}">${e.category}</span>
+                <span class="text-[10px] px-2 py-0.5 rounded-md border border-black ${isPayment ? 'bg-purple-600 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-yellow-400'}">${e.category || (isPayment ? '💵 還款' : '其他')}</span>
                 <span class="text-slate-800 dark:text-slate-100">${e.desc}</span>
                 ${imgBadge}
               </span>
@@ -1591,7 +1606,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
             </div>
             ${remarkHtml}
             <div class="flex justify-between text-xs text-slate-500 dark:text-slate-400 font-bold mt-1">
-              <span>${e.payer} ${isPayment ? '還給 ' + e.participants[0] : '買單 (' + e.participants.length + ' 人分攤)'}</span>
+              <span>${e.payer} ${isPayment ? '還給 ' + (e.participants ? e.participants[0] : '') : '買單 (' + (e.participants ? e.participants.length : 0) + ' 人分攤)'}</span>
               <span>${e.date}</span>
             </div>
           </div>`;
