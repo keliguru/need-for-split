@@ -98,8 +98,13 @@
       <input type="text" id="tokenInput" maxlength="20" placeholder="Driver License" 
              class="w-full border-3 border-black rounded-2xl p-3 text-center font-mono text-sm font-black bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-yellow-400 placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none shadow-[inset_0px_2px_4px_rgba(0,0,0,0.2)] dark:shadow-[inset_0px_2px_4px_rgba(0,0,0,0.8)] mb-5 uppercase tracking-wider">
       
-      <button onclick="handleLogin()" id="btnLogin" class="nfs-btn-red nfs-skew w-full py-3.5 font-nfs text-2xl font-black rounded-2xl tracking-wider">
+      <button onclick="handleLogin()" id="btnLogin" class="nfs-btn-red nfs-skew w-full py-3.5 font-nfs text-2xl font-black rounded-2xl tracking-wider mb-3">
         <span class="nfs-skew-inside inline-block">START ENGINE 🏎️</span>
+      </button>
+
+      <!-- 首頁註冊成為新車手按鈕 -->
+      <button onclick="openDriverRegisterModal()" class="nfs-btn-yellow nfs-skew w-full py-2.5 font-nfs text-xl font-black rounded-2xl tracking-wider">
+        <span class="nfs-skew-inside inline-block">🏁 註冊成為新車手</span>
       </button>
 
       <p id="loginError" class="text-xs text-red-500 font-black text-center mt-3 hidden"></p>
@@ -120,6 +125,7 @@
       </div>
 
       <div class="mt-3 flex items-center justify-center space-x-3">
+        <!-- 登入狀態顯示修改：改為顯示 Member Name + Member ID -->
         <span id="welcomeUser" class="text-xs font-black bg-yellow-400 text-black border-2 border-black px-3 py-1 rounded-xl shadow-[2px_2px_0px_#000]"></span>
         <button onclick="handleLogout()" class="text-xs font-black text-red-500 hover:text-red-400 underline">EXIT PIT</button>
       </div>
@@ -212,10 +218,7 @@
     <span class="nfs-skew-inside text-xl font-black">➕ 新增消費</span>
   </button>
 
-  <!-- ================================================================= -->
-  <!-- 新增消費 側邊抽屜 (Expense Drawer)                                 -->
-  <!-- ================================================================= -->
-
+  <!-- 新增消費 側邊抽屜 (Expense Drawer) -->
   <div 
     id="expenseDrawerOverlay" 
     onclick="closeExpenseDrawer()" 
@@ -304,18 +307,13 @@
     </div>
   </aside>
 
-  <!-- ================================================================= -->
-  <!-- 查看/編輯明細 底部彈出抽屜 (Expense Detail Bottom Sheet)         -->
-  <!-- ================================================================= -->
-
-  <!-- 明細抽屜 背景遮罩 -->
+  <!-- 查看/編輯明細 底部彈出抽屜 -->
   <div 
     id="expenseDetailOverlay" 
     onclick="closeExpenseDetailModal()" 
     class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 opacity-0 pointer-events-none transition-opacity duration-300">
   </div>
 
-  <!-- 明細抽屜 本體 (從底部彈出) -->
   <aside 
     id="expenseDetailDrawer" 
     class="fixed z-50 bg-white dark:bg-slate-900 text-slate-900 dark:text-white
@@ -409,6 +407,18 @@
   </aside>
 
   <!-- MODALS -->
+  <div id="driverRegisterModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-xs rounded-3xl p-5 border-4 border-black shadow-[6px_6px_0px_#facc15]">
+      <h3 class="text-lg font-nfs font-black text-yellow-500 dark:text-yellow-400 mb-3 tracking-wider">🏁 註冊成為新車手</h3>
+      <p class="text-xs font-bold text-slate-500 dark:text-slate-400 mb-3">請輸入您的車手代號/暱稱，註冊後系統將生成您的專屬 Pass Key！</p>
+      <input type="text" id="registerDriverName" placeholder="例如：SPEED_DEMON" class="w-full border-2 border-black rounded-xl p-2.5 text-sm font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white mb-4 outline-none shadow-[2px_2px_0px_#000]">
+      <div class="flex space-x-2">
+        <button onclick="closeDriverRegisterModal()" class="w-1/2 py-2 text-xs font-black bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-300 rounded-xl border-2 border-black">取消</button>
+        <button onclick="submitDriverRegister()" class="nfs-btn-yellow w-1/2 py-2 text-xs font-nfs text-lg font-black rounded-xl">立即註冊</button>
+      </div>
+    </div>
+  </div>
+
   <div id="manageCrewModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
     <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 border-4 border-black shadow-[6px_6px_0px_#ff1e27] max-h-[85vh] flex flex-col">
       <div class="flex justify-between items-center mb-3">
@@ -428,6 +438,7 @@
     </div>
   </div>
 
+  <!-- 建立新車隊 Modal -->
   <div id="createGroupModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
     <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 border-4 border-black shadow-[6px_6px_0px_#facc15] max-h-[85vh] flex flex-col">
       <h3 class="text-lg font-nfs font-black text-slate-900 dark:text-yellow-400 mb-3 tracking-wider">🏎️ 建立新車隊 (GROUP)</h3>
@@ -439,10 +450,10 @@
         </div>
 
         <div>
-          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">選擇加入的既有成員 (MEMBER)</label>
-          <div id="existingMembersList" class="space-y-2 max-h-40 overflow-y-auto border-2 border-black rounded-xl p-2 bg-slate-50 dark:bg-slate-800">
-            <p class="text-xs text-slate-400 font-bold text-center">載入成員中...</p>
-          </div>
+          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">輸入欲加入成員的 Member ID (可多筆，以換行或逗號分隔)</label>
+          <textarea id="memberIdsInput" rows="3" placeholder="例如：
+MEM-1001
+MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono font-black bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-yellow-400 placeholder-slate-400 dark:placeholder-slate-600 outline-none shadow-[2px_2px_0px_#000] uppercase tracking-wider"></textarea>
         </div>
       </div>
 
@@ -700,7 +711,12 @@
             document.getElementById('groupSelectionView').classList.remove('hidden');
             
             const adminBadge = currentUser.isAdmin ? ' [👑 ADMIN]' : '';
-            document.getElementById('welcomeUser').innerText = `🏎️ DRIVER: ${currentUser.memberName}${adminBadge}`;
+            
+            // 登入狀態顯示修改：顯示 Member Name + Member ID
+            const memberName = currentUser.memberName || currentUser.name || 'UNKNOWN';
+            const memberId = currentUser.memberId || currentUser.id || token;
+            
+            document.getElementById('welcomeUser').innerText = `🏎️ ${memberName} (${memberId})${adminBadge}`;
             
             loadMyGroups();
           } else {
@@ -810,9 +826,9 @@
       const overlay = document.getElementById('expenseDrawerOverlay');
       const drawer = document.getElementById('expenseDrawer');
 
-      document.body.style.overflow = 'hidden'; // 防誤觸/防滑動：鎖定背景頁面滾動
+      document.body.style.overflow = 'hidden';
       overlay.classList.remove('opacity-0', 'pointer-events-none');
-      overlay.classList.add('pointer-events-auto'); // 防誤觸：點擊遮罩即攔截事件
+      overlay.classList.add('pointer-events-auto');
       drawer.classList.remove('translate-y-full', 'sm:translate-x-full');
       drawer.classList.add('translate-y-0', 'sm:translate-x-0');
     }
@@ -821,7 +837,7 @@
       const overlay = document.getElementById('expenseDrawerOverlay');
       const drawer = document.getElementById('expenseDrawer');
 
-      document.body.style.overflow = ''; // 恢復背景頁面滾動
+      document.body.style.overflow = '';
       overlay.classList.add('opacity-0', 'pointer-events-none');
       overlay.classList.remove('pointer-events-auto');
       drawer.classList.remove('translate-y-0', 'sm:translate-x-0');
@@ -832,6 +848,7 @@
       if (e.key === 'Escape') {
         closeExpenseDrawer();
         closeExpenseDetailModal();
+        closeDriverRegisterModal();
       }
     });
 
@@ -885,32 +902,8 @@
 
     function openCreateGroupModal() { 
       document.getElementById('createGroupModal').classList.remove('hidden');
-      const container = document.getElementById('existingMembersList');
-      container.innerHTML = '<p class="text-xs text-slate-400 font-bold text-center">載入成員中...</p>';
-
-      callGas('getAllSystemMembers')
-        .then(members => {
-          if (!members || members.length === 0) {
-            container.innerHTML = '<p class="text-xs text-slate-400 font-bold text-center">尚無其他車手</p>';
-            return;
-          }
-          
-          container.innerHTML = members
-            .filter(m => m.id !== currentUser.id && m.name !== currentUser.memberName)
-            .map(m => `
-              <label class="flex items-center space-x-2 cursor-pointer text-xs font-black p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-white">
-                <input type="checkbox" name="selectedGroupMembers" value="${m.id}" class="w-4 h-4 rounded text-red-600 focus:ring-0 accent-red-600">
-                <span>🏎️ ${m.name}</span>
-              </label>
-            `).join('');
-
-          if(container.innerHTML.trim() === '') {
-            container.innerHTML = '<p class="text-xs text-slate-400 font-bold text-center">無其他可選擇的車手</p>';
-          }
-        })
-        .catch(err => {
-          container.innerHTML = '<p class="text-xs text-red-500 font-bold text-center">載入失敗</p>';
-        });
+      document.getElementById('newGroupName').value = '';
+      document.getElementById('memberIdsInput').value = '';
     }
 
     function closeCreateGroupModal() { document.getElementById('createGroupModal').classList.add('hidden'); }
@@ -918,7 +911,42 @@
     function closeMemberModal() { document.getElementById('memberModal').classList.add('hidden'); }
     function closeTokenModal() {
       document.getElementById('tokenModal').classList.add('hidden');
-      loadGroupData();
+      if (currentGroupId) {
+        loadGroupData();
+      }
+    }
+
+    function openDriverRegisterModal() {
+      if (!gasApiUrl && typeof google === 'undefined') return openApiModal();
+      document.getElementById('registerDriverName').value = '';
+      document.getElementById('driverRegisterModal').classList.remove('hidden');
+    }
+
+    function closeDriverRegisterModal() {
+      document.getElementById('driverRegisterModal').classList.add('hidden');
+    }
+
+    function submitDriverRegister() {
+      const name = document.getElementById('registerDriverName').value.trim();
+      if (!name) return alert('請輸入車手代號/暱稱！');
+
+      showLoading();
+      callGas('registerDriver', { name: name })
+        .then((res) => {
+          hideLoading();
+          closeDriverRegisterModal();
+          if (res && res.token) {
+            document.getElementById('newTokenDisplay').innerText = res.token;
+            document.getElementById('tokenModal').classList.remove('hidden');
+            document.getElementById('tokenInput').value = res.token;
+          } else {
+            alert(res.message || '註冊失敗，請重試！');
+          }
+        })
+        .catch((err) => {
+          hideLoading();
+          alert('註冊失敗：' + err.message);
+        });
     }
 
     function copyTokenToClipboard() {
@@ -934,19 +962,21 @@
       const name = document.getElementById('newGroupName').value.trim();
       if (!name) return alert('請輸入車隊名稱');
 
-      const checkedBoxes = document.querySelectorAll('input[name="selectedGroupMembers"]:checked');
-      const selectedMemberIds = Array.from(checkedBoxes).map(cb => cb.value);
+      const rawIds = document.getElementById('memberIdsInput').value;
+      const memberIds = rawIds
+        .split(/[\n,\s]+/)
+        .map(id => id.trim().toUpperCase())
+        .filter(id => id.length > 0);
 
       showLoading();
       callGas('createGroupWithCreator', { 
         groupName: name, 
         creatorToken: currentToken,
-        selectedMemberIds: selectedMemberIds 
+        memberIds: memberIds 
       })
         .then((groups) => {
           hideLoading();
           renderGroupList(groups);
-          document.getElementById('newGroupName').value = '';
           closeCreateGroupModal();
         })
         .catch((err) => { hideLoading(); alert('建立車隊失敗：' + err.message); });
@@ -996,14 +1026,8 @@
         document.getElementById(activeCalcTargetId).value = finalVal;
         closeCalcModal();
 
-        if (activeCalcTargetId === 'amountDisplay') {
-          // 不再自動分配，僅記錄總額
-        } else if (activeCalcTargetId === 'detailAmountDisplay') {
+        if (activeCalcTargetId === 'detailAmountDisplay' || activeCalcTargetId.startsWith('detail-share-input-')) {
           updateRemainingCalculation();
-        } else if (activeCalcTargetId.startsWith('share-input-') || activeCalcTargetId.startsWith('detail-share-input-')) {
-          if (activeCalcTargetId.startsWith('detail-share-input-')) {
-            updateRemainingCalculation();
-          }
         }
       } catch(e) { alert('算式不正確'); }
     }
@@ -1308,12 +1332,11 @@
 
       updateRemainingCalculation();
 
-      // 開啟 Bottom Sheet 動畫與鎖定背景防誤觸
       const overlay = document.getElementById('expenseDetailOverlay');
       const drawer = document.getElementById('expenseDetailDrawer');
-      document.body.style.overflow = 'hidden'; // 防誤觸/防滑動：鎖定背景頁面滾動
+      document.body.style.overflow = 'hidden';
       overlay.classList.remove('opacity-0', 'pointer-events-none');
-      overlay.classList.add('pointer-events-auto'); // 防誤觸：點擊遮罩即攔截事件
+      overlay.classList.add('pointer-events-auto');
       drawer.classList.remove('translate-y-full');
       drawer.classList.add('translate-y-0');
     }
@@ -1351,7 +1374,7 @@
       const overlay = document.getElementById('expenseDetailOverlay');
       const drawer = document.getElementById('expenseDetailDrawer');
 
-      document.body.style.overflow = ''; // 恢復背景頁面滾動
+      document.body.style.overflow = '';
       overlay.classList.add('opacity-0', 'pointer-events-none');
       overlay.classList.remove('pointer-events-auto');
       drawer.classList.remove('translate-y-0');
