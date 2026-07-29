@@ -76,7 +76,7 @@
       </div>
       
       <div class="mt-3 flex justify-center">
-        <button onclick="toggleTheme()" class="bg-slate-800 dark:bg-slate-800 text-yellow-400 dark:text-yellow-400 border-2 border-black px-3 py-1 rounded-xl shadow-[3px_3px_0px_#000] font-black text-xs hover:opacity-90 active:translate-y-0.5">
+        <button id="btnThemeLogin" onclick="toggleTheme()" class="border-2 border-black px-3 py-1 rounded-xl shadow-[3px_3px_0px_#000] font-black text-xs hover:opacity-90 active:translate-y-0.5 transition-colors">
           <span id="themeIconLogin">🌙 賽道暗黑</span>
         </button>
       </div>
@@ -109,7 +109,7 @@
       </div>
 
       <div class="mt-3 flex justify-center">
-        <button onclick="toggleTheme()" class="bg-slate-800 dark:bg-slate-800 text-yellow-400 dark:text-yellow-400 border-2 border-black px-3 py-1 rounded-xl shadow-[3px_3px_0px_#000] font-black text-xs hover:opacity-90 active:translate-y-0.5">
+        <button id="btnThemeGroup" onclick="toggleTheme()" class="border-2 border-black px-3 py-1 rounded-xl shadow-[3px_3px_0px_#000] font-black text-xs hover:opacity-90 active:translate-y-0.5 transition-colors">
           <span id="themeIconGroup">🌙 賽道暗黑</span>
         </button>
       </div>
@@ -143,7 +143,7 @@
       <div id="currentGroupName" class="bg-yellow-400 text-black border-2 border-black font-nfs font-black text-lg px-4 py-1 rounded-xl shadow-[3px_3px_0px_#000] truncate max-w-[140px]"></div>
       
       <div class="flex items-center space-x-2">
-        <button onclick="toggleTheme()" class="bg-slate-800 text-yellow-400 border-2 border-black px-2.5 py-1.5 rounded-xl shadow-[2px_2px_0px_#000] font-bold text-xs">
+        <button id="btnThemeDash" onclick="toggleTheme()" class="border-2 border-black px-2.5 py-1.5 rounded-xl shadow-[2px_2px_0px_#000] font-bold text-xs transition-colors">
           <span id="themeIconDash">🌙</span>
         </button>
         <button id="btnManageCrew" onclick="openManageCrewModal()" class="nfs-btn-red nfs-skew text-xs font-nfs text-base font-black px-3 py-1.5 rounded-xl hidden">
@@ -229,7 +229,7 @@
     </div>
   </div>
 
-  <!-- 查看與編輯訂單明細 Modal (包含 Remark 欄位) -->
+  <!-- 查看與編輯訂單明細 Modal -->
   <div id="expenseDetailModal" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4 hidden">
     <div class="bg-white dark:bg-slate-900 w-full max-w-md max-h-[90vh] overflow-y-auto rounded-3xl p-5 border-4 border-black shadow-[8px_8px_0px_#3b82f6]">
       <div class="flex justify-between items-center mb-3">
@@ -242,14 +242,16 @@
 
       <div class="mb-4 pb-3 border-b-2 border-slate-200 dark:border-slate-800">
         <h3 id="detailDesc" class="text-xl font-black text-slate-900 dark:text-white mb-1"></h3>
-        <!-- 新增：檢視細節時顯示 Remark -->
         <p id="detailRemarkContainer" class="text-xs font-bold text-slate-500 dark:text-slate-400 mb-2">備註：<span id="detailRemark" class="text-slate-700 dark:text-slate-300"></span></p>
         <div class="flex justify-between items-end">
           <div>
             <p class="text-xs text-slate-500 dark:text-slate-400 font-bold">付款人：<span id="detailPayer" class="text-yellow-500 dark:text-yellow-400 font-black"></span></p>
             <p id="detailDate" class="text-[10px] text-slate-400 font-bold mt-0.5"></p>
           </div>
-          <p id="detailAmount" class="text-3xl font-mono font-black text-green-500"></p>
+          <div class="text-right">
+            <p class="text-[10px] font-black text-slate-400">原始總額</p>
+            <p id="detailAmount" class="text-2xl font-mono font-black text-slate-800 dark:text-white"></p>
+          </div>
         </div>
       </div>
 
@@ -261,7 +263,12 @@
       </div>
 
       <div class="mb-5">
-        <h4 class="text-xs font-nfs font-black text-slate-500 dark:text-slate-400 mb-2 tracking-wider">📊 成員自行輸入金額 / 分攤明細</h4>
+        <div class="flex justify-between items-center mb-2">
+          <h4 class="text-xs font-nfs font-black text-slate-500 dark:text-slate-400 tracking-wider">📊 成員分攤明細</h4>
+          <div class="text-xs font-black px-2 py-1 rounded-lg border border-black shadow-[1px_1px_0px_#000]" id="detailRemainingBadge">
+            扣減分攤後金額：<span id="detailRemainingAmount" class="font-mono">$0</span>
+          </div>
+        </div>
         <div id="detailSharesList" class="space-y-2"></div>
       </div>
 
@@ -272,7 +279,7 @@
     </div>
   </div>
 
-  <!-- 新增消費 Modal (包含 Remark 輸入欄位) -->
+  <!-- 新增消費 Modal -->
   <div id="expenseModal" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4 hidden">
     <div class="bg-white dark:bg-slate-900 w-full max-w-md max-h-[90vh] overflow-y-auto rounded-3xl p-5 border-4 border-black shadow-[8px_8px_0px_#facc15]">
       <div class="flex justify-between items-center mb-4">
@@ -306,7 +313,6 @@
           <input type="text" id="desc" required placeholder="例如：98 無鉛汽油" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]">
         </div>
 
-        <!-- 💡 新增：Remark 備註欄位 -->
         <div>
           <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">備註說明 (Remark - 選填)</label>
           <input type="text" id="remark" placeholder="例如：加滿、含服務費等" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]">
@@ -472,7 +478,7 @@
     let activeSettleData = null;
     let currentEditingExpenseId = null;
 
-    // 判斷訂單 STATUS (未完成分帳, 未完成付款, 已全部付款)
+    // 判斷訂單 STATUS
     function getExpenseStatus(exp) {
       if (!exp) return '未完成分帳';
       
@@ -481,15 +487,13 @@
       const shareValues = Object.values(shares).map(v => parseFloat(v) || 0);
       const totalShares = shareValues.reduce((a, b) => a + b, 0);
 
-      // 若金額為0，或是尚未分配全額分帳，皆視為「未完成分帳」
       if (totalAmount === 0 || totalShares < totalAmount || shareValues.some(v => v === 0)) {
         return '未完成分帳';
       }
 
-      // 計算還款紀錄判斷付款狀態
       const paidShares = exp.paidShares || {}; 
       const isAllPaid = Object.keys(shares).every(m => {
-        if (m === exp.payer) return true; // 買單者無須付給自己
+        if (m === exp.payer) return true;
         const due = shares[m] || 0;
         const paid = paidShares[m] || 0;
         return paid >= due;
@@ -518,7 +522,7 @@
         document.body.classList.remove('dark');
         document.body.classList.add('light');
         document.documentElement.classList.remove('dark');
-        updateThemeIcons('☀️ 日光模式');
+        updateThemeIcons('☀️ 賽道光明');
       } else {
         document.body.classList.remove('light');
         document.body.classList.add('dark');
@@ -531,9 +535,28 @@
       const el1 = document.getElementById('themeIconLogin');
       const el2 = document.getElementById('themeIconGroup');
       const el3 = document.getElementById('themeIconDash');
+      
       if(el1) el1.innerText = text;
       if(el2) el2.innerText = text;
       if(el3) el3.innerText = currentTheme === 'light' ? '☀️' : '🌙';
+
+      const btn1 = document.getElementById('btnThemeLogin');
+      const btn2 = document.getElementById('btnThemeGroup');
+      const btn3 = document.getElementById('btnThemeDash');
+
+      // 切換按鈕樣式：光明模式為白色底黑字，暗黑模式為深色底黃字
+      const btnClassLight = "bg-white text-slate-900 border-2 border-black";
+      const btnClassDark = "bg-slate-800 text-yellow-400 border-2 border-black";
+
+      [btn1, btn2, btn3].forEach(btn => {
+        if (btn) {
+          if (currentTheme === 'light') {
+            btn.className = `${btnClassLight} ${btn.id === 'btnThemeDash' ? 'px-2.5 py-1.5' : 'px-3 py-1'} rounded-xl shadow-[2px_2px_0px_#000] font-black text-xs hover:opacity-90 active:translate-y-0.5 transition-colors`;
+          } else {
+            btn.className = `${btnClassDark} ${btn.id === 'btnThemeDash' ? 'px-2.5 py-1.5' : 'px-3 py-1'} rounded-xl shadow-[2px_2px_0px_#000] font-black text-xs hover:opacity-90 active:translate-y-0.5 transition-colors`;
+          }
+        }
+      });
     }
 
     function callGas(action, payload = {}) {
@@ -959,7 +982,6 @@
       splitEvenly();
     }
 
-    // 提交新訂單（包含 Remark）
     function submitExpense(e) {
       e.preventDefault();
       
@@ -987,7 +1009,7 @@
         groupId: currentGroupId,
         category: document.getElementById('category').value,
         desc: document.getElementById('desc').value,
-        remark: document.getElementById('remark').value, // 💡 傳遞 Remark
+        remark: document.getElementById('remark').value,
         amount: amount,
         payer: document.getElementById('payer').value,
         shares: shares,
@@ -1022,7 +1044,6 @@
         .catch((err) => { hideLoading(); alert('刪除失敗：' + err.message); });
     }
 
-    // 查看/編輯訂單金額明細 (包含載入 Remark)
     function openExpenseDetailModal(expenseId) {
       const exp = appData.expenses.find(e => e.id === expenseId);
       if (!exp) return;
@@ -1032,7 +1053,6 @@
       document.getElementById('detailCategory').innerText = exp.category;
       document.getElementById('detailDesc').innerText = exp.desc;
       
-      // 💡 載入 Remark 顯示
       const remarkElem = document.getElementById('detailRemark');
       const remarkContainer = document.getElementById('detailRemarkContainer');
       if (exp.remark) {
@@ -1083,6 +1103,7 @@
             <div class="flex items-center space-x-1">
               <span class="text-xs font-bold text-yellow-500 dark:text-yellow-400">$</span>
               <input type="number" id="edit-share-${member}" step="0.1" value="${shareAmount}" 
+                     oninput="updateRemainingCalculation(${exp.amount})"
                      class="w-20 bg-white dark:bg-slate-900 text-slate-900 dark:text-yellow-400 text-xs font-mono font-black border border-black rounded-lg px-2 py-1 text-right focus:outline-none">
             </div>
           </div>`;
@@ -1092,7 +1113,33 @@
         handleDeleteExpense(exp.id);
       };
 
+      updateRemainingCalculation(exp.amount);
+
       document.getElementById('expenseDetailModal').classList.remove('hidden');
+    }
+
+    function updateRemainingCalculation(totalAmount) {
+      let currentSharesSum = 0;
+      appData.members.forEach(member => {
+        const inputElem = document.getElementById(`edit-share-${member}`);
+        if (inputElem) {
+          currentSharesSum += parseFloat(inputElem.value) || 0;
+        }
+      });
+
+      const remaining = Math.round((totalAmount - currentSharesSum) * 10) / 10;
+      const remainingElem = document.getElementById('detailRemainingAmount');
+      const badgeElem = document.getElementById('detailRemainingBadge');
+
+      remainingElem.innerText = `$${remaining}`;
+
+      if (remaining > 0) {
+        badgeElem.className = 'text-xs font-black px-2 py-1 rounded-lg border border-black shadow-[1px_1px_0px_#000] bg-red-500 text-white';
+      } else if (remaining < 0) {
+        badgeElem.className = 'text-xs font-black px-2 py-1 rounded-lg border border-black shadow-[1px_1px_0px_#000] bg-orange-400 text-black';
+      } else {
+        badgeElem.className = 'text-xs font-black px-2 py-1 rounded-lg border border-black shadow-[1px_1px_0px_#000] bg-green-500 text-white';
+      }
     }
 
     function closeExpenseDetailModal() {
@@ -1107,14 +1154,12 @@
       if (!exp) return;
 
       const updatedShares = {};
-      let newTotalAmount = 0;
 
       appData.members.forEach(member => {
         const inputElem = document.getElementById(`edit-share-${member}`);
         if (inputElem) {
           const val = parseFloat(inputElem.value) || 0;
           updatedShares[member] = val;
-          newTotalAmount += val;
         }
       });
 
@@ -1124,7 +1169,7 @@
         groupId: currentGroupId,
         expenseId: currentEditingExpenseId,
         shares: updatedShares,
-        amount: newTotalAmount
+        amount: exp.amount
       })
       .then((data) => {
         hideLoading();
@@ -1210,7 +1255,6 @@
       .catch((err) => { hideLoading(); alert('還款失敗：' + err.message); });
     }
 
-    // 渲染消費動態列表 (包含顯示 Remark 備註)
     function renderFeed(expenses) {
       const filter = document.getElementById('filterCategory').value;
       const filtered = filter === 'ALL' ? expenses : expenses.filter(e => e.category === filter);
@@ -1232,7 +1276,6 @@
         if (status === '未完成分帳') statusBadgeClass = 'bg-yellow-400 text-black';
         else if (status === '未完成付款') statusBadgeClass = 'bg-red-500 text-white';
 
-        // 💡 如果有 Remark，顯示在列表項目的下方
         const remarkHtml = e.remark ? `<div class="text-[11px] text-slate-400 dark:text-slate-500 font-normal mt-0.5">💬 備註：${e.remark}</div>` : '';
 
         return `
