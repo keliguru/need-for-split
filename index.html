@@ -86,11 +86,11 @@
 
     <div class="bg-white dark:bg-slate-900 rounded-3xl border-4 border-black p-6 shadow-[8px_8px_0px_#000] relative">
       <div class="flex justify-between items-center mb-3">
-        <h2 class="text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">🔑 請輸入 20 位 MEMBER TOKEN</h2>
+        <h2 class="text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">🔑 請輸入 20 位 Driver License</h2>
         <button onclick="openApiModal()" class="text-[10px] font-bold bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-yellow-400 border border-slate-400 dark:border-slate-600 px-2 py-0.5 rounded-lg">⚙️ API 網址</button>
       </div>
       
-      <input type="text" id="tokenInput" maxlength="20" placeholder="TK8A9B2C3D4E5F6G7H8I" 
+      <input type="text" id="tokenInput" maxlength="20" placeholder="Driver License" 
              class="w-full border-3 border-black rounded-2xl p-3 text-center font-mono text-sm font-black bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-yellow-400 placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none shadow-[inset_0px_2px_4px_rgba(0,0,0,0.2)] dark:shadow-[inset_0px_2px_4px_rgba(0,0,0,0.8)] mb-5 uppercase tracking-wider">
       
       <button onclick="handleLogin()" id="btnLogin" class="nfs-btn-red nfs-skew w-full py-3.5 font-nfs text-2xl font-black rounded-2xl tracking-wider">
@@ -146,7 +146,6 @@
         <button onclick="toggleTheme()" class="bg-slate-800 text-yellow-400 border-2 border-black px-2.5 py-1.5 rounded-xl shadow-[2px_2px_0px_#000] font-bold text-xs">
           <span id="themeIconDash">🌙</span>
         </button>
-        <!-- 管理車隊成員按鈕 (ADMIN 可見) -->
         <button id="btnManageCrew" onclick="openManageCrewModal()" class="nfs-btn-red nfs-skew text-xs font-nfs text-base font-black px-3 py-1.5 rounded-xl hidden">
           <span class="nfs-skew-inside inline-block">⚙️ CREW</span>
         </button>
@@ -203,14 +202,14 @@
     </section>
   </div>
 
-  <!-- 🏎️ 右下角浮動按鈕 FAB -->
+  <!-- FAB -->
   <button id="fabAddExpense" onclick="openExpenseModal()" class="fixed bottom-6 right-6 z-40 nfs-btn-yellow fab-btn nfs-skew px-4 py-3 rounded-2xl flex items-center space-x-2 border-4 border-black shadow-[6px_6px_0px_#000] hidden">
     <span class="nfs-skew-inside text-xl font-black">➕ 新增消費</span>
   </button>
 
   <!-- MODALS -->
 
-  <!-- 管理車隊成員 Modal (ADMIN 專用) -->
+  <!-- 管理車隊成員 Modal -->
   <div id="manageCrewModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
     <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 border-4 border-black shadow-[6px_6px_0px_#ff1e27] max-h-[85vh] flex flex-col">
       <div class="flex justify-between items-center mb-3">
@@ -218,13 +217,11 @@
         <button onclick="closeManageCrewModal()" class="text-slate-800 dark:text-white font-black text-xl hover:text-red-500">✕</button>
       </div>
 
-      <!-- 車隊現有成員列表 -->
       <div class="mb-4 flex-1 overflow-y-auto pr-1">
         <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-2">當前車隊成員列表：</label>
         <div id="crewMembersList" class="space-y-2"></div>
       </div>
 
-      <!-- 操作按鈕與關閉 -->
       <div class="pt-3 border-t-2 border-slate-200 dark:border-slate-800 space-y-2">
         <button onclick="openMemberModal()" class="nfs-btn-yellow w-full py-2 text-xs font-nfs text-lg font-black rounded-xl">+ 招募新車手</button>
         <button onclick="closeManageCrewModal()" class="w-full py-2 text-xs font-black bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-300 rounded-xl border-2 border-black">關閉</button>
@@ -232,16 +229,21 @@
     </div>
   </div>
 
-  <!-- 查看每單明細 Modal -->
+  <!-- 查看與編輯訂單明細 Modal (包含 Remark 欄位) -->
   <div id="expenseDetailModal" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4 hidden">
     <div class="bg-white dark:bg-slate-900 w-full max-w-md max-h-[90vh] overflow-y-auto rounded-3xl p-5 border-4 border-black shadow-[8px_8px_0px_#3b82f6]">
       <div class="flex justify-between items-center mb-3">
-        <span id="detailCategory" class="text-xs font-nfs font-black bg-blue-600 text-white px-3 py-1 rounded-lg border-2 border-black shadow-[2px_2px_0px_#000]"></span>
+        <div class="flex items-center space-x-2">
+          <span id="detailCategory" class="text-xs font-nfs font-black bg-blue-600 text-white px-3 py-1 rounded-lg border-2 border-black shadow-[2px_2px_0px_#000]"></span>
+          <span id="detailStatusBadge" class="text-xs font-bold px-2 py-0.5 rounded-lg border border-black shadow-[1px_1px_0px_#000]"></span>
+        </div>
         <button onclick="closeExpenseDetailModal()" class="text-slate-800 dark:text-white font-black text-xl hover:text-red-500">✕</button>
       </div>
 
       <div class="mb-4 pb-3 border-b-2 border-slate-200 dark:border-slate-800">
         <h3 id="detailDesc" class="text-xl font-black text-slate-900 dark:text-white mb-1"></h3>
+        <!-- 新增：檢視細節時顯示 Remark -->
+        <p id="detailRemarkContainer" class="text-xs font-bold text-slate-500 dark:text-slate-400 mb-2">備註：<span id="detailRemark" class="text-slate-700 dark:text-slate-300"></span></p>
         <div class="flex justify-between items-end">
           <div>
             <p class="text-xs text-slate-500 dark:text-slate-400 font-bold">付款人：<span id="detailPayer" class="text-yellow-500 dark:text-yellow-400 font-black"></span></p>
@@ -259,18 +261,18 @@
       </div>
 
       <div class="mb-5">
-        <h4 class="text-xs font-nfs font-black text-slate-500 dark:text-slate-400 mb-2 tracking-wider">📊 成員分攤明細 (每人應付金額)</h4>
+        <h4 class="text-xs font-nfs font-black text-slate-500 dark:text-slate-400 mb-2 tracking-wider">📊 成員自行輸入金額 / 分攤明細</h4>
         <div id="detailSharesList" class="space-y-2"></div>
       </div>
 
       <div class="flex justify-between items-center pt-2 border-t-2 border-slate-200 dark:border-slate-800">
         <button id="btnDeleteDetailExpense" class="nfs-btn-red text-xs font-nfs px-4 py-2 rounded-xl">🗑️ 刪除此單</button>
-        <button onclick="closeExpenseDetailModal()" class="bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-300 font-black text-xs px-5 py-2 rounded-xl border-2 border-black">關閉</button>
+        <button onclick="saveDetailShares()" class="nfs-btn-green text-xs font-nfs px-4 py-2 rounded-xl font-black">💾 儲存分攤金額</button>
       </div>
     </div>
   </div>
 
-  <!-- 新增消費 Modal -->
+  <!-- 新增消費 Modal (包含 Remark 輸入欄位) -->
   <div id="expenseModal" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4 hidden">
     <div class="bg-white dark:bg-slate-900 w-full max-w-md max-h-[90vh] overflow-y-auto rounded-3xl p-5 border-4 border-black shadow-[8px_8px_0px_#facc15]">
       <div class="flex justify-between items-center mb-4">
@@ -300,14 +302,20 @@
         </div>
 
         <div>
-          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">項目說明</label>
+          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">項目說明 (Desc)</label>
           <input type="text" id="desc" required placeholder="例如：98 無鉛汽油" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]">
         </div>
 
+        <!-- 💡 新增：Remark 備註欄位 -->
         <div>
-          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">總消費金額 ($)</label>
+          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">備註說明 (Remark - 選填)</label>
+          <input type="text" id="remark" placeholder="例如：加滿、含服務費等" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]">
+        </div>
+
+        <div>
+          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">預設總消費金額 ($) <span class="text-yellow-500 font-normal">(可填 0 元建立，再由成員自行輸入)</span></label>
           <div class="relative">
-            <input type="text" id="amountDisplay" readonly required value="0" onclick="openCalcModal()" 
+            <input type="text" id="amountDisplay" readonly value="0" onclick="openCalcModal()" 
                    class="w-full border-3 border-black rounded-2xl p-3 text-right font-mono text-3xl font-black bg-yellow-400 text-black cursor-pointer shadow-[4px_4px_0px_#ea3526] focus:outline-none">
             <span class="absolute left-3 top-4 text-xs font-black text-black/70">點擊開啟計算機 🔢</span>
           </div>
@@ -324,7 +332,7 @@
 
         <div>
           <div class="flex justify-between items-center mb-2">
-            <label class="block text-xs font-black text-slate-500 dark:text-slate-400">分攤明細 (自訂金額)</label>
+            <label class="block text-xs font-black text-slate-500 dark:text-slate-400">分攤明細 (可各自分別填寫)</label>
             <div class="space-x-2">
               <button type="button" onclick="splitEvenly()" class="nfs-btn-yellow text-[10px] font-black px-2 py-1 rounded-lg">⚡ 一鍵均分</button>
               <button type="button" onclick="selectAllParts()" class="text-xs font-black text-slate-500 dark:text-slate-400 underline">全選</button>
@@ -336,7 +344,7 @@
         <div class="flex space-x-2 pt-2">
           <button type="button" onclick="closeExpenseModal()" class="w-1/3 py-2.5 text-xs font-black bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-300 rounded-2xl border-2 border-black">取消</button>
           <button type="submit" id="btnSubmit" class="nfs-btn-green nfs-skew w-2/3 font-nfs text-2xl font-black py-2 rounded-2xl tracking-wider">
-            <span class="nfs-skew-inside inline-block">RECORD LOG / 寫入</span>
+            <span class="nfs-skew-inside inline-block">確認送出</span>
           </button>
         </div>
       </form>
@@ -462,6 +470,33 @@
     let calcExpr = '0';
     let currentBase64Image = "";
     let activeSettleData = null;
+    let currentEditingExpenseId = null;
+
+    // 判斷訂單 STATUS (未完成分帳, 未完成付款, 已全部付款)
+    function getExpenseStatus(exp) {
+      if (!exp) return '未完成分帳';
+      
+      const totalAmount = parseFloat(exp.amount) || 0;
+      const shares = exp.shares || {};
+      const shareValues = Object.values(shares).map(v => parseFloat(v) || 0);
+      const totalShares = shareValues.reduce((a, b) => a + b, 0);
+
+      // 若金額為0，或是尚未分配全額分帳，皆視為「未完成分帳」
+      if (totalAmount === 0 || totalShares < totalAmount || shareValues.some(v => v === 0)) {
+        return '未完成分帳';
+      }
+
+      // 計算還款紀錄判斷付款狀態
+      const paidShares = exp.paidShares || {}; 
+      const isAllPaid = Object.keys(shares).every(m => {
+        if (m === exp.payer) return true; // 買單者無須付給自己
+        const due = shares[m] || 0;
+        const paid = paidShares[m] || 0;
+        return paid >= due;
+      });
+
+      return isAllPaid ? '已全部付款' : '未完成付款';
+    }
 
     window.onload = function() {
       applyTheme(currentTheme);
@@ -672,7 +707,6 @@
     function openExpenseModal() { document.getElementById('expenseModal').classList.remove('hidden'); }
     function closeExpenseModal() { document.getElementById('expenseModal').classList.add('hidden'); }
     
-    /* 開啟成員管理 modal */
     function openManageCrewModal() {
       if (!appData) return;
       const container = document.getElementById('crewMembersList');
@@ -713,7 +747,7 @@
       .then(data => {
         hideLoading();
         renderApp(data);
-        openManageCrewModal(); // 重新整理 Modal 列表
+        openManageCrewModal();
       })
       .catch(err => {
         hideLoading();
@@ -871,8 +905,8 @@
 
       document.querySelectorAll('input[name="parts"]').forEach(cb => {
         const input = document.getElementById(`share-input-${cb.value}`);
-        if (cb.checked && amount > 0) {
-          input.value = share;
+        if (cb.checked) {
+          input.value = amount > 0 ? share : "0";
           input.disabled = false;
         } else {
           input.value = "0";
@@ -925,11 +959,11 @@
       splitEvenly();
     }
 
+    // 提交新訂單（包含 Remark）
     function submitExpense(e) {
       e.preventDefault();
-      const amount = parseFloat(document.getElementById('amountDisplay').value);
-      if (!amount || amount <= 0) return alert('請透過計算機輸入金額');
-
+      
+      let amount = parseFloat(document.getElementById('amountDisplay').value) || 0;
       const checkedBoxes = Array.from(document.querySelectorAll('input[name="parts"]:checked'));
       if (checkedBoxes.length === 0) return alert('請至少選擇一位分攤車手！');
 
@@ -942,10 +976,8 @@
         totalSharesSum += val;
       });
 
-      if (Math.abs(totalSharesSum - amount) > 0.5) {
-        if (!confirm(`警告：分攤金額總和 ($${totalSharesSum}) 與總消費金額 ($${amount}) 不符，確定要繼續送出嗎？`)) {
-          return;
-        }
+      if (totalSharesSum > 0 && amount === 0) {
+        amount = totalSharesSum;
       }
 
       showLoading();
@@ -955,6 +987,7 @@
         groupId: currentGroupId,
         category: document.getElementById('category').value,
         desc: document.getElementById('desc').value,
+        remark: document.getElementById('remark').value, // 💡 傳遞 Remark
         amount: amount,
         payer: document.getElementById('payer').value,
         shares: shares,
@@ -989,15 +1022,41 @@
         .catch((err) => { hideLoading(); alert('刪除失敗：' + err.message); });
     }
 
+    // 查看/編輯訂單金額明細 (包含載入 Remark)
     function openExpenseDetailModal(expenseId) {
       const exp = appData.expenses.find(e => e.id === expenseId);
       if (!exp) return;
 
+      currentEditingExpenseId = expenseId;
+
       document.getElementById('detailCategory').innerText = exp.category;
       document.getElementById('detailDesc').innerText = exp.desc;
+      
+      // 💡 載入 Remark 顯示
+      const remarkElem = document.getElementById('detailRemark');
+      const remarkContainer = document.getElementById('detailRemarkContainer');
+      if (exp.remark) {
+        remarkElem.innerText = exp.remark;
+        remarkContainer.classList.remove('hidden');
+      } else {
+        remarkContainer.classList.add('hidden');
+      }
+
       document.getElementById('detailPayer').innerText = exp.payer;
       document.getElementById('detailDate').innerText = `日期：${exp.date}`;
       document.getElementById('detailAmount').innerText = `$${exp.amount}`;
+
+      const status = getExpenseStatus(exp);
+      const statusBadge = document.getElementById('detailStatusBadge');
+      statusBadge.innerText = status;
+
+      if (status === '未完成分帳') {
+        statusBadge.className = 'text-xs font-bold px-2 py-0.5 rounded-lg border border-black shadow-[1px_1px_0px_#000] bg-yellow-400 text-black';
+      } else if (status === '未完成付款') {
+        statusBadge.className = 'text-xs font-bold px-2 py-0.5 rounded-lg border border-black shadow-[1px_1px_0px_#000] bg-red-500 text-white';
+      } else {
+        statusBadge.className = 'text-xs font-bold px-2 py-0.5 rounded-lg border border-black shadow-[1px_1px_0px_#000] bg-green-500 text-white';
+      }
 
       const imgContainer = document.getElementById('detailImageContainer');
       if (exp.imageUrl) {
@@ -1012,29 +1071,20 @@
       sharesList.innerHTML = '';
 
       appData.members.forEach(member => {
-        const shareAmount = parseFloat(exp.shares[member] || 0);
+        const shareAmount = parseFloat((exp.shares && exp.shares[member]) || 0);
         const isPayer = member === exp.payer;
-
-        let roleBadge = '';
-        if (isPayer && shareAmount > 0) {
-          roleBadge = `<span class="text-[10px] bg-yellow-400 text-black px-1.5 py-0.5 rounded border border-black font-black">買單人 & 分攤</span>`;
-        } else if (isPayer) {
-          roleBadge = `<span class="text-[10px] bg-green-500 text-white px-1.5 py-0.5 rounded border border-black font-black">全額代付</span>`;
-        } else if (shareAmount > 0) {
-          roleBadge = `<span class="text-[10px] bg-red-500 text-white px-1.5 py-0.5 rounded border border-black font-black">應付</span>`;
-        } else {
-          roleBadge = `<span class="text-[10px] bg-slate-300 dark:bg-slate-700 text-slate-600 dark:text-slate-400 px-1.5 py-0.5 rounded font-bold">未參與</span>`;
-        }
 
         sharesList.innerHTML += `
           <div class="flex justify-between items-center p-2.5 bg-slate-100 dark:bg-slate-800 border-2 border-black rounded-xl font-bold text-xs shadow-[2px_2px_0px_#000]">
             <div class="flex items-center space-x-2">
               <span class="text-slate-900 dark:text-white font-black">🏎️ ${member}</span>
-              ${roleBadge}
+              ${isPayer ? '<span class="text-[10px] bg-yellow-400 text-black px-1.5 py-0.5 rounded border border-black font-black">買單人</span>' : ''}
             </div>
-            <span class="font-mono text-sm font-black ${shareAmount > 0 ? 'text-red-500' : 'text-slate-400'}">
-              $${shareAmount}
-            </span>
+            <div class="flex items-center space-x-1">
+              <span class="text-xs font-bold text-yellow-500 dark:text-yellow-400">$</span>
+              <input type="number" id="edit-share-${member}" step="0.1" value="${shareAmount}" 
+                     class="w-20 bg-white dark:bg-slate-900 text-slate-900 dark:text-yellow-400 text-xs font-mono font-black border border-black rounded-lg px-2 py-1 text-right focus:outline-none">
+            </div>
           </div>`;
       });
 
@@ -1047,6 +1097,44 @@
 
     function closeExpenseDetailModal() {
       document.getElementById('expenseDetailModal').classList.add('hidden');
+      currentEditingExpenseId = null;
+    }
+
+    function saveDetailShares() {
+      if (!currentEditingExpenseId) return;
+
+      const exp = appData.expenses.find(e => e.id === currentEditingExpenseId);
+      if (!exp) return;
+
+      const updatedShares = {};
+      let newTotalAmount = 0;
+
+      appData.members.forEach(member => {
+        const inputElem = document.getElementById(`edit-share-${member}`);
+        if (inputElem) {
+          const val = parseFloat(inputElem.value) || 0;
+          updatedShares[member] = val;
+          newTotalAmount += val;
+        }
+      });
+
+      showLoading();
+      callGas('updateExpenseShares', {
+        token: currentToken,
+        groupId: currentGroupId,
+        expenseId: currentEditingExpenseId,
+        shares: updatedShares,
+        amount: newTotalAmount
+      })
+      .then((data) => {
+        hideLoading();
+        closeExpenseDetailModal();
+        renderApp(data);
+      })
+      .catch((err) => {
+        hideLoading();
+        alert('更新金額失敗：' + err.message);
+      });
     }
 
     function renderBalances(balances) {
@@ -1122,6 +1210,7 @@
       .catch((err) => { hideLoading(); alert('還款失敗：' + err.message); });
     }
 
+    // 渲染消費動態列表 (包含顯示 Remark 備註)
     function renderFeed(expenses) {
       const filter = document.getElementById('filterCategory').value;
       const filtered = filter === 'ALL' ? expenses : expenses.filter(e => e.category === filter);
@@ -1138,6 +1227,14 @@
           ? `<span class="inline-flex items-center text-[10px] bg-yellow-400 text-black border border-black font-black px-1.5 py-0.5 rounded-md">🧾 單據</span>` 
           : '';
 
+        const status = isPayment ? '已全部付款' : getExpenseStatus(e);
+        let statusBadgeClass = 'bg-green-500 text-white';
+        if (status === '未完成分帳') statusBadgeClass = 'bg-yellow-400 text-black';
+        else if (status === '未完成付款') statusBadgeClass = 'bg-red-500 text-white';
+
+        // 💡 如果有 Remark，顯示在列表項目的下方
+        const remarkHtml = e.remark ? `<div class="text-[11px] text-slate-400 dark:text-slate-500 font-normal mt-0.5">💬 備註：${e.remark}</div>` : '';
+
         return `
           <div onclick="openExpenseDetailModal('${e.id}')" class="py-3 cursor-pointer hover:bg-slate-100/50 dark:hover:bg-slate-800/50 rounded-xl px-1 transition-colors">
             <div class="flex justify-between items-center font-black">
@@ -1147,10 +1244,12 @@
                 ${imgBadge}
               </span>
               <div class="flex items-center space-x-2">
+                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded border border-black ${statusBadgeClass}">${status}</span>
                 <span class="${isPayment ? 'text-purple-500 dark:text-purple-400' : 'text-green-600 dark:text-green-400'} text-base font-black">$${e.amount}</span>
                 <span class="text-xs text-slate-400">🔍</span>
               </div>
             </div>
+            ${remarkHtml}
             <div class="flex justify-between text-xs text-slate-500 dark:text-slate-400 font-bold mt-1">
               <span>${e.payer} ${isPayment ? '還給 ' + e.participants[0] : '買單 (' + e.participants.length + ' 人分攤)'}</span>
               <span>${e.date}</span>
