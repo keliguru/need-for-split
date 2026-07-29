@@ -1,0 +1,21 @@
+{
+  "name": "Need for Split 分賬系統",
+  "short_name": "NeedForSplit",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#ff1e27",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://raw.githubusercontent.com/keliguru/need-for-split/refs/heads/main/split-icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://raw.githubusercontent.com/keliguru/need-for-split/refs/heads/main/split-icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
