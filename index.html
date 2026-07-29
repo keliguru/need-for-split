@@ -4,7 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Need for Split 分賬系統</title>
-  
+
+  <!-- PWA Manifest & Theme Color -->
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#ff1e27">
+
   <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/keliguru/need-for-split/refs/heads/main/split-icon.png">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Need for Split 分賬系統">
@@ -12,8 +16,9 @@
   <meta property="og:image" content="https://raw.githubusercontent.com/keliguru/need-for-split/refs/heads/main/split-icon.png"> 
   <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/keliguru/need-for-split/refs/heads/main/split-icon.png">
 
+  <!-- iOS PWA Support -->
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Need for Split 分賬系統">
   
   <script src="https://cdn.tailwindcss.com"></script>
@@ -299,15 +304,9 @@
     </div>
   </aside>
 
-  <!-- ================================================================= -->
-  <!-- MODALS (其他功能彈窗)                                            -->
-  <!-- ================================================================= -->
-
-  <!-- 查看與編輯訂單明細 Modal (介面已完全對齊新增消費 Form) -->
+  <!-- MODALS -->
   <div id="expenseDetailModal" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4 hidden">
     <div class="bg-white dark:bg-slate-900 w-full max-w-md max-h-[92vh] flex flex-col rounded-3xl border-4 border-black shadow-[8px_8px_0px_#3b82f6]">
-      
-      <!-- Modal Header -->
       <div class="p-4 border-b-2 border-slate-200 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-900 rounded-t-3xl">
         <div class="flex items-center space-x-2">
           <h3 class="text-base font-nfs font-black bg-blue-600 text-white px-3 py-1 rounded-lg border-2 border-black shadow-[2px_2px_0px_#000]">
@@ -318,7 +317,6 @@
         <button onclick="closeExpenseDetailModal()" class="text-slate-800 dark:text-white font-black text-2xl hover:text-red-500 transition-colors">✕</button>
       </div>
 
-      <!-- Modal Body (與新增表單相同的輸入體驗) -->
       <form id="editExpenseForm" onsubmit="saveDetailShares(event)" class="p-4 space-y-4 overflow-y-auto flex-1">
         <div class="grid grid-cols-2 gap-3">
           <div>
@@ -385,7 +383,6 @@
         </div>
       </form>
 
-      <!-- Modal Footer -->
       <div class="p-4 border-t-2 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 flex justify-between items-center space-x-2 rounded-b-3xl">
         <button type="button" id="btnDeleteDetailExpense" class="nfs-btn-red text-xs font-nfs px-3 py-2.5 rounded-xl font-black">🗑️ 刪除</button>
         <div class="flex space-x-2">
@@ -396,7 +393,6 @@
     </div>
   </div>
 
-  <!-- 管理車隊成員 Modal -->
   <div id="manageCrewModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
     <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 border-4 border-black shadow-[6px_6px_0px_#ff1e27] max-h-[85vh] flex flex-col">
       <div class="flex justify-between items-center mb-3">
@@ -416,7 +412,6 @@
     </div>
   </div>
 
-  <!-- Create Group Modal -->
   <div id="createGroupModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
     <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 border-4 border-black shadow-[6px_6px_0px_#facc15] max-h-[85vh] flex flex-col">
       <h3 class="text-lg font-nfs font-black text-slate-900 dark:text-yellow-400 mb-3 tracking-wider">🏎️ 建立新車隊 (GROUP)</h3>
@@ -442,7 +437,6 @@
     </div>
   </div>
 
-  <!-- API Modal -->
   <div id="apiModal" class="fixed inset-0 bg-black/85 backdrop-blur-md flex items-center justify-center z-50 p-4 hidden">
     <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-6 border-4 border-black shadow-[6px_6px_0px_#facc15]">
       <h3 class="text-lg font-nfs font-black text-slate-900 dark:text-yellow-400 mb-2">⚙️ 設定 GAS API 網址</h3>
@@ -453,7 +447,6 @@
     </div>
   </div>
 
-  <!-- Add Member Modal -->
   <div id="memberModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
     <div class="bg-white dark:bg-slate-900 w-full max-w-xs rounded-3xl p-5 border-4 border-black shadow-[6px_6px_0px_#ff1e27]">
       <h3 class="text-lg font-nfs font-black text-red-500 mb-3 tracking-wider">👤 招募新車手 (ADMIN)</h3>
@@ -465,7 +458,6 @@
     </div>
   </div>
 
-  <!-- Token Display Modal -->
   <div id="tokenModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
     <div class="bg-white dark:bg-slate-900 w-full max-w-xs rounded-3xl p-5 border-4 border-black shadow-[6px_6px_0px_#facc15] text-center">
       <h3 class="text-xl font-nfs font-black text-slate-900 dark:text-yellow-400 mb-1">🏁 車手招募完成！</h3>
@@ -476,7 +468,6 @@
     </div>
   </div>
 
-  <!-- Settle Modal -->
   <div id="settleModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
     <div class="bg-white dark:bg-slate-900 w-full max-w-xs rounded-3xl p-5 border-4 border-black shadow-[6px_6px_0px_#22c55e]">
       <h3 class="text-xl font-nfs font-black text-green-500 mb-3 tracking-wider">💸 DRIFT 還款調整</h3>
@@ -492,7 +483,6 @@
     </div>
   </div>
 
-  <!-- Calc Modal -->
   <div id="calcModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-end justify-center hidden z-50">
     <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-t-3xl p-5 border-t-4 border-x-4 border-black shadow-[0px_-4px_0px_#ea3526]">
       <div class="flex justify-between items-center mb-3">
@@ -538,6 +528,15 @@
     let detailBase64Image = "";
     let activeSettleData = null;
     let currentEditingExpenseId = null;
+
+    // 註冊 Service Worker (PWA 核心功能)
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('Service Worker 註冊成功！範疇：', reg.scope))
+          .catch(err => console.error('Service Worker 註冊失敗：', err));
+      });
+    }
 
     // 判斷訂單 STATUS
     function getExpenseStatus(exp) {
@@ -787,7 +786,6 @@
       }
     }
 
-    /* Drawer 控制邏輯 */
     function openExpenseDrawer() {
       const overlay = document.getElementById('expenseDrawerOverlay');
       const drawer = document.getElementById('expenseDrawer');
@@ -1170,7 +1168,6 @@
         .catch((err) => { hideLoading(); alert('刪除失敗：' + err.message); });
     }
 
-    // 帶入個人的剩餘應付金額
     function fillRemainingForUser(memberName) {
       const totalAmount = parseFloat(document.getElementById('detailAmountDisplay').value) || 0;
       let currentSharesSum = 0;
@@ -1199,7 +1196,6 @@
       }
     }
 
-    // 打開明細 Modal 並填入資料（UI比照新增消費）
     function openExpenseDetailModal(expenseId) {
       const exp = appData.expenses.find(e => e.id === expenseId);
       if (!exp) return;
@@ -1211,12 +1207,10 @@
       document.getElementById('detailRemark').value = exp.remark || '';
       document.getElementById('detailAmountDisplay').value = exp.amount || 0;
 
-      // 載入買單人選單
       const payerSelect = document.getElementById('detailPayer');
       payerSelect.innerHTML = appData.members.map(m => `<option value="${m}">${m}</option>`).join('');
       payerSelect.value = exp.payer;
 
-      // 載入照片
       detailBase64Image = exp.imageUrl || '';
       const imgPreviewContainer = document.getElementById('detailImgPreviewContainer');
       if (exp.imageUrl) {
@@ -1227,7 +1221,6 @@
         imgPreviewContainer.classList.add('hidden');
       }
 
-      // 狀態 Badge
       const status = getExpenseStatus(exp);
       const statusBadge = document.getElementById('detailStatusBadge');
       statusBadge.innerText = status;
@@ -1240,7 +1233,6 @@
         statusBadge.className = 'text-xs font-bold px-2 py-0.5 rounded-lg border border-black shadow-[1px_1px_0px_#000] bg-green-500 text-white';
       }
 
-      // 載入分攤成員清單
       const partGroup = document.getElementById('detailParticipantsGroup');
       const shares = exp.shares || {};
 
