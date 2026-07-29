@@ -202,12 +202,199 @@
     </section>
   </div>
 
-  <!-- FAB -->
-  <button id="fabAddExpense" onclick="openExpenseModal()" class="fixed bottom-6 right-6 z-40 nfs-btn-yellow fab-btn nfs-skew px-4 py-3 rounded-2xl flex items-center space-x-2 border-4 border-black shadow-[6px_6px_0px_#000] hidden">
+  <!-- FAB 按鈕 -->
+  <button id="fabAddExpense" onclick="openExpenseDrawer()" class="fixed bottom-6 right-6 z-40 nfs-btn-yellow fab-btn nfs-skew px-4 py-3 rounded-2xl flex items-center space-x-2 border-4 border-black shadow-[6px_6px_0px_#000] hidden">
     <span class="nfs-skew-inside text-xl font-black">➕ 新增消費</span>
   </button>
 
-  <!-- MODALS -->
+  <!-- ================================================================= -->
+  <!-- 新增消費 側邊抽屜 (Expense Drawer)                                 -->
+  <!-- ================================================================= -->
+
+  <div 
+    id="expenseDrawerOverlay" 
+    onclick="closeExpenseDrawer()" 
+    class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 opacity-0 pointer-events-none transition-opacity duration-300">
+  </div>
+
+  <aside 
+    id="expenseDrawer" 
+    class="fixed z-50 bg-white dark:bg-slate-900 text-slate-900 dark:text-white
+           bottom-0 inset-x-0 rounded-t-3xl max-h-[92vh] translate-y-full
+           sm:top-0 sm:right-0 sm:left-auto sm:bottom-0 sm:w-[420px] sm:max-h-full sm:rounded-none sm:translate-y-0 sm:translate-x-full
+           border-t-4 sm:border-t-0 sm:border-l-4 border-black shadow-[0px_-8px_0px_#facc15] sm:shadow-[-8px_0px_0px_#facc15]
+           transition-transform duration-300 ease-in-out flex flex-col"
+  >
+    <div class="p-4 sm:p-5 border-b-2 border-slate-200 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-900 sm:rounded-none rounded-t-3xl">
+      <h2 class="text-base font-nfs font-black bg-green-600 text-white px-3 py-1 rounded-lg inline-block tracking-widest border-2 border-black shadow-[2px_2px_0px_#000]">
+        PIT STOP / 補給加油 (新增消費)
+      </h2>
+      <button onclick="closeExpenseDrawer()" class="text-slate-800 dark:text-white font-black text-2xl hover:text-red-500 transition-colors p-1">✕</button>
+    </div>
+
+    <form id="expenseForm" onsubmit="submitExpense(event)" class="p-4 sm:p-5 space-y-4 overflow-y-auto flex-1">
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">消費類別</label>
+          <select id="category" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-yellow-400 focus:outline-none shadow-[2px_2px_0px_#000]">
+            <option value="🍔 餐飲">🍔 燃料餐飲</option>
+            <option value="🚗 交通">🚗 競速過路費</option>
+            <option value="🏠 住宿">🏠 賽道維修廠</option>
+            <option value="🎟️ 娛樂">🎟️ 氮氣補給</option>
+            <option value="🛒 購物">🛒 改裝零件</option>
+            <option value="💡 雜項">💡 雜項開銷</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">買單車手 (Payer)</label>
+          <select id="payer" onchange="handlePayerChange()" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]"></select>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">項目說明 (Desc)</label>
+        <input type="text" id="desc" required placeholder="例如：98 無鉛汽油" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]">
+      </div>
+
+      <div>
+        <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">備註說明 (Remark - 選填)</label>
+        <input type="text" id="remark" placeholder="例如：加滿、含服務費等" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]">
+      </div>
+
+      <div>
+        <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">總消費金額 ($) <span class="text-yellow-500 font-normal">(可填 0 元建立，再由成員自行輸入)</span></label>
+        <div class="relative">
+          <input type="text" id="amountDisplay" readonly value="0" onclick="openCalcModal('amountDisplay')" 
+                 class="w-full border-3 border-black rounded-2xl p-3 text-right font-mono text-3xl font-black bg-yellow-400 text-black cursor-pointer shadow-[4px_4px_0px_#ea3526] focus:outline-none">
+          <span class="absolute left-3 top-4 text-xs font-black text-black/70">點擊開啟計算機 🔢</span>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">單據照片 (選填)</label>
+        <input type="file" id="receiptImg" accept="image/*" onchange="previewImage(event, 'imgPreview', 'imgPreviewContainer')" class="w-full text-xs text-slate-500 dark:text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-2 file:border-black file:text-xs file:font-black file:bg-red-600 file:text-white cursor-pointer">
+        <div id="imgPreviewContainer" class="hidden mt-2 relative w-20 h-20">
+          <img id="imgPreview" class="w-full h-full object-cover rounded-xl border-2 border-black shadow-[2px_2px_0px_#000]">
+          <button type="button" onclick="removeImage('imgPreview', 'imgPreviewContainer', 'receiptImg')" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs w-6 h-6 rounded-full border-2 border-black font-black flex items-center justify-center shadow">✕</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="flex justify-between items-center mb-2">
+          <label class="block text-xs font-black text-slate-500 dark:text-slate-400">分攤明細 (可各自分別填寫)</label>
+          <div class="space-x-2">
+            <button type="button" onclick="splitEvenly('amountDisplay', 'parts', 'share-input-')" class="nfs-btn-yellow text-[10px] font-black px-2 py-1 rounded-lg">⚡ 一鍵均分</button>
+            <button type="button" onclick="selectAllParts('parts', 'share-input-')" class="text-xs font-black text-slate-500 dark:text-slate-400 underline">全選</button>
+          </div>
+        </div>
+        <div id="participantsGroup" class="space-y-2"></div>
+      </div>
+    </form>
+
+    <div class="p-4 border-t-2 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 flex space-x-2">
+      <button type="button" onclick="closeExpenseDrawer()" class="w-1/3 py-2.5 text-xs font-black bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-300 rounded-2xl border-2 border-black hover:opacity-90 transition-opacity">取消</button>
+      <button type="submit" form="expenseForm" id="btnSubmit" class="nfs-btn-green nfs-skew w-2/3 font-nfs text-2xl font-black py-2 rounded-2xl tracking-wider">
+        <span class="nfs-skew-inside inline-block">確認送出</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ================================================================= -->
+  <!-- MODALS (其他功能彈窗)                                            -->
+  <!-- ================================================================= -->
+
+  <!-- 查看與編輯訂單明細 Modal (介面已完全對齊新增消費 Form) -->
+  <div id="expenseDetailModal" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4 hidden">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-md max-h-[92vh] flex flex-col rounded-3xl border-4 border-black shadow-[8px_8px_0px_#3b82f6]">
+      
+      <!-- Modal Header -->
+      <div class="p-4 border-b-2 border-slate-200 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-900 rounded-t-3xl">
+        <div class="flex items-center space-x-2">
+          <h3 class="text-base font-nfs font-black bg-blue-600 text-white px-3 py-1 rounded-lg border-2 border-black shadow-[2px_2px_0px_#000]">
+            RACE LOG / 明細詳情
+          </h3>
+          <span id="detailStatusBadge" class="text-xs font-bold px-2 py-0.5 rounded-lg border border-black shadow-[1px_1px_0px_#000]"></span>
+        </div>
+        <button onclick="closeExpenseDetailModal()" class="text-slate-800 dark:text-white font-black text-2xl hover:text-red-500 transition-colors">✕</button>
+      </div>
+
+      <!-- Modal Body (與新增表單相同的輸入體驗) -->
+      <form id="editExpenseForm" onsubmit="saveDetailShares(event)" class="p-4 space-y-4 overflow-y-auto flex-1">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">消費類別</label>
+            <select id="detailCategory" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-yellow-400 focus:outline-none shadow-[2px_2px_0px_#000]">
+              <option value="🍔 餐飲">🍔 燃料餐飲</option>
+              <option value="🚗 交通">🚗 競速過路費</option>
+              <option value="🏠 住宿">🏠 賽道維修廠</option>
+              <option value="🎟️ 娛樂">🎟️ 氮氣補給</option>
+              <option value="🛒 購物">🛒 改裝零件</option>
+              <option value="💡 雜項">💡 雜項開銷</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">買單車手 (Payer)</label>
+            <select id="detailPayer" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]"></select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">項目說明 (Desc)</label>
+          <input type="text" id="detailDesc" required class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]">
+        </div>
+
+        <div>
+          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">備註說明 (Remark)</label>
+          <input type="text" id="detailRemark" placeholder="無備註" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]">
+        </div>
+
+        <div>
+          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">總消費金額 ($)</label>
+          <div class="relative">
+            <input type="text" id="detailAmountDisplay" readonly value="0" onclick="openCalcModal('detailAmountDisplay')" 
+                   class="w-full border-3 border-black rounded-2xl p-3 text-right font-mono text-3xl font-black bg-yellow-400 text-black cursor-pointer shadow-[4px_4px_0px_#ea3526] focus:outline-none">
+            <span class="absolute left-3 top-4 text-xs font-black text-black/70">點擊開啟計算機 🔢</span>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">單據照片</label>
+          <input type="file" id="detailReceiptImg" accept="image/*" onchange="previewImage(event, 'detailImgPreview', 'detailImgPreviewContainer')" class="w-full text-xs text-slate-500 dark:text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-2 file:border-black file:text-xs file:font-black file:bg-red-600 file:text-white cursor-pointer">
+          <div id="detailImgPreviewContainer" class="hidden mt-2 relative w-24 h-24">
+            <a id="detailImgLink" href="#" target="_blank">
+              <img id="detailImgPreview" class="w-full h-full object-cover rounded-xl border-2 border-black shadow-[2px_2px_0px_#000]">
+            </a>
+            <button type="button" onclick="removeImage('detailImgPreview', 'detailImgPreviewContainer', 'detailReceiptImg')" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs w-6 h-6 rounded-full border-2 border-black font-black flex items-center justify-center shadow">✕</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex justify-between items-center mb-2">
+            <div class="flex items-center space-x-2">
+              <label class="block text-xs font-black text-slate-500 dark:text-slate-400">分攤明細</label>
+              <div class="text-[10px] font-black px-2 py-0.5 rounded-lg border border-black shadow-[1px_1px_0px_#000]" id="detailRemainingBadge">
+                剩餘：<span id="detailRemainingAmount" class="font-mono">$0</span>
+              </div>
+            </div>
+            <div class="space-x-2">
+              <button type="button" onclick="splitEvenly('detailAmountDisplay', 'detailParts', 'detail-share-input-')" class="nfs-btn-yellow text-[10px] font-black px-2 py-1 rounded-lg">⚡ 一鍵均分</button>
+              <button type="button" onclick="selectAllParts('detailParts', 'detail-share-input-')" class="text-xs font-black text-slate-500 dark:text-slate-400 underline">全選</button>
+            </div>
+          </div>
+          <div id="detailParticipantsGroup" class="space-y-2"></div>
+        </div>
+      </form>
+
+      <!-- Modal Footer -->
+      <div class="p-4 border-t-2 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 flex justify-between items-center space-x-2 rounded-b-3xl">
+        <button type="button" id="btnDeleteDetailExpense" class="nfs-btn-red text-xs font-nfs px-3 py-2.5 rounded-xl font-black">🗑️ 刪除</button>
+        <div class="flex space-x-2">
+          <button type="button" onclick="closeExpenseDetailModal()" class="py-2.5 px-4 text-xs font-black bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-300 rounded-xl border-2 border-black">取消</button>
+          <button type="submit" form="editExpenseForm" class="nfs-btn-green text-xs font-nfs px-4 py-2.5 rounded-xl font-black">💾 儲存修改</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- 管理車隊成員 Modal -->
   <div id="manageCrewModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
@@ -226,134 +413,6 @@
         <button onclick="openMemberModal()" class="nfs-btn-yellow w-full py-2 text-xs font-nfs text-lg font-black rounded-xl">+ 招募新車手</button>
         <button onclick="closeManageCrewModal()" class="w-full py-2 text-xs font-black bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-300 rounded-xl border-2 border-black">關閉</button>
       </div>
-    </div>
-  </div>
-
-  <!-- 查看與編輯訂單明細 Modal -->
-  <div id="expenseDetailModal" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4 hidden">
-    <div class="bg-white dark:bg-slate-900 w-full max-w-md max-h-[90vh] overflow-y-auto rounded-3xl p-5 border-4 border-black shadow-[8px_8px_0px_#3b82f6]">
-      <div class="flex justify-between items-center mb-3">
-        <div class="flex items-center space-x-2">
-          <span id="detailCategory" class="text-xs font-nfs font-black bg-blue-600 text-white px-3 py-1 rounded-lg border-2 border-black shadow-[2px_2px_0px_#000]"></span>
-          <span id="detailStatusBadge" class="text-xs font-bold px-2 py-0.5 rounded-lg border border-black shadow-[1px_1px_0px_#000]"></span>
-        </div>
-        <button onclick="closeExpenseDetailModal()" class="text-slate-800 dark:text-white font-black text-xl hover:text-red-500">✕</button>
-      </div>
-
-      <div class="mb-4 pb-3 border-b-2 border-slate-200 dark:border-slate-800">
-        <h3 id="detailDesc" class="text-xl font-black text-slate-900 dark:text-white mb-1"></h3>
-        <p id="detailRemarkContainer" class="text-xs font-bold text-slate-500 dark:text-slate-400 mb-2">備註：<span id="detailRemark" class="text-slate-700 dark:text-slate-300"></span></p>
-        <div class="flex justify-between items-end">
-          <div>
-            <p class="text-xs text-slate-500 dark:text-slate-400 font-bold">付款人：<span id="detailPayer" class="text-yellow-500 dark:text-yellow-400 font-black"></span></p>
-            <p id="detailDate" class="text-[10px] text-slate-400 font-bold mt-0.5"></p>
-          </div>
-          <div class="text-right">
-            <p class="text-[10px] font-black text-slate-400">原始總額</p>
-            <p id="detailAmount" class="text-2xl font-mono font-black text-slate-800 dark:text-white"></p>
-          </div>
-        </div>
-      </div>
-
-      <div id="detailImageContainer" class="mb-4 hidden">
-        <p class="text-xs font-black text-slate-500 dark:text-slate-400 mb-1">單據照片：</p>
-        <a id="detailImageLink" href="#" target="_blank" class="block">
-          <img id="detailImage" class="w-full h-40 object-cover rounded-2xl border-2 border-black shadow-[3px_3px_0px_#000] hover:opacity-90">
-        </a>
-      </div>
-
-      <div class="mb-5">
-        <div class="flex justify-between items-center mb-2">
-          <h4 class="text-xs font-nfs font-black text-slate-500 dark:text-slate-400 tracking-wider">📊 成員分攤明細</h4>
-          <div class="text-xs font-black px-2 py-1 rounded-lg border border-black shadow-[1px_1px_0px_#000]" id="detailRemainingBadge">
-            扣減分攤後金額：<span id="detailRemainingAmount" class="font-mono">$0</span>
-          </div>
-        </div>
-        <div id="detailSharesList" class="space-y-2"></div>
-      </div>
-
-      <div class="flex justify-between items-center pt-2 border-t-2 border-slate-200 dark:border-slate-800">
-        <button id="btnDeleteDetailExpense" class="nfs-btn-red text-xs font-nfs px-4 py-2 rounded-xl">🗑️ 刪除此單</button>
-        <button onclick="saveDetailShares()" class="nfs-btn-green text-xs font-nfs px-4 py-2 rounded-xl font-black">💾 儲存分攤金額</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 新增消費 Modal -->
-  <div id="expenseModal" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4 hidden">
-    <div class="bg-white dark:bg-slate-900 w-full max-w-md max-h-[90vh] overflow-y-auto rounded-3xl p-5 border-4 border-black shadow-[8px_8px_0px_#facc15]">
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-base font-nfs font-black bg-green-600 text-white px-3 py-1 rounded-lg inline-block tracking-widest border-2 border-black shadow-[2px_2px_0px_#000]">
-          PIT STOP / 補給加油 (新增消費)
-        </h2>
-        <button onclick="closeExpenseModal()" class="text-slate-800 dark:text-white font-black text-xl hover:text-red-500">✕</button>
-      </div>
-
-      <form id="expenseForm" onsubmit="submitExpense(event)" class="space-y-4">
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">消費類別</label>
-            <select id="category" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-yellow-400 focus:outline-none shadow-[2px_2px_0px_#000]">
-              <option value="🍔 餐飲">🍔 燃料餐飲</option>
-              <option value="🚗 交通">🚗 競速過路費</option>
-              <option value="🏠 住宿">🏠 賽道維修廠</option>
-              <option value="🎟️ 娛樂">🎟️ 氮氣補給</option>
-              <option value="🛒 購物">🛒 改裝零件</option>
-              <option value="💡 雜項">💡 雜項開銷</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">買單車手 (Payer)</label>
-            <select id="payer" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]"></select>
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">項目說明 (Desc)</label>
-          <input type="text" id="desc" required placeholder="例如：98 無鉛汽油" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]">
-        </div>
-
-        <div>
-          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">備註說明 (Remark - 選填)</label>
-          <input type="text" id="remark" placeholder="例如：加滿、含服務費等" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]">
-        </div>
-
-        <div>
-          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">預設總消費金額 ($) <span class="text-yellow-500 font-normal">(可填 0 元建立，再由成員自行輸入)</span></label>
-          <div class="relative">
-            <input type="text" id="amountDisplay" readonly value="0" onclick="openCalcModal()" 
-                   class="w-full border-3 border-black rounded-2xl p-3 text-right font-mono text-3xl font-black bg-yellow-400 text-black cursor-pointer shadow-[4px_4px_0px_#ea3526] focus:outline-none">
-            <span class="absolute left-3 top-4 text-xs font-black text-black/70">點擊開啟計算機 🔢</span>
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">單據照片 (選填)</label>
-          <input type="file" id="receiptImg" accept="image/*" onchange="previewImage(event)" class="w-full text-xs text-slate-500 dark:text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-2 file:border-black file:text-xs file:font-black file:bg-red-600 file:text-white cursor-pointer">
-          <div id="imgPreviewContainer" class="hidden mt-2 relative w-20 h-20">
-            <img id="imgPreview" class="w-full h-full object-cover rounded-xl border-2 border-black shadow-[2px_2px_0px_#000]">
-            <button type="button" onclick="removeImage()" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs w-6 h-6 rounded-full border-2 border-black font-black flex items-center justify-center shadow">✕</button>
-          </div>
-        </div>
-
-        <div>
-          <div class="flex justify-between items-center mb-2">
-            <label class="block text-xs font-black text-slate-500 dark:text-slate-400">分攤明細 (可各自分別填寫)</label>
-            <div class="space-x-2">
-              <button type="button" onclick="splitEvenly()" class="nfs-btn-yellow text-[10px] font-black px-2 py-1 rounded-lg">⚡ 一鍵均分</button>
-              <button type="button" onclick="selectAllParts()" class="text-xs font-black text-slate-500 dark:text-slate-400 underline">全選</button>
-            </div>
-          </div>
-          <div id="participantsGroup" class="space-y-2"></div>
-        </div>
-
-        <div class="flex space-x-2 pt-2">
-          <button type="button" onclick="closeExpenseModal()" class="w-1/3 py-2.5 text-xs font-black bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-300 rounded-2xl border-2 border-black">取消</button>
-          <button type="submit" id="btnSubmit" class="nfs-btn-green nfs-skew w-2/3 font-nfs text-2xl font-black py-2 rounded-2xl tracking-wider">
-            <span class="nfs-skew-inside inline-block">確認送出</span>
-          </button>
-        </div>
-      </form>
     </div>
   </div>
 
@@ -474,7 +533,9 @@
     let currentGroupId = null;
     let appData = null;
     let calcExpr = '0';
+    let activeCalcTargetId = 'amountDisplay';
     let currentBase64Image = "";
+    let detailBase64Image = "";
     let activeSettleData = null;
     let currentEditingExpenseId = null;
 
@@ -544,7 +605,6 @@
       const btn2 = document.getElementById('btnThemeGroup');
       const btn3 = document.getElementById('btnThemeDash');
 
-      // 切換按鈕樣式：光明模式為白色底黑字，暗黑模式為深色底黃字
       const btnClassLight = "bg-white text-slate-900 border-2 border-black";
       const btnClassDark = "bg-slate-800 text-yellow-400 border-2 border-black";
 
@@ -727,9 +787,29 @@
       }
     }
 
-    function openExpenseModal() { document.getElementById('expenseModal').classList.remove('hidden'); }
-    function closeExpenseModal() { document.getElementById('expenseModal').classList.add('hidden'); }
-    
+    /* Drawer 控制邏輯 */
+    function openExpenseDrawer() {
+      const overlay = document.getElementById('expenseDrawerOverlay');
+      const drawer = document.getElementById('expenseDrawer');
+
+      overlay.classList.remove('opacity-0', 'pointer-events-none');
+      drawer.classList.remove('translate-y-full', 'sm:translate-x-full');
+      drawer.classList.add('translate-y-0', 'sm:translate-x-0');
+    }
+
+    function closeExpenseDrawer() {
+      const overlay = document.getElementById('expenseDrawerOverlay');
+      const drawer = document.getElementById('expenseDrawer');
+
+      overlay.classList.add('opacity-0', 'pointer-events-none');
+      drawer.classList.remove('translate-y-0', 'sm:translate-x-0');
+      drawer.classList.add('translate-y-full', 'sm:translate-x-full');
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeExpenseDrawer();
+    });
+
     function openManageCrewModal() {
       if (!appData) return;
       const container = document.getElementById('crewMembersList');
@@ -863,7 +943,12 @@
         .catch((err) => { hideLoading(); alert('招募成員失敗：' + err.message); });
     }
 
-    function openCalcModal() { document.getElementById('calcModal').classList.remove('hidden'); }
+    function openCalcModal(targetInputId) { 
+      activeCalcTargetId = targetInputId || 'amountDisplay';
+      calcExpr = document.getElementById(activeCalcTargetId).value || '0';
+      updateCalcDisplay();
+      document.getElementById('calcModal').classList.remove('hidden'); 
+    }
     function closeCalcModal() { document.getElementById('calcModal').classList.add('hidden'); }
     function calcNum(n) { calcExpr = (calcExpr === '0') ? n : calcExpr + n; updateCalcDisplay(); }
     function calcOp(op) {
@@ -882,13 +967,18 @@
       try {
         const val = eval(calcExpr);
         const finalVal = isNaN(val) ? 0 : Math.round(val * 100) / 100;
-        document.getElementById('amountDisplay').value = finalVal;
+        document.getElementById(activeCalcTargetId).value = finalVal;
         closeCalcModal();
-        splitEvenly();
+
+        if (activeCalcTargetId === 'amountDisplay') {
+          splitEvenly('amountDisplay', 'parts', 'share-input-');
+        } else if (activeCalcTargetId === 'detailAmountDisplay') {
+          splitEvenly('detailAmountDisplay', 'detailParts', 'detail-share-input-');
+        }
       } catch(e) { alert('算式不正確'); }
     }
 
-    function previewImage(event) {
+    function previewImage(event, imgElemId, containerElemId) {
       const file = event.target.files[0];
       if (!file) return;
       const reader = new FileReader();
@@ -905,29 +995,39 @@
           }
           canvas.width = width; canvas.height = height;
           ctx.drawImage(img, 0, 0, width, height);
-          currentBase64Image = canvas.toDataURL('image/jpeg', 0.7);
-          document.getElementById('imgPreview').src = currentBase64Image;
-          document.getElementById('imgPreviewContainer').classList.remove('hidden');
+          
+          const base64Res = canvas.toDataURL('image/jpeg', 0.7);
+          if (imgElemId === 'imgPreview') {
+            currentBase64Image = base64Res;
+          } else {
+            detailBase64Image = base64Res;
+            document.getElementById('detailImgLink').href = base64Res;
+          }
+
+          document.getElementById(imgElemId).src = base64Res;
+          document.getElementById(containerElemId).classList.remove('hidden');
         };
         img.src = e.target.result;
       };
       reader.readAsDataURL(file);
     }
 
-    function removeImage() {
-      currentBase64Image = "";
-      document.getElementById('receiptImg').value = "";
-      document.getElementById('imgPreviewContainer').classList.add('hidden');
+    function removeImage(imgElemId, containerElemId, inputElemId) {
+      if (imgElemId === 'imgPreview') currentBase64Image = "";
+      else detailBase64Image = "";
+      
+      document.getElementById(inputElemId).value = "";
+      document.getElementById(containerElemId).classList.add('hidden');
     }
 
-    function splitEvenly() {
-      const amount = parseFloat(document.getElementById('amountDisplay').value) || 0;
-      const checkboxes = document.querySelectorAll('input[name="parts"]:checked');
+    function splitEvenly(amountElemId, checkboxName, inputPrefix) {
+      const amount = parseFloat(document.getElementById(amountElemId).value) || 0;
+      const checkboxes = document.querySelectorAll(`input[name="${checkboxName}"]:checked`);
       if (checkboxes.length === 0) return;
       const share = (amount / checkboxes.length).toFixed(1);
 
-      document.querySelectorAll('input[name="parts"]').forEach(cb => {
-        const input = document.getElementById(`share-input-${cb.value}`);
+      document.querySelectorAll(`input[name="${checkboxName}"]`).forEach(cb => {
+        const input = document.getElementById(`${inputPrefix}${cb.value}`);
         if (cb.checked) {
           input.value = amount > 0 ? share : "0";
           input.disabled = false;
@@ -936,16 +1036,33 @@
           input.disabled = true;
         }
       });
+
+      if (amountElemId === 'detailAmountDisplay') {
+        updateRemainingCalculation();
+      }
     }
 
-    function handleCheckboxChange(member) {
-      const cb = document.querySelector(`input[name="parts"][value="${member}"]`);
-      const input = document.getElementById(`share-input-${member}`);
+    function handleCheckboxChange(member, checkboxName, inputPrefix, isDetail = false) {
+      const cb = document.querySelector(`input[name="${checkboxName}"][value="${member}"]`);
+      const input = document.getElementById(`${inputPrefix}${member}`);
       if (cb.checked) {
         input.disabled = false;
       } else {
         input.value = "0";
         input.disabled = true;
+      }
+
+      if (isDetail) updateRemainingCalculation();
+    }
+
+    function handlePayerChange() {
+      const currentPayer = document.getElementById('payer').value;
+      if (!currentPayer) return;
+      
+      const cb = document.querySelector(`input[name="parts"][value="${currentPayer}"]`);
+      if (cb && !cb.checked) {
+        cb.checked = true;
+        handleCheckboxChange(currentPayer, 'parts', 'share-input-');
       }
     }
 
@@ -957,11 +1074,15 @@
         payerSelect.value = currentUser.memberName;
       }
 
+      const activePayer = payerSelect.value;
+
       const partGroup = document.getElementById('participantsGroup');
-      partGroup.innerHTML = members.length ? members.map(m => `
+      partGroup.innerHTML = members.length ? members.map(m => {
+        const isChecked = 'checked'; 
+        return `
         <div class="flex items-center justify-between border-2 border-black p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white shadow-[2px_2px_0px_#000]">
           <label class="flex items-center space-x-2 cursor-pointer text-xs font-black">
-            <input type="checkbox" name="parts" value="${m}" checked onchange="handleCheckboxChange('${m}')" class="w-4 h-4 rounded text-red-600 focus:ring-0 accent-red-600">
+            <input type="checkbox" name="parts" value="${m}" ${isChecked} onchange="handleCheckboxChange('${m}', 'parts', 'share-input-')" class="w-4 h-4 rounded text-red-600 focus:ring-0 accent-red-600">
             <span>${m}</span>
           </label>
           <div class="flex items-center space-x-1">
@@ -969,17 +1090,22 @@
             <input type="number" id="share-input-${m}" step="0.1" value="0" class="w-20 bg-white dark:bg-slate-900 text-slate-900 dark:text-yellow-400 text-xs font-mono font-black border border-black rounded-lg px-2 py-1 text-right focus:outline-none">
           </div>
         </div>
-      `).join('') : '<p class="text-xs font-bold text-slate-500">請先招募成員</p>';
+      `;
+      }).join('') : '<p class="text-xs font-bold text-slate-500">請先招募成員</p>';
       
-      splitEvenly();
+      splitEvenly('amountDisplay', 'parts', 'share-input-');
     }
 
-    function selectAllParts() {
-      document.querySelectorAll('input[name="parts"]').forEach(cb => {
+    function selectAllParts(checkboxName, inputPrefix) {
+      document.querySelectorAll(`input[name="${checkboxName}"]`).forEach(cb => {
         cb.checked = true;
-        handleCheckboxChange(cb.value);
+        handleCheckboxChange(cb.value, checkboxName, inputPrefix, checkboxName === 'detailParts');
       });
-      splitEvenly();
+      if (checkboxName === 'parts') {
+        splitEvenly('amountDisplay', 'parts', 'share-input-');
+      } else {
+        splitEvenly('detailAmountDisplay', 'detailParts', 'detail-share-input-');
+      }
     }
 
     function submitExpense(e) {
@@ -1021,11 +1147,11 @@
       callGas('addTransaction', payload)
         .then((data) => {
           hideLoading();
-          closeExpenseModal();
+          closeExpenseDrawer();
           renderApp(data);
           document.getElementById('expenseForm').reset();
           document.getElementById('amountDisplay').value = '0';
-          removeImage();
+          removeImage('imgPreview', 'imgPreviewContainer', 'receiptImg');
           calcExpr = '0';
           renderFormOptions(data.members);
         })
@@ -1044,28 +1170,64 @@
         .catch((err) => { hideLoading(); alert('刪除失敗：' + err.message); });
     }
 
+    // 帶入個人的剩餘應付金額
+    function fillRemainingForUser(memberName) {
+      const totalAmount = parseFloat(document.getElementById('detailAmountDisplay').value) || 0;
+      let currentSharesSum = 0;
+
+      appData.members.forEach(m => {
+        if (m !== memberName) {
+          const inputElem = document.getElementById(`detail-share-input-${m}`);
+          if (inputElem) {
+            currentSharesSum += parseFloat(inputElem.value) || 0;
+          }
+        }
+      });
+
+      const remaining = Math.max(0, Math.round((totalAmount - currentSharesSum) * 10) / 10);
+      const targetInput = document.getElementById(`detail-share-input-${memberName}`);
+      const targetCb = document.querySelector(`input[name="detailParts"][value="${memberName}"]`);
+
+      if (targetCb && !targetCb.checked) {
+        targetCb.checked = true;
+        handleCheckboxChange(memberName, 'detailParts', 'detail-share-input-', true);
+      }
+
+      if (targetInput) {
+        targetInput.value = remaining;
+        updateRemainingCalculation();
+      }
+    }
+
+    // 打開明細 Modal 並填入資料（UI比照新增消費）
     function openExpenseDetailModal(expenseId) {
       const exp = appData.expenses.find(e => e.id === expenseId);
       if (!exp) return;
 
       currentEditingExpenseId = expenseId;
 
-      document.getElementById('detailCategory').innerText = exp.category;
-      document.getElementById('detailDesc').innerText = exp.desc;
-      
-      const remarkElem = document.getElementById('detailRemark');
-      const remarkContainer = document.getElementById('detailRemarkContainer');
-      if (exp.remark) {
-        remarkElem.innerText = exp.remark;
-        remarkContainer.classList.remove('hidden');
+      document.getElementById('detailCategory').value = exp.category;
+      document.getElementById('detailDesc').value = exp.desc || '';
+      document.getElementById('detailRemark').value = exp.remark || '';
+      document.getElementById('detailAmountDisplay').value = exp.amount || 0;
+
+      // 載入買單人選單
+      const payerSelect = document.getElementById('detailPayer');
+      payerSelect.innerHTML = appData.members.map(m => `<option value="${m}">${m}</option>`).join('');
+      payerSelect.value = exp.payer;
+
+      // 載入照片
+      detailBase64Image = exp.imageUrl || '';
+      const imgPreviewContainer = document.getElementById('detailImgPreviewContainer');
+      if (exp.imageUrl) {
+        document.getElementById('detailImgPreview').src = exp.imageUrl;
+        document.getElementById('detailImgLink').href = exp.imageUrl;
+        imgPreviewContainer.classList.remove('hidden');
       } else {
-        remarkContainer.classList.add('hidden');
+        imgPreviewContainer.classList.add('hidden');
       }
 
-      document.getElementById('detailPayer').innerText = exp.payer;
-      document.getElementById('detailDate').innerText = `日期：${exp.date}`;
-      document.getElementById('detailAmount').innerText = `$${exp.amount}`;
-
+      // 狀態 Badge
       const status = getExpenseStatus(exp);
       const statusBadge = document.getElementById('detailStatusBadge');
       statusBadge.innerText = status;
@@ -1078,52 +1240,57 @@
         statusBadge.className = 'text-xs font-bold px-2 py-0.5 rounded-lg border border-black shadow-[1px_1px_0px_#000] bg-green-500 text-white';
       }
 
-      const imgContainer = document.getElementById('detailImageContainer');
-      if (exp.imageUrl) {
-        document.getElementById('detailImage').src = exp.imageUrl;
-        document.getElementById('detailImageLink').href = exp.imageUrl;
-        imgContainer.classList.remove('hidden');
-      } else {
-        imgContainer.classList.add('hidden');
-      }
+      // 載入分攤成員清單
+      const partGroup = document.getElementById('detailParticipantsGroup');
+      const shares = exp.shares || {};
 
-      const sharesList = document.getElementById('detailSharesList');
-      sharesList.innerHTML = '';
+      partGroup.innerHTML = appData.members.map(m => {
+        const shareVal = parseFloat(shares[m]) || 0;
+        const isChecked = shares.hasOwnProperty(m) && shareVal >= 0 && (exp.participants && exp.participants.includes(m));
+        const isMe = currentUser && m === currentUser.memberName;
 
-      appData.members.forEach(member => {
-        const shareAmount = parseFloat((exp.shares && exp.shares[member]) || 0);
-        const isPayer = member === exp.payer;
-
-        sharesList.innerHTML += `
-          <div class="flex justify-between items-center p-2.5 bg-slate-100 dark:bg-slate-800 border-2 border-black rounded-xl font-bold text-xs shadow-[2px_2px_0px_#000]">
+        return `
+          <div class="flex items-center justify-between border-2 border-black p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white shadow-[2px_2px_0px_#000]">
             <div class="flex items-center space-x-2">
-              <span class="text-slate-900 dark:text-white font-black">🏎️ ${member}</span>
-              ${isPayer ? '<span class="text-[10px] bg-yellow-400 text-black px-1.5 py-0.5 rounded border border-black font-black">買單人</span>' : ''}
+              <label class="flex items-center space-x-1.5 cursor-pointer text-xs font-black">
+                <input type="checkbox" name="detailParts" value="${m}" ${isChecked ? 'checked' : ''} onchange="handleCheckboxChange('${m}', 'detailParts', 'detail-share-input-', true)" class="w-4 h-4 rounded text-red-600 focus:ring-0 accent-red-600">
+                <span>${m}</span>
+              </label>
+              ${isMe ? `
+                <button type="button" onclick="fillRemainingForUser('${m}')" class="text-[10px] bg-blue-500 text-white px-1.5 py-0.5 rounded border border-black font-black hover:opacity-90">
+                  ⚡ 填入個人餘額
+                </button>
+              ` : ''}
             </div>
             <div class="flex items-center space-x-1">
               <span class="text-xs font-bold text-yellow-500 dark:text-yellow-400">$</span>
-              <input type="number" id="edit-share-${member}" step="0.1" value="${shareAmount}" 
-                     oninput="updateRemainingCalculation(${exp.amount})"
+              <input type="number" id="detail-share-input-${m}" step="0.1" value="${shareVal}" ${isChecked ? '' : 'disabled'}
+                     oninput="updateRemainingCalculation()"
                      class="w-20 bg-white dark:bg-slate-900 text-slate-900 dark:text-yellow-400 text-xs font-mono font-black border border-black rounded-lg px-2 py-1 text-right focus:outline-none">
             </div>
-          </div>`;
-      });
+          </div>
+        `;
+      }).join('');
 
       document.getElementById('btnDeleteDetailExpense').onclick = function() {
         handleDeleteExpense(exp.id);
       };
 
-      updateRemainingCalculation(exp.amount);
-
+      updateRemainingCalculation();
       document.getElementById('expenseDetailModal').classList.remove('hidden');
     }
 
-    function updateRemainingCalculation(totalAmount) {
+    function updateRemainingCalculation() {
+      const totalAmount = parseFloat(document.getElementById('detailAmountDisplay').value) || 0;
       let currentSharesSum = 0;
+
       appData.members.forEach(member => {
-        const inputElem = document.getElementById(`edit-share-${member}`);
-        if (inputElem) {
-          currentSharesSum += parseFloat(inputElem.value) || 0;
+        const cb = document.querySelector(`input[name="detailParts"][value="${member}"]`);
+        if (cb && cb.checked) {
+          const inputElem = document.getElementById(`detail-share-input-${member}`);
+          if (inputElem) {
+            currentSharesSum += parseFloat(inputElem.value) || 0;
+          }
         }
       });
 
@@ -1134,11 +1301,11 @@
       remainingElem.innerText = `$${remaining}`;
 
       if (remaining > 0) {
-        badgeElem.className = 'text-xs font-black px-2 py-1 rounded-lg border border-black shadow-[1px_1px_0px_#000] bg-red-500 text-white';
+        badgeElem.className = 'text-[10px] font-black px-2 py-0.5 rounded-lg border border-black shadow-[1px_1px_0px_#000] bg-red-500 text-white';
       } else if (remaining < 0) {
-        badgeElem.className = 'text-xs font-black px-2 py-1 rounded-lg border border-black shadow-[1px_1px_0px_#000] bg-orange-400 text-black';
+        badgeElem.className = 'text-[10px] font-black px-2 py-0.5 rounded-lg border border-black shadow-[1px_1px_0px_#000] bg-orange-400 text-black';
       } else {
-        badgeElem.className = 'text-xs font-black px-2 py-1 rounded-lg border border-black shadow-[1px_1px_0px_#000] bg-green-500 text-white';
+        badgeElem.className = 'text-[10px] font-black px-2 py-0.5 rounded-lg border border-black shadow-[1px_1px_0px_#000] bg-green-500 text-white';
       }
     }
 
@@ -1147,29 +1314,39 @@
       currentEditingExpenseId = null;
     }
 
-    function saveDetailShares() {
+    function saveDetailShares(e) {
+      if(e) e.preventDefault();
       if (!currentEditingExpenseId) return;
 
-      const exp = appData.expenses.find(e => e.id === currentEditingExpenseId);
-      if (!exp) return;
+      const checkedBoxes = Array.from(document.querySelectorAll('input[name="detailParts"]:checked'));
+      if (checkedBoxes.length === 0) return alert('請至少選擇一位分攤車手！');
 
+      let amount = parseFloat(document.getElementById('detailAmountDisplay').value) || 0;
       const updatedShares = {};
+      let totalSharesSum = 0;
 
-      appData.members.forEach(member => {
-        const inputElem = document.getElementById(`edit-share-${member}`);
-        if (inputElem) {
-          const val = parseFloat(inputElem.value) || 0;
-          updatedShares[member] = val;
-        }
+      checkedBoxes.forEach(cb => {
+        const val = parseFloat(document.getElementById(`detail-share-input-${cb.value}`).value) || 0;
+        updatedShares[cb.value] = val;
+        totalSharesSum += val;
       });
+
+      if (totalSharesSum > 0 && amount === 0) {
+        amount = totalSharesSum;
+      }
 
       showLoading();
       callGas('updateExpenseShares', {
         token: currentToken,
         groupId: currentGroupId,
         expenseId: currentEditingExpenseId,
+        category: document.getElementById('detailCategory').value,
+        desc: document.getElementById('detailDesc').value,
+        remark: document.getElementById('detailRemark').value,
+        payer: document.getElementById('detailPayer').value,
+        amount: amount,
         shares: updatedShares,
-        amount: exp.amount
+        imageBase64: detailBase64Image
       })
       .then((data) => {
         hideLoading();
@@ -1178,7 +1355,7 @@
       })
       .catch((err) => {
         hideLoading();
-        alert('更新金額失敗：' + err.message);
+        alert('更新失敗：' + err.message);
       });
     }
 
