@@ -804,7 +804,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
     function handleLogin() {
       if (!gasApiUrl && typeof google === 'undefined') return openApiModal();
       const token = document.getElementById('tokenInput').value.trim().toUpperCase();
-      if (token.length !== 20) return showError('Token 必須為 20 位字元！');
+      if (token.length !== 20) return showError('Drive License 必須為 20 位字元！');
       showLoading();
       verifyAndLoad(token);
     }
