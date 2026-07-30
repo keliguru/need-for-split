@@ -331,11 +331,8 @@
         <div>
           <label class="block text-xs md:text-sm font-black text-slate-500 dark:text-slate-400 mb-1">總消費金額 ($) <span class="text-yellow-500 font-normal">(可填 0 元建立，再由成員自行輸入)</span></label>
           <div class="relative flex items-center">
-            <input type="number" step="any" id="amountDisplay" value="0"
-                   class="w-full border-3 border-black rounded-2xl p-3 pr-12 text-right font-mono text-3xl md:text-4xl font-black bg-yellow-400 text-black shadow-[4px_4px_0px_#ea3526] focus:outline-none">
-            <button type="button" onclick="openCalcModal('amountDisplay')" class="absolute right-3 bg-black text-yellow-400 rounded-xl p-1.5 border border-black hover:scale-105 active:scale-95 transition-transform" title="開啟計算機">
-              🔢
-            </button>
+            <input type="text" readonly id="amountDisplay" value="0" onclick="openCalcModal('amountDisplay')"
+                   class="w-full border-3 border-black rounded-2xl p-3 text-right font-mono text-3xl md:text-4xl font-black bg-yellow-400 text-black shadow-[4px_4px_0px_#ea3526] focus:outline-none cursor-pointer">
           </div>
         </div>
 
@@ -426,11 +423,8 @@
         <div>
           <label class="block text-xs md:text-sm font-black text-slate-500 dark:text-slate-400 mb-1">總消費金額 ($)</label>
           <div class="relative flex items-center">
-            <input type="number" step="any" id="detailAmountDisplay" value="0" onchange="updateRemainingCalculation()" 
-                   class="w-full border-3 border-black rounded-2xl p-3 pr-12 text-right font-mono text-3xl md:text-4xl font-black bg-yellow-400 text-black shadow-[4px_4px_0px_#ea3526] focus:outline-none">
-            <button type="button" onclick="openCalcModal('detailAmountDisplay')" class="absolute right-3 bg-black text-yellow-400 rounded-xl p-1.5 border border-black hover:scale-105 active:scale-95 transition-transform" title="開啟計算機">
-              🔢
-            </button>
+            <input type="text" readonly id="detailAmountDisplay" value="0" onclick="openCalcModal('detailAmountDisplay')" onchange="updateRemainingCalculation()" 
+                   class="w-full border-3 border-black rounded-2xl p-3 text-right font-mono text-3xl md:text-4xl font-black bg-yellow-400 text-black shadow-[4px_4px_0px_#ea3526] focus:outline-none cursor-pointer">
           </div>
         </div>
 
@@ -567,11 +561,8 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
       
       <label class="block text-xs md:text-sm font-black text-slate-500 dark:text-slate-400 mb-1">還款金額 ($)</label>
       <div class="relative mb-4 flex items-center">
-        <input type="number" step="any" id="settleAmountInput" value="0"
-               class="w-full border-2 border-black rounded-xl p-2.5 pr-10 text-base md:text-lg font-mono font-black bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-yellow-400 text-right outline-none shadow-[2px_2px_0px_#000]">
-        <button type="button" onclick="openCalcModal('settleAmountInput')" class="absolute right-2 bg-black text-yellow-400 rounded-lg p-1 text-xs border border-black hover:scale-105 active:scale-95 transition-transform" title="開啟計算機">
-          🔢
-        </button>
+        <input type="text" readonly id="settleAmountInput" value="0" onclick="openCalcModal('settleAmountInput')"
+               class="w-full border-2 border-black rounded-xl p-2.5 text-base md:text-lg font-mono font-black bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-yellow-400 text-right outline-none shadow-[2px_2px_0px_#000] cursor-pointer">
       </div>
       
       <div class="flex space-x-2">
@@ -1498,7 +1489,9 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
           </label>
           <div class="flex items-center space-x-1">
             <span class="text-xs md:text-sm font-bold text-yellow-500 dark:text-yellow-400">$</span>
-            <input type="number" step="any" id="share-input-${safeName}" value="0" class="w-20 md:w-24 bg-white dark:bg-slate-900 text-slate-900 dark:text-yellow-400 text-xs md:text-sm font-mono font-black border border-black rounded-lg px-2 py-1 text-right focus:outline-none">
+            <div class="relative flex items-center">
+              <input type="text" readonly id="share-input-${safeName}" value="0" onclick="openCalcModal('share-input-${safeName}')" class="w-20 md:w-24 bg-white dark:bg-slate-900 text-slate-900 dark:text-yellow-400 text-xs md:text-sm font-mono font-black border border-black rounded-lg px-1.5 py-1 text-right focus:outline-none cursor-pointer">
+            </div>
           </div>
         </div>
       `;
@@ -1693,9 +1686,12 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
             </div>
             <div class="flex items-center space-x-1">
               <span class="text-xs md:text-sm font-bold text-yellow-500 dark:text-yellow-400">$</span>
-              <input type="number" step="any" id="detail-share-input-${safeName}" value="${shareVal}" ${isChecked ? '' : 'disabled'}
-                     onchange="updateRemainingCalculation()"
-                     class="w-20 md:w-24 bg-white dark:bg-slate-900 text-slate-900 dark:text-yellow-400 text-xs md:text-sm font-mono font-black border border-black rounded-lg px-2 py-1 text-right focus:outline-none">
+              <div class="relative flex items-center">
+                <input type="text" readonly id="detail-share-input-${safeName}" value="${shareVal}" ${isChecked ? '' : 'disabled'}
+                       onclick="openCalcModal('detail-share-input-${safeName}')"
+                       onchange="updateRemainingCalculation()"
+                       class="w-20 md:w-24 bg-white dark:bg-slate-900 text-slate-900 dark:text-yellow-400 text-xs md:text-sm font-mono font-black border border-black rounded-lg px-1.5 py-1 text-right focus:outline-none cursor-pointer">
+              </div>
             </div>
           </div>
         `;
@@ -2014,28 +2010,21 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
                   <span class="text-slate-800 dark:text-slate-100 text-sm md:text-base truncate">${safeDesc}</span>
                 </div>
                 <div class="flex items-center space-x-1.5 shrink-0 ml-2">
-                  <span class="${isPayment ? 'text-purple-500 dark:text-purple-400' : 'text-green-600 dark:text-green-400'} text-base md:text-lg font-black">$${e.amount}</span>
-                  <span class="text-xs md:text-sm text-slate-400">🔍</span>
+                  <span class="${isPayment ? 'text-purple-500 dark:text-purple-400' : 'text-yellow-500 dark:text-yellow-400'} text-base md:text-lg">$${e.amount}</span>
+                  ${imgBadge}
                 </div>
-              </div>
-              
-              <div class="flex justify-between text-xs md:text-sm text-slate-500 dark:text-slate-400 font-bold mt-1">
-                <span>買單：<b class="text-slate-800 dark:text-slate-200">${safePayer}</b></span>
-                <span class="text-[10px] md:text-xs text-slate-400">${escapeHTML(e.date || '')}</span>
               </div>
             </div>
 
-            <!-- 下半部：備註與狀態標籤 -->
-            <div class="flex justify-between items-center mt-2 pt-1 border-t border-slate-100 dark:border-slate-800/50">
-              <div>
+            <!-- 下半部：買單者與狀態標籤 -->
+            <div class="flex justify-between items-center mt-2 pt-1 border-t border-slate-100 dark:border-slate-800/60 text-xs text-slate-500 dark:text-slate-400">
+              <div class="flex items-center space-x-2 truncate">
+                <span>買單：<b class="text-slate-700 dark:text-slate-300 font-bold">${safePayer}</b></span>
                 ${remarkHtml}
               </div>
-              <div class="flex items-center space-x-1">
-                ${imgBadge}
-                <span class="text-[10px] md:text-xs font-bold px-2 py-0.5 rounded-md border border-black ${statusBadgeClass}">
-                  ${status}
-                </span>
-              </div>
+              <span class="text-[10px] md:text-xs font-black px-2 py-0.5 rounded-md border border-black shrink-0 shadow-[1px_1px_0px_#000] ${statusBadgeClass}">
+                ${status}
+              </span>
             </div>
           </div>
         `;
