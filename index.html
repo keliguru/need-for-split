@@ -415,7 +415,7 @@
       <input type="text" id="registerDriverName" placeholder="例如：SPEED_DEMON" class="w-full border-2 border-black rounded-xl p-2.5 text-sm font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white mb-4 outline-none shadow-[2px_2px_0px_#000]">
       <div class="flex space-x-2">
         <button onclick="closeDriverRegisterModal()" class="w-1/2 py-2 text-xs font-black bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-300 rounded-xl border-2 border-black">取消</button>
-        <button onclick="submitDriverRegister()" class="nfs-btn-yellow w-1/2 py-2 text-xs font-nfs text-lg font-black rounded-xl">立即註冊</button>
+        <button onclick="submitDriverRegister()" class="nfs-btn-yellow w-1/2 py-2 text-xs font-nfs text-lg font-black rounded-xl">隱藏註冊</button>
       </div>
     </div>
   </div>
@@ -713,7 +713,6 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
             
             const adminBadge = currentUser.isAdmin ? ' [👑 ADMIN]' : '';
             
-            // 登入狀態顯示修改：新增一鍵複製 Member ID 功能
             const memberName = currentUser.memberName || currentUser.name || 'UNKNOWN';
             const memberId = currentUser.memberId || currentUser.id || token;
             
@@ -739,7 +738,6 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
         });
     }
 
-    // 複製個人 Member ID 的輔助函式
     function copyMyMemberId(id, btn) {
       navigator.clipboard.writeText(id).then(() => {
         const originalText = btn.innerText;
@@ -809,7 +807,6 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
     function renderApp(data) {
       appData = data;
       
-      // 計算不包含「💡 雜項」與「PAYMENT」還款的總支出[span_0](start_span)[span_0](end_span)
       if (data && data.expenses) {
         data.totalGroupExpense = data.expenses.reduce((sum, e) => {
           if (e.type !== 'PAYMENT' && (!e.category || !e.category.includes('雜項'))) {
@@ -1196,6 +1193,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
       }
     }
 
+    // 新增消費提交 (已新增 loading 特效)
     function submitExpense(e) {
       e.preventDefault();
       
@@ -1219,6 +1217,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
       const submitBtn = document.getElementById('btnSubmit');
       if (submitBtn) submitBtn.disabled = true;
 
+      // 觸發競速動畫特效
       showLoading();
 
       const payload = {
@@ -1254,13 +1253,16 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
         });
     }
 
+    // 刪除消費 (已新增 loading 特效)
     function handleDeleteExpense(expenseId) {
       if (!confirm('確定要刪除這筆開銷紀錄？')) return;
       
       const deleteBtn = document.getElementById('btnDeleteDetailExpense');
       if (deleteBtn) deleteBtn.disabled = true;
 
+      // 觸發競速動畫特效
       showLoading();
+
       callGas('deleteExpense', { token: currentToken, groupId: currentGroupId, expenseId })
         .then((data) => {
           hideLoading();
@@ -1431,6 +1433,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
       currentEditingExpenseId = null;
     }
 
+    // 儲存修改提交 (已新增 loading 特效)
     function saveDetailShares(e) {
       if(e) e.preventDefault();
       if (!currentEditingExpenseId) return;
@@ -1455,7 +1458,9 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
       const saveBtn = document.getElementById('btnSaveDetail');
       if (saveBtn) saveBtn.disabled = true;
 
+      // 觸發競速動畫特效
       showLoading();
+
       callGas('updateExpenseShares', {
         token: currentToken,
         groupId: currentGroupId,
