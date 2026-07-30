@@ -86,7 +86,7 @@
 
   <!-- 下拉更新指示器 -->
   <div id="ptrContainer" class="flex justify-center items-center">
-    <div id="ptrContent" class="bg-yellow-400 text-black border-2 border-black px-4 py-1.5 rounded-2xl shadow-[3px_3px_0px_#000] font-nfs font-black text-sm flex items-center space-x-2">
+    <div id="ptrContent" class="bg-yellow-400 text-black border-2 border-black px-4 py-1.5 rounded-2xl shadow-[3px_3px_0px_#000] font-nfs font-black text-sm md:text-base flex items-center space-x-2">
       <span id="ptrIcon">⬇️</span>
       <span id="ptrText">下拉更新數據...</span>
     </div>
@@ -94,136 +94,136 @@
 
   <!-- Loading Overlay -->
   <div id="loadingOverlay" class="fixed inset-0 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center z-50 hidden">
-    <div class="bg-yellow-400 border-4 border-black p-4 rounded-2xl shadow-[6px_6px_0px_#ff1e27] animate-rev mb-4 text-center">
-      <span class="text-4xl">🏎️💨</span>
-      <div class="font-nfs text-2xl font-black text-black leading-none mt-1">REVVING ENGINE</div>
+    <div class="bg-yellow-400 border-4 border-black p-4 md:p-6 rounded-2xl shadow-[6px_6px_0px_#ff1e27] animate-rev mb-4 text-center">
+      <span class="text-4xl md:text-5xl">🏎️💨</span>
+      <div class="font-nfs text-2xl md:text-3xl font-black text-black leading-none mt-1">REVVING ENGINE</div>
     </div>
-    <span class="bg-red-600 text-white font-nfs text-sm tracking-widest px-4 py-1 rounded-xl border-2 border-black animate-pulse">CONNECTING TO NOS SERVER... ⚡</span>
+    <span class="bg-red-600 text-white font-nfs text-sm md:text-base tracking-widest px-4 py-1 rounded-xl border-2 border-black animate-pulse">CONNECTING TO NOS SERVER... ⚡</span>
   </div>
 
   <!-- PAGE 0: LOGIN VIEW -->
-  <div id="loginView" class="max-w-md mx-auto p-4 flex flex-col justify-center relative">
+  <div id="loginView" class="max-w-md md:max-w-lg mx-auto p-4 md:p-6 flex flex-col justify-center relative">
     <header class="text-center mb-6">
-      <div class="bg-red-600 text-white font-nfs text-4xl font-black py-2 px-6 rounded-2xl border-4 border-black shadow-[6px_6px_0px_#facc15] inline-block nfs-skew italic">
+      <div class="bg-red-600 text-white font-nfs text-4xl md:text-5xl font-black py-2 px-6 rounded-2xl border-4 border-black shadow-[6px_6px_0px_#facc15] inline-block nfs-skew italic">
         <span class="nfs-skew-inside inline-block">🏎️ NEED FOR SPLIT</span>
       </div>
       
       <div class="mt-3 flex justify-center">
-        <button id="btnThemeLogin" onclick="toggleTheme()" class="border-2 border-black px-3 py-1 rounded-xl shadow-[3px_3px_0px_#000] font-black text-xs hover:opacity-90 active:translate-y-0.5 transition-colors">
+        <button id="btnThemeLogin" onclick="toggleTheme()" class="border-2 border-black px-3 py-1 rounded-xl shadow-[3px_3px_0px_#000] font-black text-xs md:text-sm hover:opacity-90 active:translate-y-0.5 transition-colors">
           <span id="themeIconLogin">🌙 賽道暗黑</span>
         </button>
       </div>
 
-      <p class="text-xs font-black text-yellow-500 mt-2 tracking-widest uppercase font-nfs text-lg">🏁 SPEED CHAMPIONS EDITION 🏁</p>
+      <p class="text-xs md:text-sm font-black text-yellow-500 mt-2 tracking-widest uppercase font-nfs text-lg md:text-xl">🏁 SPEED CHAMPIONS EDITION 🏁</p>
     </header>
 
-    <div class="bg-white dark:bg-slate-900 rounded-3xl border-4 border-black p-6 shadow-[8px_8px_0px_#000] relative">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl border-4 border-black p-6 md:p-8 shadow-[8px_8px_0px_#000] relative">
       <div class="flex justify-between items-center mb-3">
-        <h2 class="text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">🔑 請輸入 Driver License</h2>
-        <button onclick="openApiModal()" class="text-[10px] font-bold bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-yellow-400 border border-slate-400 dark:border-slate-600 px-2 py-0.5 rounded-lg">⚙️ API 網址</button>
+        <h2 class="text-xs md:text-sm font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">🔑 請輸入 Driver License</h2>
+        <button onclick="openApiModal()" class="text-[10px] md:text-xs font-bold bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-yellow-400 border border-slate-400 dark:border-slate-600 px-2 py-0.5 rounded-lg">⚙️ API 網址</button>
       </div>
       
       <input type="text" id="tokenInput" maxlength="20" placeholder="Driver License" 
-             class="w-full border-3 border-black rounded-2xl p-3 text-center font-mono text-sm font-black bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-yellow-400 placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none shadow-[inset_0px_2px_4px_rgba(0,0,0,0.2)] dark:shadow-[inset_0px_2px_4px_rgba(0,0,0,0.8)] mb-5 uppercase tracking-wider">
+             class="w-full border-3 border-black rounded-2xl p-3 text-center font-mono text-sm md:text-base font-black bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-yellow-400 placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none shadow-[inset_0px_2px_4px_rgba(0,0,0,0.2)] dark:shadow-[inset_0px_2px_4px_rgba(0,0,0,0.8)] mb-5 uppercase tracking-wider">
       
-      <button onclick="handleLogin()" id="btnLogin" class="nfs-btn-red nfs-skew w-full py-3.5 font-nfs text-2xl font-black rounded-2xl tracking-wider mb-3">
+      <button onclick="handleLogin()" id="btnLogin" class="nfs-btn-red nfs-skew w-full py-3.5 font-nfs text-2xl md:text-3xl font-black rounded-2xl tracking-wider mb-3">
         <span class="nfs-skew-inside inline-block">START ENGINE 🏎️</span>
       </button>
 
-      <button onclick="openDriverRegisterModal()" class="nfs-btn-yellow nfs-skew w-full py-2.5 font-nfs text-xl font-black rounded-2xl tracking-wider">
+      <button onclick="openDriverRegisterModal()" class="nfs-btn-yellow nfs-skew w-full py-2.5 font-nfs text-xl md:text-2xl font-black rounded-2xl tracking-wider">
         <span class="nfs-skew-inside inline-block">🏁 註冊成為新車手</span>
       </button>
 
-      <p id="loginError" class="text-xs text-red-500 font-black text-center mt-3 hidden"></p>
+      <p id="loginError" class="text-xs md:text-sm text-red-500 font-black text-center mt-3 hidden"></p>
     </div>
   </div>
 
   <!-- PAGE 1: GROUP SELECTION -->
-  <div id="groupSelectionView" class="max-w-md mx-auto p-4 hidden relative">
+  <div id="groupSelectionView" class="max-w-md md:max-w-xl mx-auto p-4 md:p-6 hidden relative">
     <header class="my-6 text-center relative">
-      <div class="bg-red-600 text-white font-nfs text-3xl font-black py-2 px-6 rounded-2xl border-4 border-black shadow-[5px_5px_0px_#facc15] inline-block nfs-skew italic">
+      <div class="bg-red-600 text-white font-nfs text-3xl md:text-4xl font-black py-2 px-6 rounded-2xl border-4 border-black shadow-[5px_5px_0px_#facc15] inline-block nfs-skew italic">
         <span class="nfs-skew-inside inline-block">🏎️ NEED FOR SPLIT</span>
       </div>
 
       <div class="mt-3 flex justify-center">
-        <button id="btnThemeGroup" onclick="toggleTheme()" class="border-2 border-black px-3 py-1 rounded-xl shadow-[3px_3px_0px_#000] font-black text-xs hover:opacity-90 active:translate-y-0.5 transition-colors">
+        <button id="btnThemeGroup" onclick="toggleTheme()" class="border-2 border-black px-3 py-1 rounded-xl shadow-[3px_3px_0px_#000] font-black text-xs md:text-sm hover:opacity-90 active:translate-y-0.5 transition-colors">
           <span id="themeIconGroup">🌙 賽道暗黑</span>
         </button>
       </div>
 
       <div class="mt-3 flex items-center justify-center space-x-3">
-        <span id="welcomeUser" class="text-xs font-black bg-yellow-400 text-black border-2 border-black px-3 py-1 rounded-xl shadow-[2px_2px_0px_#000]"></span>
-        <button onclick="handleLogout()" class="text-xs font-black text-red-500 hover:text-red-400 underline">EXIT PIT</button>
+        <span id="welcomeUser" class="text-xs md:text-sm font-black bg-yellow-400 text-black border-2 border-black px-3 py-1 rounded-xl shadow-[2px_2px_0px_#000]"></span>
+        <button onclick="handleLogout()" class="text-xs md:text-sm font-black text-red-500 hover:text-red-400 underline">EXIT PIT</button>
       </div>
     </header>
 
-    <div class="bg-white dark:bg-slate-900 rounded-3xl border-4 border-black p-5 mb-4 shadow-[6px_6px_0px_#000]">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl border-4 border-black p-5 md:p-6 mb-4 shadow-[6px_6px_0px_#000]">
       <div class="flex justify-between items-center mb-4">
-        <h2 class="text-base font-nfs font-black text-slate-800 dark:text-yellow-400 tracking-wider">GARAGE / 車庫群組</h2>
-        <button onclick="openCreateGroupModal()" class="nfs-btn-yellow nfs-skew font-nfs text-lg font-black px-3 py-1 rounded-xl">
+        <h2 class="text-base md:text-lg font-nfs font-black text-slate-800 dark:text-yellow-400 tracking-wider">GARAGE / 車庫群組</h2>
+        <button onclick="openCreateGroupModal()" class="nfs-btn-yellow nfs-skew font-nfs text-lg md:text-xl font-black px-3 py-1 rounded-xl">
           <span class="nfs-skew-inside inline-block">+ 建立新車隊</span>
         </button>
       </div>
       <div id="groupList" class="space-y-3">
-        <p class="text-xs text-slate-500 py-4 text-center font-bold">搜尋車隊資料中...</p>
+        <p class="text-xs md:text-sm text-slate-500 py-4 text-center font-bold">搜尋車隊資料中...</p>
       </div>
     </div>
   </div>
 
   <!-- PAGE 2: GROUP DASHBOARD -->
-  <div id="groupDashboardView" class="max-w-md mx-auto p-4 hidden">
+  <div id="groupDashboardView" class="max-w-md md:max-w-2xl mx-auto p-4 md:p-6 hidden">
     <header class="flex justify-between items-center my-4">
-      <button onclick="backToGroupSelection()" class="nfs-btn-blue nfs-skew text-xs font-nfs text-base font-black px-3 py-1.5 rounded-xl">
+      <button onclick="backToGroupSelection()" class="nfs-btn-blue nfs-skew text-xs md:text-sm font-nfs font-black px-3 py-1.5 rounded-xl">
         <span class="nfs-skew-inside inline-block">← GARAGE</span>
       </button>
 
-      <div id="currentGroupName" class="bg-yellow-400 text-black border-2 border-black font-nfs font-black text-lg px-4 py-1 rounded-xl shadow-[3px_3px_0px_#000] truncate max-w-[140px]"></div>
+      <div id="currentGroupName" class="bg-yellow-400 text-black border-2 border-black font-nfs font-black text-lg md:text-xl px-4 py-1 rounded-xl shadow-[3px_3px_0px_#000] truncate max-w-[160px] md:max-w-[260px]"></div>
       
       <div class="flex items-center space-x-2">
-        <button id="btnThemeDash" onclick="toggleTheme()" class="border-2 border-black px-2.5 py-1.5 rounded-xl shadow-[2px_2px_0px_#000] font-bold text-xs transition-colors">
+        <button id="btnThemeDash" onclick="toggleTheme()" class="border-2 border-black px-2.5 py-1.5 rounded-xl shadow-[2px_2px_0px_#000] font-bold text-xs md:text-sm transition-colors">
           <span id="themeIconDash">🌙</span>
         </button>
-        <button id="btnManageCrew" onclick="openManageCrewModal()" class="nfs-btn-red nfs-skew text-xs font-nfs text-base font-black px-3 py-1.5 rounded-xl hidden">
+        <button id="btnManageCrew" onclick="openManageCrewModal()" class="nfs-btn-red nfs-skew text-xs md:text-sm font-nfs font-black px-3 py-1.5 rounded-xl hidden">
           <span class="nfs-skew-inside inline-block">⚙️ CREW</span>
         </button>
       </div>
     </header>
 
-    <section class="grid grid-cols-2 gap-3 mb-4">
-      <div class="bg-white dark:bg-slate-900 border-3 border-black p-3.5 rounded-2xl shadow-[4px_4px_0px_#ea3526] relative overflow-hidden">
-        <div class="absolute -right-2 -bottom-2 text-4xl opacity-10">🏁</div>
-        <p class="text-[10px] font-nfs tracking-widest text-slate-500 dark:text-slate-400">TOTAL DISTANCE / 總支出 <br/><span class="text-[9px] opacity-75">(不含雜項)</span></p>
-        <p id="statTotalExpense" class="text-2xl font-mono font-black text-slate-900 dark:text-yellow-400 mt-0.5">$0</p>
+    <section class="grid grid-cols-2 gap-3 md:gap-4 mb-4">
+      <div class="bg-white dark:bg-slate-900 border-3 border-black p-3.5 md:p-5 rounded-2xl shadow-[4px_4px_0px_#ea3526] relative overflow-hidden">
+        <div class="absolute -right-2 -bottom-2 text-4xl md:text-5xl opacity-10">🏁</div>
+        <p class="text-[10px] md:text-xs font-nfs tracking-widest text-slate-500 dark:text-slate-400">TOTAL DISTANCE / 總支出 <br/><span class="text-[9px] md:text-[10px] opacity-75">(不含雜項)</span></p>
+        <p id="statTotalExpense" class="text-2xl md:text-3xl font-mono font-black text-slate-900 dark:text-yellow-400 mt-0.5">$0</p>
       </div>
-      <div class="bg-white dark:bg-slate-900 border-3 border-black p-3.5 rounded-2xl shadow-[4px_4px_0px_#3b82f6] relative overflow-hidden">
-        <div class="absolute -right-2 -bottom-2 text-4xl opacity-10">⚡</div>
-        <p class="text-[10px] font-nfs tracking-widest text-slate-500 dark:text-slate-400">NITRO STATUS / 個人戰績</p>
-        <p id="statMyBalance" class="text-sm font-black text-slate-800 dark:text-slate-100 mt-1">CALCULATING...</p>
+      <div class="bg-white dark:bg-slate-900 border-3 border-black p-3.5 md:p-5 rounded-2xl shadow-[4px_4px_0px_#3b82f6] relative overflow-hidden">
+        <div class="absolute -right-2 -bottom-2 text-4xl md:text-5xl opacity-10">⚡</div>
+        <p class="text-[10px] md:text-xs font-nfs tracking-widest text-slate-500 dark:text-slate-400">NITRO STATUS / 個人戰績</p>
+        <p id="statMyBalance" class="text-sm md:text-base font-black text-slate-800 dark:text-slate-100 mt-1">CALCULATING...</p>
       </div>
     </section>
 
-    <section class="bg-white dark:bg-slate-900 rounded-3xl border-4 border-black p-5 mb-5 shadow-[6px_6px_0px_#000]">
-      <h2 class="text-sm font-nfs font-black bg-blue-600 text-white px-3 py-1 rounded-lg inline-block tracking-widest mb-3 border-2 border-black shadow-[2px_2px_0px_#000]">
+    <section class="bg-white dark:bg-slate-900 rounded-3xl border-4 border-black p-5 md:p-6 mb-5 shadow-[6px_6px_0px_#000]">
+      <h2 class="text-sm md:text-base font-nfs font-black bg-blue-600 text-white px-3 py-1 rounded-lg inline-block tracking-widest mb-3 border-2 border-black shadow-[2px_2px_0px_#000]">
         1. LAP TIME & DRIFT / 結算還款
       </h2>
-      <div id="balanceList" class="space-y-2 mb-4 text-sm font-bold">
+      <div id="balanceList" class="space-y-2 mb-4 text-sm md:text-base font-bold">
         <p class="text-slate-500">載入戰報中...</p>
       </div>
 
       <div class="pt-3 border-t-2 border-slate-200 dark:border-slate-800">
-        <h3 class="text-xs font-nfs text-slate-500 dark:text-slate-400 tracking-wider mb-2">最佳甩尾結算路線：</h3>
+        <h3 class="text-xs md:text-sm font-nfs text-slate-500 dark:text-slate-400 tracking-wider mb-2">最佳甩尾結算路線：</h3>
         <div id="settlementList" class="space-y-2">
-          <p class="text-xs text-slate-500">計算中...</p>
+          <p class="text-xs md:text-sm text-slate-500">計算中...</p>
         </div>
       </div>
     </section>
 
-    <section class="bg-white dark:bg-slate-900 rounded-3xl border-4 border-black p-5 shadow-[6px_6px_0px_#000]">
+    <section class="bg-white dark:bg-slate-900 rounded-3xl border-4 border-black p-5 md:p-6 shadow-[6px_6px_0px_#000]">
       <div class="flex justify-between items-center mb-3">
-        <h2 class="text-sm font-nfs font-black bg-red-600 text-white px-3 py-1 rounded-lg inline-block tracking-widest border-2 border-black shadow-[2px_2px_0px_#000]">
+        <h2 class="text-sm md:text-base font-nfs font-black bg-red-600 text-white px-3 py-1 rounded-lg inline-block tracking-widest border-2 border-black shadow-[2px_2px_0px_#000]">
           2. RACE LOGS / 明細紀錄
         </h2>
-        <select id="filterCategory" onchange="filterFeed()" class="text-xs border-2 border-black font-bold rounded-xl p-1 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-yellow-400 outline-none shadow-[2px_2px_0px_#000]">
+        <select id="filterCategory" onchange="filterFeed()" class="text-xs md:text-sm border-2 border-black font-bold rounded-xl p-1 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-yellow-400 outline-none shadow-[2px_2px_0px_#000]">
           <option value="ALL">全部分類</option>
           <option value="🍔 餐飲">🍔 燃料餐飲</option>
           <option value="🚗 交通">🚗 競速過路費</option>
@@ -234,7 +234,7 @@
           <option value="還款">💵 還款紀錄</option>
         </select>
       </div>
-      <div id="expensesFeed" class="divide-y-2 divide-slate-200 dark:divide-slate-800 text-sm font-bold">
+      <div id="expensesFeed" class="divide-y-2 divide-slate-200 dark:divide-slate-800 text-sm md:text-base font-bold">
         <p class="text-slate-500 py-2">載入紀錄中...</p>
       </div>
     </section>
@@ -242,7 +242,7 @@
 
   <!-- FAB 按鈕 -->
   <button id="fabAddExpense" onclick="openExpenseDrawer()" class="fixed bottom-6 right-6 z-40 nfs-btn-yellow fab-btn nfs-skew px-4 py-3 rounded-2xl flex items-center space-x-2 border-4 border-black shadow-[6px_6px_0px_#000] hidden">
-    <span class="nfs-skew-inside text-xl font-black">➕ 新增消費</span>
+    <span class="nfs-skew-inside text-xl md:text-2xl font-black">➕ 新增消費</span>
   </button>
 
   <!-- 新增消費 側邊抽屜 (Expense Drawer) -->
@@ -256,12 +256,12 @@
     id="expenseDrawer" 
     class="fixed z-50 bg-white dark:bg-slate-900 text-slate-900 dark:text-white
            bottom-0 inset-x-0 rounded-t-3xl max-h-[92vh] translate-y-full
-           sm:top-0 sm:right-0 sm:left-auto sm:bottom-0 sm:w-[420px] sm:max-h-full sm:rounded-none sm:translate-y-0 sm:translate-x-full
+           sm:top-0 sm:right-0 sm:left-auto sm:bottom-0 sm:w-[420px] md:sm:w-[480px] sm:max-h-full sm:rounded-none sm:translate-y-0 sm:translate-x-full
            border-t-4 sm:border-t-0 sm:border-l-4 border-black shadow-[0px_-8px_0px_#facc15] sm:shadow-[-8px_0px_0px_#facc15]
            transition-transform duration-300 ease-in-out flex flex-col"
   >
     <div class="p-4 sm:p-5 border-b-2 border-slate-200 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-900 sm:rounded-none rounded-t-3xl">
-      <h2 class="text-base font-nfs font-black bg-green-600 text-white px-3 py-1 rounded-lg inline-block tracking-widest border-2 border-black shadow-[2px_2px_0px_#000]">
+      <h2 class="text-base md:text-lg font-nfs font-black bg-green-600 text-white px-3 py-1 rounded-lg inline-block tracking-widest border-2 border-black shadow-[2px_2px_0px_#000]">
         PIT STOP / 補給加油 (新增消費)
       </h2>
       <button onclick="closeExpenseDrawer()" class="text-slate-800 dark:text-white font-black text-2xl hover:text-red-500 transition-colors p-1">✕</button>
@@ -271,8 +271,8 @@
       <div class="p-4 sm:p-5 space-y-4 overflow-y-auto flex-1">
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">消費類別</label>
-            <select id="category" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-yellow-400 focus:outline-none shadow-[2px_2px_0px_#000]">
+            <label class="block text-xs md:text-sm font-black text-slate-500 dark:text-slate-400 mb-1">消費類別</label>
+            <select id="category" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-sm font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-yellow-400 focus:outline-none shadow-[2px_2px_0px_#000]">
               <option value="🍔 餐飲">🍔 燃料餐飲</option>
               <option value="🚗 交通">🚗 競速過路費</option>
               <option value="🏠 住宿">🏠 賽道維修廠</option>
@@ -282,33 +282,33 @@
             </select>
           </div>
           <div>
-            <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">買單車手 (Payer)</label>
-            <select id="payer" onchange="handlePayerChange()" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]"></select>
+            <label class="block text-xs md:text-sm font-black text-slate-500 dark:text-slate-400 mb-1">買單車手 (Payer)</label>
+            <select id="payer" onchange="handlePayerChange()" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-sm font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]"></select>
           </div>
         </div>
 
         <div>
-          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">項目說明 (Desc)</label>
-          <input type="text" id="desc" required placeholder="例如：98 無鉛汽油" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]">
+          <label class="block text-xs md:text-sm font-black text-slate-500 dark:text-slate-400 mb-1">項目說明 (Desc)</label>
+          <input type="text" id="desc" required placeholder="例如：98 無鉛汽油" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-sm font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]">
         </div>
 
         <div>
-          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">備註說明 (Remark - 選填)</label>
-          <input type="text" id="remark" placeholder="例如：加滿、含服務費等" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]">
+          <label class="block text-xs md:text-sm font-black text-slate-500 dark:text-slate-400 mb-1">備註說明 (Remark - 選填)</label>
+          <input type="text" id="remark" placeholder="例如：加滿、含服務費等" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-sm font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]">
         </div>
 
         <div>
-          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">總消費金額 ($) <span class="text-yellow-500 font-normal">(可填 0 元建立，再由成員自行輸入)</span></label>
+          <label class="block text-xs md:text-sm font-black text-slate-500 dark:text-slate-400 mb-1">總消費金額 ($) <span class="text-yellow-500 font-normal">(可填 0 元建立，再由成員自行輸入)</span></label>
           <div class="relative">
             <input type="text" id="amountDisplay" readonly value="0" onclick="openCalcModal('amountDisplay')" 
-                   class="w-full border-3 border-black rounded-2xl p-3 text-right font-mono text-3xl font-black bg-yellow-400 text-black cursor-pointer shadow-[4px_4px_0px_#ea3526] focus:outline-none">
-            <span class="absolute left-3 top-4 text-xs font-black text-black/70">點擊開啟計算機 🔢</span>
+                   class="w-full border-3 border-black rounded-2xl p-3 text-right font-mono text-3xl md:text-4xl font-black bg-yellow-400 text-black cursor-pointer shadow-[4px_4px_0px_#ea3526] focus:outline-none">
+            <span class="absolute left-3 top-4 text-xs md:text-sm font-black text-black/70">點擊開啟計算機 🔢</span>
           </div>
         </div>
 
         <div>
-          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">單據照片 (選填)</label>
-          <input type="file" id="receiptImg" accept="image/*" onchange="previewImage(event, 'imgPreview', 'imgPreviewContainer')" class="w-full text-xs text-slate-500 dark:text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-2 file:border-black file:text-xs file:font-black file:bg-red-600 file:text-white cursor-pointer">
+          <label class="block text-xs md:text-sm font-black text-slate-500 dark:text-slate-400 mb-1">單據照片 (選填)</label>
+          <input type="file" id="receiptImg" accept="image/*" onchange="previewImage(event, 'imgPreview', 'imgPreviewContainer')" class="w-full text-xs md:text-sm text-slate-500 dark:text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-2 file:border-black file:text-xs file:font-black file:bg-red-600 file:text-white cursor-pointer">
           <div id="imgPreviewContainer" class="hidden mt-2 relative w-20 h-20">
             <img id="imgPreview" class="w-full h-full object-cover rounded-xl border-2 border-black shadow-[2px_2px_0px_#000]">
             <button type="button" onclick="removeImage('imgPreview', 'imgPreviewContainer', 'receiptImg')" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs w-6 h-6 rounded-full border-2 border-black font-black flex items-center justify-center shadow">✕</button>
@@ -317,10 +317,10 @@
 
         <div>
           <div class="flex justify-between items-center mb-2">
-            <label class="block text-xs font-black text-slate-500 dark:text-slate-400">分攤明細 (可各自分別填寫)</label>
+            <label class="block text-xs md:text-sm font-black text-slate-500 dark:text-slate-400">分攤明細 (可各自分別填寫)</label>
             <div class="space-x-2">
-              <button type="button" onclick="splitEvenly('amountDisplay', 'parts', 'share-input-')" class="nfs-btn-yellow text-[10px] font-black px-2 py-1 rounded-lg">⚡ 一鍵均分</button>
-              <button type="button" id="btnToggleSelectAdd" onclick="toggleSelectAllParts('parts', 'share-input-', 'btnToggleSelectAdd')" class="text-xs font-black text-slate-500 dark:text-slate-400 underline">取消全選</button>
+              <button type="button" onclick="splitEvenly('amountDisplay', 'parts', 'share-input-')" class="nfs-btn-yellow text-[10px] md:text-xs font-black px-2 py-1 rounded-lg">⚡ 一鍵均分</button>
+              <button type="button" id="btnToggleSelectAdd" onclick="toggleSelectAllParts('parts', 'share-input-', 'btnToggleSelectAdd')" class="text-xs md:text-sm font-black text-slate-500 dark:text-slate-400 underline">取消全選</button>
             </div>
           </div>
           <div id="participantsGroup" class="space-y-2"></div>
@@ -328,8 +328,8 @@
       </div>
 
       <div class="p-4 border-t-2 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 flex space-x-2">
-        <button type="button" onclick="closeExpenseDrawer()" class="w-1/3 py-2.5 text-xs font-black bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-300 rounded-2xl border-2 border-black hover:opacity-90 transition-opacity">取消</button>
-        <button type="submit" id="btnSubmit" class="nfs-btn-green nfs-skew w-2/3 font-nfs text-2xl font-black py-2 rounded-2xl tracking-wider">
+        <button type="button" onclick="closeExpenseDrawer()" class="w-1/3 py-2.5 text-xs md:text-sm font-black bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-300 rounded-2xl border-2 border-black hover:opacity-90 transition-opacity">取消</button>
+        <button type="submit" id="btnSubmit" class="nfs-btn-green nfs-skew w-2/3 font-nfs text-2xl md:text-3xl font-black py-2 rounded-2xl tracking-wider">
           <span class="nfs-skew-inside inline-block">確認送出</span>
         </button>
       </div>
@@ -346,16 +346,16 @@
   <aside 
     id="expenseDetailDrawer" 
     class="fixed z-50 bg-white dark:bg-slate-900 text-slate-900 dark:text-white
-           bottom-0 inset-x-0 rounded-t-3xl max-h-[92vh] max-w-md mx-auto translate-y-full
+           bottom-0 inset-x-0 rounded-t-3xl max-h-[92vh] max-w-md md:max-w-xl mx-auto translate-y-full
            border-t-4 border-x-4 border-black shadow-[0px_-8px_0px_#3b82f6]
            transition-transform duration-300 ease-in-out flex flex-col"
   >
     <div class="p-4 border-b-2 border-slate-200 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-900 rounded-t-3xl">
       <div class="flex items-center space-x-2">
-        <h3 class="text-base font-nfs font-black bg-blue-600 text-white px-3 py-1 rounded-lg border-2 border-black shadow-[2px_2px_0px_#000]">
+        <h3 class="text-base md:text-lg font-nfs font-black bg-blue-600 text-white px-3 py-1 rounded-lg border-2 border-black shadow-[2px_2px_0px_#000]">
           RACE LOG / 明細詳情
         </h3>
-        <span id="detailStatusBadge" class="text-xs font-bold px-2 py-0.5 rounded-lg border border-black shadow-[1px_1px_0px_#000]"></span>
+        <span id="detailStatusBadge" class="text-xs md:text-sm font-bold px-2 py-0.5 rounded-lg border border-black shadow-[1px_1px_0px_#000]"></span>
       </div>
       <button onclick="closeExpenseDetailModal()" class="text-slate-800 dark:text-white font-black text-2xl hover:text-red-500 transition-colors p-1">✕</button>
     </div>
@@ -364,8 +364,8 @@
       <div class="p-4 space-y-4 overflow-y-auto flex-1">
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">消費類別</label>
-            <select id="detailCategory" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-yellow-400 focus:outline-none shadow-[2px_2px_0px_#000]">
+            <label class="block text-xs md:text-sm font-black text-slate-500 dark:text-slate-400 mb-1">消費類別</label>
+            <select id="detailCategory" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-sm font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-yellow-400 focus:outline-none shadow-[2px_2px_0px_#000]">
               <option value="🍔 餐飲">🍔 燃料餐飲</option>
               <option value="🚗 交通">🚗 競速過路費</option>
               <option value="🏠 住宿">🏠 賽道維修廠</option>
@@ -375,33 +375,33 @@
             </select>
           </div>
           <div>
-            <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">買單車手 (Payer)</label>
-            <select id="detailPayer" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]"></select>
+            <label class="block text-xs md:text-sm font-black text-slate-500 dark:text-slate-400 mb-1">買單車手 (Payer)</label>
+            <select id="detailPayer" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-sm font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]"></select>
           </div>
         </div>
 
         <div>
-          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">項目說明 (Desc)</label>
-          <input type="text" id="detailDesc" required class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]">
+          <label class="block text-xs md:text-sm font-black text-slate-500 dark:text-slate-400 mb-1">項目說明 (Desc)</label>
+          <input type="text" id="detailDesc" required class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-sm font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]">
         </div>
 
         <div>
-          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">備註說明 (Remark)</label>
-          <input type="text" id="detailRemark" placeholder="無備註" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]">
+          <label class="block text-xs md:text-sm font-black text-slate-500 dark:text-slate-400 mb-1">備註說明 (Remark)</label>
+          <input type="text" id="detailRemark" placeholder="無備註" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-sm font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]">
         </div>
 
         <div>
-          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">總消費金額 ($)</label>
+          <label class="block text-xs md:text-sm font-black text-slate-500 dark:text-slate-400 mb-1">總消費金額 ($)</label>
           <div class="relative">
             <input type="text" id="detailAmountDisplay" readonly value="0" onclick="openCalcModal('detailAmountDisplay')" 
-                   class="w-full border-3 border-black rounded-2xl p-3 text-right font-mono text-3xl font-black bg-yellow-400 text-black cursor-pointer shadow-[4px_4px_0px_#ea3526] focus:outline-none">
-            <span class="absolute left-3 top-4 text-xs font-black text-black/70">點擊開啟計算機 🔢</span>
+                   class="w-full border-3 border-black rounded-2xl p-3 text-right font-mono text-3xl md:text-4xl font-black bg-yellow-400 text-black cursor-pointer shadow-[4px_4px_0px_#ea3526] focus:outline-none">
+            <span class="absolute left-3 top-4 text-xs md:text-sm font-black text-black/70">點擊開啟計算機 🔢</span>
           </div>
         </div>
 
         <div>
-          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">單據照片</label>
-          <input type="file" id="detailReceiptImg" accept="image/*" onchange="previewImage(event, 'detailImgPreview', 'detailImgPreviewContainer')" class="w-full text-xs text-slate-500 dark:text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-2 file:border-black file:text-xs file:font-black file:bg-red-600 file:text-white cursor-pointer">
+          <label class="block text-xs md:text-sm font-black text-slate-500 dark:text-slate-400 mb-1">單據照片</label>
+          <input type="file" id="detailReceiptImg" accept="image/*" onchange="previewImage(event, 'detailImgPreview', 'detailImgPreviewContainer')" class="w-full text-xs md:text-sm text-slate-500 dark:text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-2 file:border-black file:text-xs file:font-black file:bg-red-600 file:text-white cursor-pointer">
           <div id="detailImgPreviewContainer" class="hidden mt-2 relative w-24 h-24">
             <a id="detailImgLink" href="#" target="_blank">
               <img id="detailImgPreview" class="w-full h-full object-cover rounded-xl border-2 border-black shadow-[2px_2px_0px_#000]">
@@ -413,14 +413,14 @@
         <div>
           <div class="flex justify-between items-center mb-2">
             <div class="flex items-center space-x-2">
-              <label class="block text-xs font-black text-slate-500 dark:text-slate-400">分攤明細</label>
-              <div class="text-[10px] font-black px-2 py-0.5 rounded-lg border border-black shadow-[1px_1px_0px_#000]" id="detailRemainingBadge">
+              <label class="block text-xs md:text-sm font-black text-slate-500 dark:text-slate-400">分攤明細</label>
+              <div class="text-[10px] md:text-xs font-black px-2 py-0.5 rounded-lg border border-black shadow-[1px_1px_0px_#000]" id="detailRemainingBadge">
                 剩餘：<span id="detailRemainingAmount" class="font-mono">$0</span>
               </div>
             </div>
             <div class="space-x-2">
-              <button type="button" onclick="splitEvenly('detailAmountDisplay', 'detailParts', 'detail-share-input-')" class="nfs-btn-yellow text-[10px] font-black px-2 py-1 rounded-lg">⚡ 一鍵均分</button>
-              <button type="button" id="btnToggleSelectDetail" onclick="toggleSelectAllParts('detailParts', 'detail-share-input-', 'btnToggleSelectDetail')" class="text-xs font-black text-slate-500 dark:text-slate-400 underline">全選</button>
+              <button type="button" onclick="splitEvenly('detailAmountDisplay', 'detailParts', 'detail-share-input-')" class="nfs-btn-yellow text-[10px] md:text-xs font-black px-2 py-1 rounded-lg">⚡ 一鍵均分</button>
+              <button type="button" id="btnToggleSelectDetail" onclick="toggleSelectAllParts('detailParts', 'detail-share-input-', 'btnToggleSelectDetail')" class="text-xs md:text-sm font-black text-slate-500 dark:text-slate-400 underline">全選</button>
             </div>
           </div>
           <div id="detailParticipantsGroup" class="space-y-2"></div>
@@ -428,10 +428,10 @@
       </div>
 
       <div class="p-4 border-t-2 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 flex justify-between items-center space-x-2">
-        <button type="button" id="btnDeleteDetailExpense" class="nfs-btn-red text-xs font-nfs px-3 py-2.5 rounded-xl font-black">🗑️ 刪除</button>
+        <button type="button" id="btnDeleteDetailExpense" class="nfs-btn-red text-xs md:text-sm font-nfs px-3 py-2.5 rounded-xl font-black">🗑️ 刪除</button>
         <div class="flex space-x-2">
-          <button type="button" onclick="closeExpenseDetailModal()" class="py-2.5 px-4 text-xs font-black bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-300 rounded-xl border-2 border-black">取消</button>
-          <button type="submit" id="btnSaveDetail" class="nfs-btn-green text-xs font-nfs px-4 py-2.5 rounded-xl font-black">💾 儲存修改</button>
+          <button type="button" onclick="closeExpenseDetailModal()" class="py-2.5 px-4 text-xs md:text-sm font-black bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-300 rounded-xl border-2 border-black">取消</button>
+          <button type="submit" id="btnSaveDetail" class="nfs-btn-green text-xs md:text-sm font-nfs px-4 py-2.5 rounded-xl font-black">💾 儲存修改</button>
         </div>
       </div>
     </form>
@@ -439,122 +439,122 @@
 
   <!-- MODALS -->
   <div id="driverRegisterModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
-    <div class="bg-white dark:bg-slate-900 w-full max-w-xs rounded-3xl p-5 border-4 border-black shadow-[6px_6px_0px_#facc15]">
-      <h3 class="text-lg font-nfs font-black text-yellow-500 dark:text-yellow-400 mb-3 tracking-wider">🏁 註冊成為新車手</h3>
-      <p class="text-xs font-bold text-slate-500 dark:text-slate-400 mb-3">請輸入您的車手代號/暱稱，註冊後系統將生成您的專屬 Driver License！</p>
-      <input type="text" id="registerDriverName" placeholder="例如：SPEED_DEMON" class="w-full border-2 border-black rounded-xl p-2.5 text-sm font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white mb-4 outline-none shadow-[2px_2px_0px_#000]">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-xs md:max-w-md rounded-3xl p-5 md:p-6 border-4 border-black shadow-[6px_6px_0px_#facc15]">
+      <h3 class="text-lg md:text-xl font-nfs font-black text-yellow-500 dark:text-yellow-400 mb-3 tracking-wider">🏁 註冊成為新車手</h3>
+      <p class="text-xs md:text-sm font-bold text-slate-500 dark:text-slate-400 mb-3">請輸入您的車手代號/暱稱，註冊後系統將生成您的專屬 Driver License！</p>
+      <input type="text" id="registerDriverName" placeholder="例如：SPEED_DEMON" class="w-full border-2 border-black rounded-xl p-2.5 text-sm md:text-base font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white mb-4 outline-none shadow-[2px_2px_0px_#000]">
       <div class="flex space-x-2">
-        <button onclick="closeDriverRegisterModal()" class="w-1/2 py-2 text-xs font-black bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-300 rounded-xl border-2 border-black">取消</button>
-        <button onclick="submitDriverRegister()" class="nfs-btn-yellow w-1/2 py-2 text-xs font-nfs text-lg font-black rounded-xl">確認註冊</button>
+        <button onclick="closeDriverRegisterModal()" class="w-1/2 py-2 text-xs md:text-sm font-black bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-300 rounded-xl border-2 border-black">取消</button>
+        <button onclick="submitDriverRegister()" class="nfs-btn-yellow w-1/2 py-2 text-xs md:text-sm font-nfs text-lg md:text-xl font-black rounded-xl">確認註冊</button>
       </div>
     </div>
   </div>
 
   <div id="manageCrewModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
-    <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 border-4 border-black shadow-[6px_6px_0px_#ff1e27] max-h-[85vh] flex flex-col">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-sm md:max-w-md rounded-3xl p-5 md:p-6 border-4 border-black shadow-[6px_6px_0px_#ff1e27] max-h-[85vh] flex flex-col">
       <div class="flex justify-between items-center mb-3">
-        <h3 class="text-lg font-nfs font-black text-red-500 tracking-wider">⚙️ 車隊成員管理 (CREW)</h3>
+        <h3 class="text-lg md:text-xl font-nfs font-black text-red-500 tracking-wider">⚙️ 車隊成員管理 (CREW)</h3>
         <button onclick="closeManageCrewModal()" class="text-slate-800 dark:text-white font-black text-xl hover:text-red-500">✕</button>
       </div>
 
       <div class="mb-4 flex-1 overflow-y-auto pr-1">
-        <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-2">當前車隊成員列表：</label>
+        <label class="block text-xs md:text-sm font-black text-slate-500 dark:text-slate-400 mb-2">當前車隊成員列表：</label>
         <div id="crewMembersList" class="space-y-2"></div>
       </div>
 
       <div class="pt-3 border-t-2 border-slate-200 dark:border-slate-800 space-y-2">
-        <button onclick="openMemberModal()" class="nfs-btn-yellow w-full py-2 text-xs font-nfs text-lg font-black rounded-xl">+ 招募新車手</button>
-        <button onclick="closeManageCrewModal()" class="w-full py-2 text-xs font-black bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-300 rounded-xl border-2 border-black">關閉</button>
+        <button onclick="openMemberModal()" class="nfs-btn-yellow w-full py-2 text-xs md:text-sm font-nfs text-lg md:text-xl font-black rounded-xl">+ 招募新車手</button>
+        <button onclick="closeManageCrewModal()" class="w-full py-2 text-xs md:text-sm font-black bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-300 rounded-xl border-2 border-black">關閉</button>
       </div>
     </div>
   </div>
 
   <div id="createGroupModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
-    <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 border-4 border-black shadow-[6px_6px_0px_#facc15] max-h-[85vh] flex flex-col">
-      <h3 class="text-lg font-nfs font-black text-slate-900 dark:text-yellow-400 mb-3 tracking-wider">🏎️ 建立新車隊 (GROUP)</h3>
+    <div class="bg-white dark:bg-slate-900 w-full max-w-sm md:max-w-md rounded-3xl p-5 md:p-6 border-4 border-black shadow-[6px_6px_0px_#facc15] max-h-[85vh] flex flex-col">
+      <h3 class="text-lg md:text-xl font-nfs font-black text-slate-900 dark:text-yellow-400 mb-3 tracking-wider">🏎️ 建立新車隊 (GROUP)</h3>
       
       <div class="space-y-3 overflow-y-auto pr-1">
         <div>
-          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">車隊名稱</label>
-          <input type="text" id="newGroupName" placeholder="例如：東京地下甩尾組" class="w-full border-2 border-black rounded-xl p-2.5 text-sm font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white outline-none shadow-[2px_2px_0px_#000]">
+          <label class="block text-xs md:text-sm font-black text-slate-500 dark:text-slate-400 mb-1">車隊名稱</label>
+          <input type="text" id="newGroupName" placeholder="例如：東京地下甩尾組" class="w-full border-2 border-black rounded-xl p-2.5 text-sm md:text-base font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white outline-none shadow-[2px_2px_0px_#000]">
         </div>
 
         <div>
-          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">輸入欲加入成員的 Member ID (可多筆，以換行或逗號分隔)</label>
+          <label class="block text-xs md:text-sm font-black text-slate-500 dark:text-slate-400 mb-1">輸入欲加入成員的 Member ID (可多筆，以換行或逗號分隔)</label>
           <textarea id="memberIdsInput" rows="3" placeholder="例如：
 MEM-1001
-MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono font-black bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-yellow-400 placeholder-slate-400 dark:placeholder-slate-600 outline-none shadow-[2px_2px_0px_#000] uppercase tracking-wider"></textarea>
+MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-sm font-mono font-black bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-yellow-400 placeholder-slate-400 dark:placeholder-slate-600 outline-none shadow-[2px_2px_0px_#000] uppercase tracking-wider"></textarea>
         </div>
       </div>
 
       <div class="flex space-x-2 mt-4 pt-2 border-t-2 border-slate-200 dark:border-slate-800">
-        <button onclick="closeCreateGroupModal()" class="w-1/2 py-2 text-xs font-black bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-300 rounded-xl border-2 border-black">取消</button>
-        <button onclick="submitNewGroup()" class="nfs-btn-yellow w-1/2 py-2 text-xs font-nfs text-lg font-black rounded-xl">建立車隊</button>
+        <button onclick="closeCreateGroupModal()" class="w-1/2 py-2 text-xs md:text-sm font-black bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-300 rounded-xl border-2 border-black">取消</button>
+        <button onclick="submitNewGroup()" class="nfs-btn-yellow w-1/2 py-2 text-xs md:text-sm font-nfs text-lg md:text-xl font-black rounded-xl">建立車隊</button>
       </div>
     </div>
   </div>
 
   <div id="apiModal" class="fixed inset-0 bg-black/85 backdrop-blur-md flex items-center justify-center z-50 p-4 hidden">
-    <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-6 border-4 border-black shadow-[6px_6px_0px_#facc15]">
-      <h3 class="text-lg font-nfs font-black text-slate-900 dark:text-yellow-400 mb-2">⚙️ 設定 GAS API 網址</h3>
-      <p class="text-xs text-slate-500 dark:text-slate-400 mb-4 font-bold">貼上發佈好的 Google Apps Script Web App URL：</p>
+    <div class="bg-white dark:bg-slate-900 w-full max-w-sm md:max-w-md rounded-3xl p-6 border-4 border-black shadow-[6px_6px_0px_#facc15]">
+      <h3 class="text-lg md:text-xl font-nfs font-black text-slate-900 dark:text-yellow-400 mb-2">⚙️ 設定 GAS API 網址</h3>
+      <p class="text-xs md:text-sm text-slate-500 dark:text-slate-400 mb-4 font-bold">貼上發佈好的 Google Apps Script Web App URL：</p>
       <textarea id="apiUrlInput" rows="3" placeholder="https://script.google.com/macros/s/.../exec" 
-                class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-yellow-400 mb-4 focus:outline-none break-all shadow-[2px_2px_0px_#000]"></textarea>
-      <button onclick="saveApiUrl()" class="nfs-btn-yellow w-full py-2 text-base font-nfs font-black rounded-xl">儲存並連接引擎 🏎️</button>
+                class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-sm font-mono bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-yellow-400 mb-4 focus:outline-none break-all shadow-[2px_2px_0px_#000]"></textarea>
+      <button onclick="saveApiUrl()" class="nfs-btn-yellow w-full py-2 text-base md:text-lg font-nfs font-black rounded-xl">儲存並連接引擎 🏎️</button>
     </div>
   </div>
 
   <div id="memberModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
-    <div class="bg-white dark:bg-slate-900 w-full max-w-xs rounded-3xl p-5 border-4 border-black shadow-[6px_6px_0px_#ff1e27]">
-      <h3 class="text-lg font-nfs font-black text-red-500 mb-3 tracking-wider">👤 招募新車手 (ADMIN)</h3>
-      <input type="text" id="newMemberName" placeholder="車手代號" class="w-full border-2 border-black rounded-xl p-2.5 text-sm font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white mb-4 outline-none shadow-[2px_2px_0px_#000]">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-xs md:max-w-sm rounded-3xl p-5 md:p-6 border-4 border-black shadow-[6px_6px_0px_#ff1e27]">
+      <h3 class="text-lg md:text-xl font-nfs font-black text-red-500 mb-3 tracking-wider">👤 招募新車手 (ADMIN)</h3>
+      <input type="text" id="newMemberName" placeholder="車手代號" class="w-full border-2 border-black rounded-xl p-2.5 text-sm md:text-base font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white mb-4 outline-none shadow-[2px_2px_0px_#000]">
       <div class="flex space-x-2">
-        <button onclick="closeMemberModal()" class="w-1/2 py-2 text-xs font-black bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-300 rounded-xl border-2 border-black">取消</button>
-        <button onclick="submitNewMember()" class="nfs-btn-red w-1/2 py-2 text-xs font-nfs text-lg font-black rounded-xl">確認招募</button>
+        <button onclick="closeMemberModal()" class="w-1/2 py-2 text-xs md:text-sm font-black bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-300 rounded-xl border-2 border-black">取消</button>
+        <button onclick="submitNewMember()" class="nfs-btn-red w-1/2 py-2 text-xs md:text-sm font-nfs text-lg md:text-xl font-black rounded-xl">確認招募</button>
       </div>
     </div>
   </div>
 
   <div id="tokenModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
-    <div class="bg-white dark:bg-slate-900 w-full max-w-xs rounded-3xl p-5 border-4 border-black shadow-[6px_6px_0px_#facc15] text-center">
-      <h3 class="text-xl font-nfs font-black text-slate-900 dark:text-yellow-400 mb-1">🏁 車手招募完成！</h3>
-      <p class="text-xs font-bold text-slate-500 dark:text-slate-400 mb-3">請將專屬 Driver License 傳送給該車手：</p>
-      <div id="newTokenDisplay" class="bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-yellow-400 border-2 border-black font-mono font-black text-xs p-3 rounded-xl mb-3 select-all break-all"></div>
-      <button onclick="copyTokenToClipboard()" id="btnCopyToken" class="nfs-btn-yellow w-full py-2 text-xs font-nfs text-lg font-black rounded-xl mb-2">📋 複製 Driver License</button>
-      <button onclick="closeTokenModal()" class="nfs-btn-green w-full py-2 text-xs font-nfs text-lg font-black rounded-xl">完成</button>
+    <div class="bg-white dark:bg-slate-900 w-full max-w-xs md:max-w-sm rounded-3xl p-5 md:p-6 border-4 border-black shadow-[6px_6px_0px_#facc15] text-center">
+      <h3 class="text-xl md:text-2xl font-nfs font-black text-slate-900 dark:text-yellow-400 mb-1">🏁 車手招募完成！</h3>
+      <p class="text-xs md:text-sm font-bold text-slate-500 dark:text-slate-400 mb-3">請將專屬 Driver License 傳送給該車手：</p>
+      <div id="newTokenDisplay" class="bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-yellow-400 border-2 border-black font-mono font-black text-xs md:text-sm p-3 rounded-xl mb-3 select-all break-all"></div>
+      <button onclick="copyTokenToClipboard()" id="btnCopyToken" class="nfs-btn-yellow w-full py-2 text-xs md:text-sm font-nfs text-lg md:text-xl font-black rounded-xl mb-2">📋 複製 Driver License</button>
+      <button onclick="closeTokenModal()" class="nfs-btn-green w-full py-2 text-xs md:text-sm font-nfs text-lg md:text-xl font-black rounded-xl">完成</button>
     </div>
   </div>
 
   <div id="settleModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
-    <div class="bg-white dark:bg-slate-900 w-full max-w-xs rounded-3xl p-5 border-4 border-black shadow-[6px_6px_0px_#22c55e]">
-      <h3 class="text-xl font-nfs font-black text-green-500 mb-3 tracking-wider">💸 DRIFT 還款調整</h3>
-      <p id="settleInfo" class="text-xs font-bold text-slate-700 dark:text-slate-300 mb-3"></p>
+    <div class="bg-white dark:bg-slate-900 w-full max-w-xs md:max-w-sm rounded-3xl p-5 md:p-6 border-4 border-black shadow-[6px_6px_0px_#22c55e]">
+      <h3 class="text-xl md:text-2xl font-nfs font-black text-green-500 mb-3 tracking-wider">💸 DRIFT 還款調整</h3>
+      <p id="settleInfo" class="text-xs md:text-sm font-bold text-slate-700 dark:text-slate-300 mb-3"></p>
       
-      <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">還款金額 ($)</label>
+      <label class="block text-xs md:text-sm font-black text-slate-500 dark:text-slate-400 mb-1">還款金額 ($)</label>
       <div class="relative mb-4">
         <input type="text" id="settleAmountInput" readonly value="0" onclick="openCalcModal('settleAmountInput')"
-               class="w-full border-2 border-black rounded-xl p-2.5 text-base font-mono font-black bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-yellow-400 text-right cursor-pointer outline-none shadow-[2px_2px_0px_#000]">
-        <span class="absolute left-3 top-3 text-[10px] font-black text-slate-400">點擊開啟計算機 🔢</span>
+               class="w-full border-2 border-black rounded-xl p-2.5 text-base md:text-lg font-mono font-black bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-yellow-400 text-right cursor-pointer outline-none shadow-[2px_2px_0px_#000]">
+        <span class="absolute left-3 top-3 text-[10px] md:text-xs font-black text-slate-400">點擊開啟計算機 🔢</span>
       </div>
       
       <div class="flex space-x-2">
-        <button onclick="closeSettleModal()" class="w-1/2 py-2 text-xs font-black bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-300 rounded-xl border-2 border-black">取消</button>
-        <button onclick="confirmSettle()" id="btnConfirmSettle" class="nfs-btn-green w-1/2 py-2 text-xs font-nfs text-lg font-black rounded-xl">確認還款</button>
+        <button onclick="closeSettleModal()" class="w-1/2 py-2 text-xs md:text-sm font-black bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-300 rounded-xl border-2 border-black">取消</button>
+        <button onclick="confirmSettle()" id="btnConfirmSettle" class="nfs-btn-green w-1/2 py-2 text-xs md:text-sm font-nfs text-lg md:text-xl font-black rounded-xl">確認還款</button>
       </div>
     </div>
   </div>
 
-  <div id="calcModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-end justify-center hidden z-50">
-    <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-t-3xl p-5 border-t-4 border-x-4 border-black shadow-[0px_-4px_0px_#ea3526]">
+  <div id="calcModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-end md:items-center justify-center hidden z-50">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-md md:rounded-3xl rounded-t-3xl p-5 border-t-4 md:border-4 border-x-4 border-black shadow-[0px_-4px_0px_#ea3526] md:shadow-[6px_6px_0px_#ea3526]">
       <div class="flex justify-between items-center mb-3">
-        <span class="text-xs font-nfs tracking-widest bg-yellow-400 text-black px-2 py-0.5 rounded border border-black font-black">SPEEDOMETER CALC</span>
+        <span class="text-xs md:text-sm font-nfs tracking-widest bg-yellow-400 text-black px-2 py-0.5 rounded border border-black font-black">SPEEDOMETER CALC</span>
         <button onclick="closeCalcModal()" class="text-slate-800 dark:text-white font-black text-xl">✕</button>
       </div>
       <div class="bg-black text-right p-4 rounded-2xl border-2 border-slate-700 mb-4 shadow-[inset_0px_2px_6px_rgba(0,0,0,0.9)]">
-        <div id="calcFormula" class="text-xs text-yellow-400 font-mono min-h-[1.2rem]"></div>
-        <div id="calcDisplay" class="text-4xl font-mono font-black text-green-400">0</div>
+        <div id="calcFormula" class="text-xs md:text-sm text-yellow-400 font-mono min-h-[1.2rem]"></div>
+        <div id="calcDisplay" class="text-4xl md:text-5xl font-mono font-black text-green-400">0</div>
       </div>
-      <div class="grid grid-cols-4 gap-2.5 text-xl font-black">
+      <div class="grid grid-cols-4 gap-2.5 text-xl md:text-2xl font-black">
         <button onclick="calcClear()" class="nfs-btn-red p-3 rounded-2xl">C</button>
         <button onclick="calcOp('/')" class="nfs-btn-blue p-3 rounded-2xl">÷</button>
         <button onclick="calcOp('*')" class="nfs-btn-blue p-3 rounded-2xl">×</button>
@@ -748,9 +748,9 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
       [btn1, btn2, btn3].forEach(btn => {
         if (btn) {
           if (currentTheme === 'light') {
-            btn.className = `${btnClassLight} ${btn.id === 'btnThemeDash' ? 'px-2.5 py-1.5' : 'px-3 py-1'} rounded-xl shadow-[2px_2px_0px_#000] font-black text-xs hover:opacity-90 active:translate-y-0.5 transition-colors`;
+            btn.className = `${btnClassLight} ${btn.id === 'btnThemeDash' ? 'px-2.5 py-1.5' : 'px-3 py-1'} rounded-xl shadow-[2px_2px_0px_#000] font-black text-xs md:text-sm hover:opacity-90 active:translate-y-0.5 transition-colors`;
           } else {
-            btn.className = `${btnClassDark} ${btn.id === 'btnThemeDash' ? 'px-2.5 py-1.5' : 'px-3 py-1'} rounded-xl shadow-[2px_2px_0px_#000] font-black text-xs hover:opacity-90 active:translate-y-0.5 transition-colors`;
+            btn.className = `${btnClassDark} ${btn.id === 'btnThemeDash' ? 'px-2.5 py-1.5' : 'px-3 py-1'} rounded-xl shadow-[2px_2px_0px_#000] font-black text-xs md:text-sm hover:opacity-90 active:translate-y-0.5 transition-colors`;
           }
         }
       });
@@ -828,10 +828,10 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
             
             document.getElementById('welcomeUser').innerHTML = `
               <div class="flex flex-col items-center leading-tight">
-                <span class="font-black text-xs">🏎️ ${memberName}${adminBadge}</span>
+                <span class="font-black text-xs md:text-sm">🏎️ ${memberName}${adminBadge}</span>
                 <div class="flex items-center space-x-1 mt-0.5">
-                  <span class="text-[10px] font-mono opacity-80">ID: ${memberId}</span>
-                  <button onclick="copyMyMemberId('${memberId}', this)" class="text-[10px] hover:scale-125 transition-transform" title="複製 Member ID">📋</button>
+                  <span class="text-[10px] md:text-xs font-mono opacity-80">ID: ${memberId}</span>
+                  <button onclick="copyMyMemberId('${memberId}', this)" class="text-[10px] md:text-xs hover:scale-125 transition-transform" title="複製 Member ID">📋</button>
                 </div>
               </div>
             `;
@@ -872,14 +872,14 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
     function renderGroupList(groups) {
       const container = document.getElementById('groupList');
       if (groups.length === 0) {
-        container.innerHTML = '<p class="text-xs font-bold text-slate-500 py-4 text-center">你目前尚未加入任何車隊群組。</p>';
+        container.innerHTML = '<p class="text-xs md:text-sm font-bold text-slate-500 py-4 text-center">你目前尚未加入任何車隊群組。</p>';
         return;
       }
       container.innerHTML = groups.map(g => `
         <div onclick="selectGroup('${g.id}', '${g.name}')" 
              class="flex justify-between items-center p-4 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border-2 border-black rounded-2xl cursor-pointer shadow-[3px_3px_0px_#facc15] active:translate-y-1">
-          <span class="font-nfs font-black text-slate-900 dark:text-yellow-400 text-lg">🏎️ ${g.name}</span>
-          <span class="text-xs font-nfs text-base font-black bg-red-600 text-white px-3 py-1 rounded-lg border border-black">DRIVE →</span>
+          <span class="font-nfs font-black text-slate-900 dark:text-yellow-400 text-lg md:text-xl">🏎️ ${g.name}</span>
+          <span class="text-xs md:text-sm font-nfs text-base md:text-lg font-black bg-red-600 text-white px-3 py-1 rounded-lg border border-black">DRIVE →</span>
         </div>
       `).join('');
     }
@@ -947,13 +947,13 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
 
       if (rounded > 0) {
         elem.innerText = `應收 $${rounded}`;
-        elem.className = 'text-sm font-black text-green-500 mt-1';
+        elem.className = 'text-sm md:text-base font-black text-green-500 mt-1';
       } else if (rounded < 0) {
         elem.innerText = `應付 $${Math.abs(rounded)}`;
-        elem.className = 'text-sm font-black text-red-500 mt-1';
+        elem.className = 'text-sm md:text-base font-black text-red-500 mt-1';
       } else {
         elem.innerText = `READY / 已結清 ⚡`;
-        elem.className = 'text-sm font-black text-yellow-500 dark:text-yellow-400 mt-1';
+        elem.className = 'text-sm md:text-base font-black text-yellow-500 dark:text-yellow-400 mt-1';
       }
     }
 
@@ -1006,9 +1006,9 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
 
           container.innerHTML += `
             <div class="flex justify-between items-center p-2.5 bg-slate-100 dark:bg-slate-800 border-2 border-black rounded-xl shadow-[2px_2px_0px_#000]">
-              <span class="font-black text-xs text-slate-900 dark:text-white">🏎️ ${member}</span>
+              <span class="font-black text-xs md:text-sm text-slate-900 dark:text-white">🏎️ ${member}</span>
               ${memberId ? `
-                <button onclick="handleRemoveMember('${memberId}', '${member}', this)" class="nfs-btn-red text-[10px] font-black px-2 py-1 rounded-lg">
+                <button onclick="handleRemoveMember('${memberId}', '${member}', this)" class="nfs-btn-red text-[10px] md:text-xs font-black px-2 py-1 rounded-lg">
                   🗑️ 踢出
                 </button>
               ` : ''}
@@ -1278,17 +1278,17 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
         const isChecked = 'checked'; 
         return `
         <div class="flex items-center justify-between border-2 border-black p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white shadow-[2px_2px_0px_#000]">
-          <label class="flex items-center space-x-2 cursor-pointer text-xs font-black">
+          <label class="flex items-center space-x-2 cursor-pointer text-xs md:text-sm font-black">
             <input type="checkbox" name="parts" value="${m}" ${isChecked} onchange="handleCheckboxChange('${m}', 'parts', 'share-input-')" class="w-4 h-4 rounded text-red-600 focus:ring-0 accent-red-600">
             <span>${m}</span>
           </label>
           <div class="flex items-center space-x-1">
-            <span class="text-xs font-bold text-yellow-500 dark:text-yellow-400">$</span>
-            <input type="text" id="share-input-${m}" readonly value="0" onclick="openCalcModal('share-input-${m}')" class="w-20 bg-white dark:bg-slate-900 text-slate-900 dark:text-yellow-400 text-xs font-mono font-black border border-black rounded-lg px-2 py-1 text-right focus:outline-none cursor-pointer">
+            <span class="text-xs md:text-sm font-bold text-yellow-500 dark:text-yellow-400">$</span>
+            <input type="text" id="share-input-${m}" readonly value="0" onclick="openCalcModal('share-input-${m}')" class="w-20 md:w-24 bg-white dark:bg-slate-900 text-slate-900 dark:text-yellow-400 text-xs md:text-sm font-mono font-black border border-black rounded-lg px-2 py-1 text-right focus:outline-none cursor-pointer">
           </div>
         </div>
       `;
-      }).join('') : '<p class="text-xs font-bold text-slate-500">請先招募成員</p>';
+      }).join('') : '<p class="text-xs md:text-sm font-bold text-slate-500">請先招募成員</p>';
 
       const btn = document.getElementById('btnToggleSelectAdd');
       if (btn) btn.innerText = '取消全選';
@@ -1448,11 +1448,11 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
       statusBadge.innerText = status;
 
       if (status === '未完成分帳') {
-        statusBadge.className = 'text-xs font-bold px-2 py-0.5 rounded-lg border border-black shadow-[1px_1px_0px_#000] bg-yellow-400 text-black';
+        statusBadge.className = 'text-xs md:text-sm font-bold px-2 py-0.5 rounded-lg border border-black shadow-[1px_1px_0px_#000] bg-yellow-400 text-black';
       } else if (status === '未完成付款') {
-        statusBadge.className = 'text-xs font-bold px-2 py-0.5 rounded-lg border border-black shadow-[1px_1px_0px_#000] bg-red-500 text-white';
+        statusBadge.className = 'text-xs md:text-sm font-bold px-2 py-0.5 rounded-lg border border-black shadow-[1px_1px_0px_#000] bg-red-500 text-white';
       } else {
-        statusBadge.className = 'text-xs font-bold px-2 py-0.5 rounded-lg border border-black shadow-[1px_1px_0px_#000] bg-green-500 text-white';
+        statusBadge.className = 'text-xs md:text-sm font-bold px-2 py-0.5 rounded-lg border border-black shadow-[1px_1px_0px_#000] bg-green-500 text-white';
       }
 
       const partGroup = document.getElementById('detailParticipantsGroup');
@@ -1466,21 +1466,21 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
         return `
           <div class="flex items-center justify-between border-2 border-black p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white shadow-[2px_2px_0px_#000]">
             <div class="flex items-center space-x-2">
-              <label class="flex items-center space-x-1.5 cursor-pointer text-xs font-black">
+              <label class="flex items-center space-x-1.5 cursor-pointer text-xs md:text-sm font-black">
                 <input type="checkbox" name="detailParts" value="${m}" ${isChecked ? 'checked' : ''} onchange="handleCheckboxChange('${m}', 'detailParts', 'detail-share-input-', true)" class="w-4 h-4 rounded text-red-600 focus:ring-0 accent-red-600">
                 <span>${m}</span>
               </label>
               ${isMe ? `
-                <button type="button" onclick="fillRemainingForUser('${m}')" class="text-[10px] bg-blue-500 text-white px-1.5 py-0.5 rounded border border-black font-black hover:opacity-90">
+                <button type="button" onclick="fillRemainingForUser('${m}')" class="text-[10px] md:text-xs bg-blue-500 text-white px-1.5 py-0.5 rounded border border-black font-black hover:opacity-90">
                   ⚡ 填入個人餘額
                 </button>
               ` : ''}
             </div>
             <div class="flex items-center space-x-1">
-              <span class="text-xs font-bold text-yellow-500 dark:text-yellow-400">$</span>
+              <span class="text-xs md:text-sm font-bold text-yellow-500 dark:text-yellow-400">$</span>
               <input type="text" id="detail-share-input-${m}" readonly value="${shareVal}" ${isChecked ? '' : 'disabled'}
                      onclick="openCalcModal('detail-share-input-${m}')"
-                     class="w-20 bg-white dark:bg-slate-900 text-slate-900 dark:text-yellow-400 text-xs font-mono font-black border border-black rounded-lg px-2 py-1 text-right focus:outline-none cursor-pointer">
+                     class="w-20 md:w-24 bg-white dark:bg-slate-900 text-slate-900 dark:text-yellow-400 text-xs md:text-sm font-mono font-black border border-black rounded-lg px-2 py-1 text-right focus:outline-none cursor-pointer">
             </div>
           </div>
         `;
@@ -1525,11 +1525,11 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
       remainingElem.innerText = `$${remaining}`;
 
       if (remaining > 0) {
-        badgeElem.className = 'text-[10px] font-black px-2 py-0.5 rounded-lg border border-black shadow-[1px_1px_0px_#000] bg-red-500 text-white';
+        badgeElem.className = 'text-[10px] md:text-xs font-black px-2 py-0.5 rounded-lg border border-black shadow-[1px_1px_0px_#000] bg-red-500 text-white';
       } else if (remaining < 0) {
-        badgeElem.className = 'text-[10px] font-black px-2 py-0.5 rounded-lg border border-black shadow-[1px_1px_0px_#000] bg-orange-400 text-black';
+        badgeElem.className = 'text-[10px] md:text-xs font-black px-2 py-0.5 rounded-lg border border-black shadow-[1px_1px_0px_#000] bg-orange-400 text-black';
       } else {
-        badgeElem.className = 'text-[10px] font-black px-2 py-0.5 rounded-lg border border-black shadow-[1px_1px_0px_#000] bg-green-500 text-white';
+        badgeElem.className = 'text-[10px] md:text-xs font-black px-2 py-0.5 rounded-lg border border-black shadow-[1px_1px_0px_#000] bg-green-500 text-white';
       }
     }
 
@@ -1600,7 +1600,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
     function renderBalances(balances) {
       const container = document.getElementById('balanceList');
       if (!balances || Object.keys(balances).length === 0) {
-        container.innerHTML = '<p class="text-xs text-slate-500 py-2">尚未招募成員</p>';
+        container.innerHTML = '<p class="text-xs md:text-sm text-slate-500 py-2">尚未招募成員</p>';
         return;
       }
 
@@ -1632,13 +1632,13 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
       container.innerHTML = `
         ${myHtml ? `
           <div class="mb-2">
-            <div class="text-[10px] font-black text-yellow-500 dark:text-yellow-400 mb-1">🙋‍♂️ 我的戰報</div>
+            <div class="text-[10px] md:text-xs font-black text-yellow-500 dark:text-yellow-400 mb-1">🙋‍♂️ 我的戰報</div>
             ${myHtml}
           </div>
         ` : ''}
         ${othersHtml ? `
           <div class="pt-2 border-t border-slate-200 dark:border-slate-800">
-            <div class="text-[10px] font-black text-slate-400 mb-1">👥 其他車手戰報</div>
+            <div class="text-[10px] md:text-xs font-black text-slate-400 mb-1">👥 其他車手戰報</div>
             ${othersHtml}
           </div>
         ` : ''}
@@ -1648,7 +1648,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
     function renderSettlements(settlements) {
       const container = document.getElementById('settlementList');
       if (!settlements || settlements.length === 0) {
-        container.innerHTML = '<p class="text-xs text-slate-500 font-bold">目前無欠款，全員平手！✨</p>';
+        container.innerHTML = '<p class="text-xs md:text-sm text-slate-500 font-bold">目前無欠款，全員平手！✨</p>';
         return;
       }
 
@@ -1665,12 +1665,12 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
       });
 
       const createItemCard = (s, isMySettlement = false) => `
-        <div class="flex justify-between items-center bg-slate-100 dark:bg-slate-800 border-2 ${isMySettlement ? 'border-yellow-400' : 'border-black'} p-2.5 rounded-xl text-xs font-black shadow-[2px_2px_0px_#000]">
+        <div class="flex justify-between items-center bg-slate-100 dark:bg-slate-800 border-2 ${isMySettlement ? 'border-yellow-400' : 'border-black'} p-2.5 rounded-xl text-xs md:text-sm font-black shadow-[2px_2px_0px_#000]">
           <span class="text-slate-800 dark:text-slate-200">
             🏎️ <b>${s.from === myName ? '我' : s.from}</b> ➔ <b>${s.to === myName ? '我' : s.to}</b> 
             <b class="text-red-500">$${s.amount}</b>
           </span>
-          <button onclick="openSettleModal('${s.from}', '${s.to}', ${s.amount})" class="nfs-btn-green text-[10px] font-nfs px-2 py-1 rounded-lg">
+          <button onclick="openSettleModal('${s.from}', '${s.to}', ${s.amount})" class="nfs-btn-green text-[10px] md:text-xs font-nfs px-2 py-1 rounded-lg">
             DRIFT 還款
           </button>
         </div>
@@ -1681,7 +1681,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
       if (mySettlements.length > 0) {
         html += `
           <div class="space-y-2 mb-3">
-            <div class="text-[10px] font-black text-yellow-500 dark:text-yellow-400">⚡ 與我有關的還款事項</div>
+            <div class="text-[10px] md:text-xs font-black text-yellow-500 dark:text-yellow-400">⚡ 與我有關的還款事項</div>
             ${mySettlements.map(s => createItemCard(s, true)).join('')}
           </div>
         `;
@@ -1690,7 +1690,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
       if (otherSettlements.length > 0) {
         html += `
           <div class="space-y-2">
-            <div class="text-[10px] font-black text-slate-400">🏁 其他成員還款路線</div>
+            <div class="text-[10px] md:text-xs font-black text-slate-400">🏁 其他成員還款路線</div>
             ${otherSettlements.map(s => createItemCard(s, false)).join('')}
           </div>
         `;
@@ -1756,14 +1756,14 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
       const feed = document.getElementById('expensesFeed');
       
       if (!filtered || filtered.length === 0) {
-        feed.innerHTML = '<p class="text-slate-500 py-3 text-center text-xs font-bold">尚無競速日誌紀錄</p>';
+        feed.innerHTML = '<p class="text-slate-500 py-3 text-center text-xs md:text-sm font-bold">尚無競速日誌紀錄</p>';
         return;
       }
 
       feed.innerHTML = filtered.map(e => {
         const isPayment = e.type === 'PAYMENT';
         const imgBadge = e.imageUrl 
-          ? `<span class="inline-flex items-center text-[10px] bg-yellow-400 text-black border border-black font-black px-1.5 py-0.5 rounded-md">🧾 單據</span>` 
+          ? `<span class="inline-flex items-center text-[10px] md:text-xs bg-yellow-400 text-black border border-black font-black px-1.5 py-0.5 rounded-md">🧾 單據</span>` 
           : '';
 
         const status = isPayment ? '已全部付款' : getExpenseStatus(e);
@@ -1771,7 +1771,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
         if (status === '未完成分帳') statusBadgeClass = 'bg-yellow-400 text-black';
         else if (status === '未完成付款') statusBadgeClass = 'bg-red-500 text-white';
 
-        const remarkHtml = e.remark ? `<span class="text-[11px] text-slate-400 dark:text-slate-500 font-normal">💬 ${e.remark}</span>` : '';
+        const remarkHtml = e.remark ? `<span class="text-[11px] md:text-xs text-slate-400 dark:text-slate-500 font-normal">💬 ${e.remark}</span>` : '';
 
         return `
           <div onclick="openExpenseDetailModal('${e.id}')" class="py-3 px-2 cursor-pointer hover:bg-slate-100/50 dark:hover:bg-slate-800/50 rounded-xl transition-colors flex flex-col justify-between">
@@ -1779,30 +1779,30 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
             <div>
               <div class="flex justify-between items-center font-black">
                 <div class="flex items-center space-x-2 truncate">
-                  <span class="text-[10px] px-2 py-0.5 rounded-md border border-black shrink-0 ${isPayment ? 'bg-purple-600 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-yellow-400'}">
+                  <span class="text-[10px] md:text-xs px-2 py-0.5 rounded-md border border-black shrink-0 ${isPayment ? 'bg-purple-600 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-yellow-400'}">
                     ${e.category || (isPayment ? '💵 還款' : '其他')}
                   </span>
-                  <span class="text-slate-800 dark:text-slate-100 truncate">${e.desc}</span>
+                  <span class="text-slate-800 dark:text-slate-100 text-sm md:text-base truncate">${e.desc}</span>
                 </div>
                 <div class="flex items-center space-x-1.5 shrink-0 ml-2">
-                  <span class="${isPayment ? 'text-purple-500 dark:text-purple-400' : 'text-green-600 dark:text-green-400'} text-base font-black">$${e.amount}</span>
-                  <span class="text-xs text-slate-400">🔍</span>
+                  <span class="${isPayment ? 'text-purple-500 dark:text-purple-400' : 'text-green-600 dark:text-green-400'} text-base md:text-lg font-black">$${e.amount}</span>
+                  <span class="text-xs md:text-sm text-slate-400">🔍</span>
                 </div>
               </div>
               
-              <div class="flex justify-between text-xs text-slate-500 dark:text-slate-400 font-bold mt-1">
+              <div class="flex justify-between text-xs md:text-sm text-slate-500 dark:text-slate-400 font-bold mt-1">
                 <span>${e.payer} ${isPayment ? '還給 ' + (e.participants ? e.participants[0] : '') : '買單 (' + (e.participants ? e.participants.length : 0) + ' 人分攤)'}</span>
                 <span>${e.date}</span>
               </div>
             </div>
 
             <!-- 下半部：狀態 / 備註 / 單據（統一釘在最底部） -->
-            <div class="mt-2 pt-2 border-t border-slate-200/50 dark:border-slate-800/50 flex justify-between items-center text-xs font-bold">
+            <div class="mt-2 pt-2 border-t border-slate-200/50 dark:border-slate-800/50 flex justify-between items-center text-xs md:text-sm font-bold">
               <div class="flex items-center space-x-2 truncate">
                 ${imgBadge}
                 ${remarkHtml}
               </div>
-              <span class="text-[10px] px-1.5 py-0.5 rounded border border-black shrink-0 ml-2 ${statusBadgeClass}">${status}</span>
+              <span class="text-[10px] md:text-xs px-1.5 py-0.5 rounded border border-black shrink-0 ml-2 ${statusBadgeClass}">${status}</span>
             </div>
           </div>`;
       }).join('');
