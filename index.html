@@ -102,7 +102,6 @@
         <span class="nfs-skew-inside inline-block">START ENGINE 🏎️</span>
       </button>
 
-      <!-- 首頁註冊成為新車手按鈕 -->
       <button onclick="openDriverRegisterModal()" class="nfs-btn-yellow nfs-skew w-full py-2.5 font-nfs text-xl font-black rounded-2xl tracking-wider">
         <span class="nfs-skew-inside inline-block">🏁 註冊成為新車手</span>
       </button>
@@ -125,7 +124,6 @@
       </div>
 
       <div class="mt-3 flex items-center justify-center space-x-3">
-        <!-- 登入狀態顯示區域 -->
         <span id="welcomeUser" class="text-xs font-black bg-yellow-400 text-black border-2 border-black px-3 py-1 rounded-xl shadow-[2px_2px_0px_#000]"></span>
         <button onclick="handleLogout()" class="text-xs font-black text-red-500 hover:text-red-400 underline">EXIT PIT</button>
       </div>
@@ -180,7 +178,7 @@
       <h2 class="text-sm font-nfs font-black bg-blue-600 text-white px-3 py-1 rounded-lg inline-block tracking-widest mb-3 border-2 border-black shadow-[2px_2px_0px_#000]">
         1. LAP TIME & DRIFT / 結算還款
       </h2>
-      <div id="balanceList" class="space-y-2 mb-4 text-sm font-bold divide-y-2 divide-slate-200 dark:divide-slate-800">
+      <div id="balanceList" class="space-y-2 mb-4 text-sm font-bold">
         <p class="text-slate-500">載入戰報中...</p>
       </div>
 
@@ -415,7 +413,7 @@
       <input type="text" id="registerDriverName" placeholder="例如：SPEED_DEMON" class="w-full border-2 border-black rounded-xl p-2.5 text-sm font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white mb-4 outline-none shadow-[2px_2px_0px_#000]">
       <div class="flex space-x-2">
         <button onclick="closeDriverRegisterModal()" class="w-1/2 py-2 text-xs font-black bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-300 rounded-xl border-2 border-black">取消</button>
-        <button onclick="submitDriverRegister()" class="nfs-btn-yellow w-1/2 py-2 text-xs font-nfs text-lg font-black rounded-xl">隱藏註冊</button>
+        <button onclick="submitDriverRegister()" class="nfs-btn-yellow w-1/2 py-2 text-xs font-nfs text-lg font-black rounded-xl">確認註冊</button>
       </div>
     </div>
   </div>
@@ -439,7 +437,6 @@
     </div>
   </div>
 
-  <!-- 建立新車隊 Modal -->
   <div id="createGroupModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
     <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 border-4 border-black shadow-[6px_6px_0px_#facc15] max-h-[85vh] flex flex-col">
       <h3 class="text-lg font-nfs font-black text-slate-900 dark:text-yellow-400 mb-3 tracking-wider">🏎️ 建立新車隊 (GROUP)</h3>
@@ -1193,9 +1190,9 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
       }
     }
 
-    // 新增消費提交 (已新增 loading 特效)
+    // 新增消費提交
     function submitExpense(e) {
-      e.preventDefault();
+      if (e) e.preventDefault();
       
       let amount = parseFloat(document.getElementById('amountDisplay').value) || 0;
       const checkedBoxes = Array.from(document.querySelectorAll('input[name="parts"]:checked'));
@@ -1253,7 +1250,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
         });
     }
 
-    // 刪除消費 (已新增 loading 特效)
+    // 刪除消費
     function handleDeleteExpense(expenseId) {
       if (!confirm('確定要刪除這筆開銷紀錄？')) return;
       
@@ -1433,9 +1430,9 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
       currentEditingExpenseId = null;
     }
 
-    // 儲存修改提交 (已新增 loading 特效)
+    // 儲存修改提交
     function saveDetailShares(e) {
-      if(e) e.preventDefault();
+      if (e) e.preventDefault();
       if (!currentEditingExpenseId) return;
 
       const checkedBoxes = Array.from(document.querySelectorAll('input[name="detailParts"]:checked'));
@@ -1486,39 +1483,108 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
       });
     }
 
+    // 分區顯示：戰報 (我的戰報 vs 其他車手)
     function renderBalances(balances) {
       const container = document.getElementById('balanceList');
       if (!balances || Object.keys(balances).length === 0) {
         container.innerHTML = '<p class="text-xs text-slate-500 py-2">尚未招募成員</p>';
         return;
       }
-      container.innerHTML = '';
+
+      const myName = currentUser ? currentUser.memberName : null;
+      let myHtml = '';
+      let othersHtml = '';
+
       for (const [name, val] of Object.entries(balances)) {
         const rounded = Math.round(val * 10) / 10;
         let colorClass = 'text-slate-400', statusText = '已結清';
         if (rounded > 0) { colorClass = 'text-green-500 font-black'; statusText = `應收 $${rounded}`; }
         else if (rounded < 0) { colorClass = 'text-red-500 font-black'; statusText = `應付 $${Math.abs(rounded)}`; }
 
-        container.innerHTML += `
-          <div class="flex justify-between items-center py-2">
-            <span class="font-black text-slate-800 dark:text-slate-200">${name}</span>
+        const itemHtml = `
+          <div class="flex justify-between items-center py-2 ${name === myName ? 'bg-yellow-400/10 -mx-1 px-2 rounded-xl border border-yellow-400/50' : ''}">
+            <span class="font-black text-slate-800 dark:text-slate-200">
+              ${name === myName ? '🙋‍♂️ ' + name + ' (我)' : '🏎️ ' + name}
+            </span>
             <span class="${colorClass}">${statusText}</span>
           </div>`;
+
+        if (name === myName) {
+          myHtml += itemHtml;
+        } else {
+          othersHtml += itemHtml;
+        }
       }
+
+      container.innerHTML = `
+        ${myHtml ? `
+          <div class="mb-2">
+            <div class="text-[10px] font-black text-yellow-500 dark:text-yellow-400 mb-1">🙋‍♂️ 我的戰報</div>
+            ${myHtml}
+          </div>
+        ` : ''}
+        ${othersHtml ? `
+          <div class="pt-2 border-t border-slate-200 dark:border-slate-800">
+            <div class="text-[10px] font-black text-slate-400 mb-1">👥 其他車手戰報</div>
+            ${othersHtml}
+          </div>
+        ` : ''}
+      `;
     }
 
+    // 分區顯示：最佳甩尾結算路線 (與我有關 vs 其他成員)
     function renderSettlements(settlements) {
       const container = document.getElementById('settlementList');
       if (!settlements || settlements.length === 0) {
         container.innerHTML = '<p class="text-xs text-slate-500 font-bold">目前無欠款，全員平手！✨</p>';
         return;
       }
-      container.innerHTML = settlements.map(s => `
-        <div class="flex justify-between items-center bg-slate-100 dark:bg-slate-800 border-2 border-black p-2.5 rounded-xl text-xs font-black shadow-[2px_2px_0px_#000]">
-          <span class="text-slate-800 dark:text-slate-200">🏎️ <b>${s.from}</b> ➔ <b>${s.to}</b> <b class="text-red-500">$${s.amount}</b></span>
-          <button onclick="openSettleModal('${s.from}', '${s.to}', ${s.amount})" class="nfs-btn-green text-[10px] font-nfs px-2 py-1 rounded-lg">DRIFT 還款</button>
+
+      const myName = currentUser ? currentUser.memberName : null;
+      const mySettlements = [];
+      const otherSettlements = [];
+
+      settlements.forEach(s => {
+        if (s.from === myName || s.to === myName) {
+          mySettlements.push(s);
+        } else {
+          otherSettlements.push(s);
+        }
+      });
+
+      const createItemCard = (s, isMySettlement = false) => `
+        <div class="flex justify-between items-center bg-slate-100 dark:bg-slate-800 border-2 ${isMySettlement ? 'border-yellow-400' : 'border-black'} p-2.5 rounded-xl text-xs font-black shadow-[2px_2px_0px_#000]">
+          <span class="text-slate-800 dark:text-slate-200">
+            🏎️ <b>${s.from === myName ? '我' : s.from}</b> ➔ <b>${s.to === myName ? '我' : s.to}</b> 
+            <b class="text-red-500">$${s.amount}</b>
+          </span>
+          <button onclick="openSettleModal('${s.from}', '${s.to}', ${s.amount})" class="nfs-btn-green text-[10px] font-nfs px-2 py-1 rounded-lg">
+            DRIFT 還款
+          </button>
         </div>
-      `).join('');
+      `;
+
+      let html = '';
+
+      if (mySettlements.length > 0) {
+        html += `
+          <div class="space-y-2 mb-3">
+            <div class="text-[10px] font-black text-yellow-500 dark:text-yellow-400">⚡ 與我有關的還款事項</div>
+            ${mySettlements.map(s => createItemCard(s, true)).join('')}
+          </div>
+        `;
+      }
+
+      if (otherSettlements.length > 0) {
+        html += `
+          <div class="space-y-2">
+            <div class="text-[10px] font-black text-slate-400">🏁 其他成員還款路線</div>
+            ${otherSettlements.map(s => createItemCard(s, false)).join('')}
+          </div>
+        `;
+      }
+
+      container.innerHTML = html;
     }
 
     function openSettleModal(from, to, amount) {
