@@ -239,71 +239,73 @@
       <button onclick="closeExpenseDrawer()" class="text-slate-800 dark:text-white font-black text-2xl hover:text-red-500 transition-colors p-1">✕</button>
     </div>
 
-    <form id="expenseForm" onsubmit="submitExpense(event)" class="p-4 sm:p-5 space-y-4 overflow-y-auto flex-1">
-      <div class="grid grid-cols-2 gap-3">
-        <div>
-          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">消費類別</label>
-          <select id="category" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-yellow-400 focus:outline-none shadow-[2px_2px_0px_#000]">
-            <option value="🍔 餐飲">🍔 燃料餐飲</option>
-            <option value="🚗 交通">🚗 競速過路費</option>
-            <option value="🏠 住宿">🏠 賽道維修廠</option>
-            <option value="🎟️ 娛樂">🎟️ 氮氣補給</option>
-            <option value="🛒 購物">🛒 改裝零件</option>
-            <option value="💡 雜項">💡 雜項開銷</option>
-          </select>
-        </div>
-        <div>
-          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">買單車手 (Payer)</label>
-          <select id="payer" onchange="handlePayerChange()" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]"></select>
-        </div>
-      </div>
-
-      <div>
-        <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">項目說明 (Desc)</label>
-        <input type="text" id="desc" required placeholder="例如：98 無鉛汽油" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]">
-      </div>
-
-      <div>
-        <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">備註說明 (Remark - 選填)</label>
-        <input type="text" id="remark" placeholder="例如：加滿、含服務費等" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]">
-      </div>
-
-      <div>
-        <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">總消費金額 ($) <span class="text-yellow-500 font-normal">(可填 0 元建立，再由成員自行輸入)</span></label>
-        <div class="relative">
-          <input type="text" id="amountDisplay" readonly value="0" onclick="openCalcModal('amountDisplay')" 
-                 class="w-full border-3 border-black rounded-2xl p-3 text-right font-mono text-3xl font-black bg-yellow-400 text-black cursor-pointer shadow-[4px_4px_0px_#ea3526] focus:outline-none">
-          <span class="absolute left-3 top-4 text-xs font-black text-black/70">點擊開啟計算機 🔢</span>
-        </div>
-      </div>
-
-      <div>
-        <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">單據照片 (選填)</label>
-        <input type="file" id="receiptImg" accept="image/*" onchange="previewImage(event, 'imgPreview', 'imgPreviewContainer')" class="w-full text-xs text-slate-500 dark:text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-2 file:border-black file:text-xs file:font-black file:bg-red-600 file:text-white cursor-pointer">
-        <div id="imgPreviewContainer" class="hidden mt-2 relative w-20 h-20">
-          <img id="imgPreview" class="w-full h-full object-cover rounded-xl border-2 border-black shadow-[2px_2px_0px_#000]">
-          <button type="button" onclick="removeImage('imgPreview', 'imgPreviewContainer', 'receiptImg')" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs w-6 h-6 rounded-full border-2 border-black font-black flex items-center justify-center shadow">✕</button>
-        </div>
-      </div>
-
-      <div>
-        <div class="flex justify-between items-center mb-2">
-          <label class="block text-xs font-black text-slate-500 dark:text-slate-400">分攤明細 (可各自分別填寫)</label>
-          <div class="space-x-2">
-            <button type="button" onclick="splitEvenly('amountDisplay', 'parts', 'share-input-')" class="nfs-btn-yellow text-[10px] font-black px-2 py-1 rounded-lg">⚡ 一鍵均分</button>
-            <button type="button" id="btnToggleSelectAdd" onclick="toggleSelectAllParts('parts', 'share-input-', 'btnToggleSelectAdd')" class="text-xs font-black text-slate-500 dark:text-slate-400 underline">取消全選</button>
+    <form id="expenseForm" onsubmit="submitExpense(event)" class="flex flex-col flex-1 overflow-hidden">
+      <div class="p-4 sm:p-5 space-y-4 overflow-y-auto flex-1">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">消費類別</label>
+            <select id="category" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-yellow-400 focus:outline-none shadow-[2px_2px_0px_#000]">
+              <option value="🍔 餐飲">🍔 燃料餐飲</option>
+              <option value="🚗 交通">🚗 競速過路費</option>
+              <option value="🏠 住宿">🏠 賽道維修廠</option>
+              <option value="🎟️ 娛樂">🎟️ 氮氣補給</option>
+              <option value="🛒 購物">🛒 改裝零件</option>
+              <option value="💡 雜項">💡 雜項開銷</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">買單車手 (Payer)</label>
+            <select id="payer" onchange="handlePayerChange()" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]"></select>
           </div>
         </div>
-        <div id="participantsGroup" class="space-y-2"></div>
+
+        <div>
+          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">項目說明 (Desc)</label>
+          <input type="text" id="desc" required placeholder="例如：98 無鉛汽油" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]">
+        </div>
+
+        <div>
+          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">備註說明 (Remark - 選填)</label>
+          <input type="text" id="remark" placeholder="例如：加滿、含服務費等" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]">
+        </div>
+
+        <div>
+          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">總消費金額 ($) <span class="text-yellow-500 font-normal">(可填 0 元建立，再由成員自行輸入)</span></label>
+          <div class="relative">
+            <input type="text" id="amountDisplay" readonly value="0" onclick="openCalcModal('amountDisplay')" 
+                   class="w-full border-3 border-black rounded-2xl p-3 text-right font-mono text-3xl font-black bg-yellow-400 text-black cursor-pointer shadow-[4px_4px_0px_#ea3526] focus:outline-none">
+            <span class="absolute left-3 top-4 text-xs font-black text-black/70">點擊開啟計算機 🔢</span>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">單據照片 (選填)</label>
+          <input type="file" id="receiptImg" accept="image/*" onchange="previewImage(event, 'imgPreview', 'imgPreviewContainer')" class="w-full text-xs text-slate-500 dark:text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-2 file:border-black file:text-xs file:font-black file:bg-red-600 file:text-white cursor-pointer">
+          <div id="imgPreviewContainer" class="hidden mt-2 relative w-20 h-20">
+            <img id="imgPreview" class="w-full h-full object-cover rounded-xl border-2 border-black shadow-[2px_2px_0px_#000]">
+            <button type="button" onclick="removeImage('imgPreview', 'imgPreviewContainer', 'receiptImg')" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs w-6 h-6 rounded-full border-2 border-black font-black flex items-center justify-center shadow">✕</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex justify-between items-center mb-2">
+            <label class="block text-xs font-black text-slate-500 dark:text-slate-400">分攤明細 (可各自分別填寫)</label>
+            <div class="space-x-2">
+              <button type="button" onclick="splitEvenly('amountDisplay', 'parts', 'share-input-')" class="nfs-btn-yellow text-[10px] font-black px-2 py-1 rounded-lg">⚡ 一鍵均分</button>
+              <button type="button" id="btnToggleSelectAdd" onclick="toggleSelectAllParts('parts', 'share-input-', 'btnToggleSelectAdd')" class="text-xs font-black text-slate-500 dark:text-slate-400 underline">取消全選</button>
+            </div>
+          </div>
+          <div id="participantsGroup" class="space-y-2"></div>
+        </div>
+      </div>
+
+      <div class="p-4 border-t-2 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 flex space-x-2">
+        <button type="button" onclick="closeExpenseDrawer()" class="w-1/3 py-2.5 text-xs font-black bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-300 rounded-2xl border-2 border-black hover:opacity-90 transition-opacity">取消</button>
+        <button type="submit" id="btnSubmit" class="nfs-btn-green nfs-skew w-2/3 font-nfs text-2xl font-black py-2 rounded-2xl tracking-wider">
+          <span class="nfs-skew-inside inline-block">確認送出</span>
+        </button>
       </div>
     </form>
-
-    <div class="p-4 border-t-2 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 flex space-x-2">
-      <button type="button" onclick="closeExpenseDrawer()" class="w-1/3 py-2.5 text-xs font-black bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-300 rounded-2xl border-2 border-black hover:opacity-90 transition-opacity">取消</button>
-      <button type="submit" form="expenseForm" id="btnSubmit" class="nfs-btn-green nfs-skew w-2/3 font-nfs text-2xl font-black py-2 rounded-2xl tracking-wider">
-        <span class="nfs-skew-inside inline-block">確認送出</span>
-      </button>
-    </div>
   </aside>
 
   <!-- 查看/編輯明細 底部彈出抽屜 -->
@@ -330,86 +332,88 @@
       <button onclick="closeExpenseDetailModal()" class="text-slate-800 dark:text-white font-black text-2xl hover:text-red-500 transition-colors p-1">✕</button>
     </div>
 
-    <form id="editExpenseForm" onsubmit="saveDetailShares(event)" class="p-4 space-y-4 overflow-y-auto flex-1">
-      <div class="grid grid-cols-2 gap-3">
+    <form id="editExpenseForm" onsubmit="saveDetailShares(event)" class="flex flex-col flex-1 overflow-hidden">
+      <div class="p-4 space-y-4 overflow-y-auto flex-1">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">消費類別</label>
+            <select id="detailCategory" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-yellow-400 focus:outline-none shadow-[2px_2px_0px_#000]">
+              <option value="🍔 餐飲">🍔 燃料餐飲</option>
+              <option value="🚗 交通">🚗 競速過路費</option>
+              <option value="🏠 住宿">🏠 賽道維修廠</option>
+              <option value="🎟️ 娛樂">🎟️ 氮氣補給</option>
+              <option value="🛒 購物">🛒 改裝零件</option>
+              <option value="💡 雜項">💡 雜項開銷</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">買單車手 (Payer)</label>
+            <select id="detailPayer" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]"></select>
+          </div>
+        </div>
+
         <div>
-          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">消費類別</label>
-          <select id="detailCategory" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-yellow-400 focus:outline-none shadow-[2px_2px_0px_#000]">
-            <option value="🍔 餐飲">🍔 燃料餐飲</option>
-            <option value="🚗 交通">🚗 競速過路費</option>
-            <option value="🏠 住宿">🏠 賽道維修廠</option>
-            <option value="🎟️ 娛樂">🎟️ 氮氣補給</option>
-            <option value="🛒 購物">🛒 改裝零件</option>
-            <option value="💡 雜項">💡 雜項開銷</option>
-          </select>
+          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">項目說明 (Desc)</label>
+          <input type="text" id="detailDesc" required class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]">
         </div>
+
         <div>
-          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">買單車手 (Payer)</label>
-          <select id="detailPayer" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]"></select>
+          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">備註說明 (Remark)</label>
+          <input type="text" id="detailRemark" placeholder="無備註" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]">
         </div>
-      </div>
 
-      <div>
-        <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">項目說明 (Desc)</label>
-        <input type="text" id="detailDesc" required class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]">
-      </div>
-
-      <div>
-        <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">備註說明 (Remark)</label>
-        <input type="text" id="detailRemark" placeholder="無備註" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]">
-      </div>
-
-      <div>
-        <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">總消費金額 ($)</label>
-        <div class="relative">
-          <input type="text" id="detailAmountDisplay" readonly value="0" onclick="openCalcModal('detailAmountDisplay')" 
-                 class="w-full border-3 border-black rounded-2xl p-3 text-right font-mono text-3xl font-black bg-yellow-400 text-black cursor-pointer shadow-[4px_4px_0px_#ea3526] focus:outline-none">
-          <span class="absolute left-3 top-4 text-xs font-black text-black/70">點擊開啟計算機 🔢</span>
+        <div>
+          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">總消費金額 ($)</label>
+          <div class="relative">
+            <input type="text" id="detailAmountDisplay" readonly value="0" onclick="openCalcModal('detailAmountDisplay')" 
+                   class="w-full border-3 border-black rounded-2xl p-3 text-right font-mono text-3xl font-black bg-yellow-400 text-black cursor-pointer shadow-[4px_4px_0px_#ea3526] focus:outline-none">
+            <span class="absolute left-3 top-4 text-xs font-black text-black/70">點擊開啟計算機 🔢</span>
+          </div>
         </div>
-      </div>
 
-      <div>
-        <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">單據照片</label>
-        <input type="file" id="detailReceiptImg" accept="image/*" onchange="previewImage(event, 'detailImgPreview', 'detailImgPreviewContainer')" class="w-full text-xs text-slate-500 dark:text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-2 file:border-black file:text-xs file:font-black file:bg-red-600 file:text-white cursor-pointer">
-        <div id="detailImgPreviewContainer" class="hidden mt-2 relative w-24 h-24">
-          <a id="detailImgLink" href="#" target="_blank">
-            <img id="detailImgPreview" class="w-full h-full object-cover rounded-xl border-2 border-black shadow-[2px_2px_0px_#000]">
-          </a>
-          <button type="button" onclick="removeImage('detailImgPreview', 'detailImgPreviewContainer', 'detailReceiptImg')" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs w-6 h-6 rounded-full border-2 border-black font-black flex items-center justify-center shadow">✕</button>
+        <div>
+          <label class="block text-xs font-black text-slate-500 dark:text-slate-400 mb-1">單據照片</label>
+          <input type="file" id="detailReceiptImg" accept="image/*" onchange="previewImage(event, 'detailImgPreview', 'detailImgPreviewContainer')" class="w-full text-xs text-slate-500 dark:text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-2 file:border-black file:text-xs file:font-black file:bg-red-600 file:text-white cursor-pointer">
+          <div id="detailImgPreviewContainer" class="hidden mt-2 relative w-24 h-24">
+            <a id="detailImgLink" href="#" target="_blank">
+              <img id="detailImgPreview" class="w-full h-full object-cover rounded-xl border-2 border-black shadow-[2px_2px_0px_#000]">
+            </a>
+            <button type="button" onclick="removeImage('detailImgPreview', 'detailImgPreviewContainer', 'detailReceiptImg')" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs w-6 h-6 rounded-full border-2 border-black font-black flex items-center justify-center shadow">✕</button>
+          </div>
         </div>
-      </div>
 
-      <div>
-        <div class="flex justify-between items-center mb-2">
-          <div class="flex items-center space-x-2">
-            <label class="block text-xs font-black text-slate-500 dark:text-slate-400">分攤明細</label>
-            <div class="text-[10px] font-black px-2 py-0.5 rounded-lg border border-black shadow-[1px_1px_0px_#000]" id="detailRemainingBadge">
-              剩餘：<span id="detailRemainingAmount" class="font-mono">$0</span>
+        <div>
+          <div class="flex justify-between items-center mb-2">
+            <div class="flex items-center space-x-2">
+              <label class="block text-xs font-black text-slate-500 dark:text-slate-400">分攤明細</label>
+              <div class="text-[10px] font-black px-2 py-0.5 rounded-lg border border-black shadow-[1px_1px_0px_#000]" id="detailRemainingBadge">
+                剩餘：<span id="detailRemainingAmount" class="font-mono">$0</span>
+              </div>
+            </div>
+            <div class="space-x-2">
+              <button type="button" onclick="splitEvenly('detailAmountDisplay', 'detailParts', 'detail-share-input-')" class="nfs-btn-yellow text-[10px] font-black px-2 py-1 rounded-lg">⚡ 一鍵均分</button>
+              <button type="button" id="btnToggleSelectDetail" onclick="toggleSelectAllParts('detailParts', 'detail-share-input-', 'btnToggleSelectDetail')" class="text-xs font-black text-slate-500 dark:text-slate-400 underline">全選</button>
             </div>
           </div>
-          <div class="space-x-2">
-            <button type="button" onclick="splitEvenly('detailAmountDisplay', 'detailParts', 'detail-share-input-')" class="nfs-btn-yellow text-[10px] font-black px-2 py-1 rounded-lg">⚡ 一鍵均分</button>
-            <button type="button" id="btnToggleSelectDetail" onclick="toggleSelectAllParts('detailParts', 'detail-share-input-', 'btnToggleSelectDetail')" class="text-xs font-black text-slate-500 dark:text-slate-400 underline">全選</button>
-          </div>
+          <div id="detailParticipantsGroup" class="space-y-2"></div>
         </div>
-        <div id="detailParticipantsGroup" class="space-y-2"></div>
+      </div>
+
+      <div class="p-4 border-t-2 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 flex justify-between items-center space-x-2">
+        <button type="button" id="btnDeleteDetailExpense" class="nfs-btn-red text-xs font-nfs px-3 py-2.5 rounded-xl font-black">🗑️ 刪除</button>
+        <div class="flex space-x-2">
+          <button type="button" onclick="closeExpenseDetailModal()" class="py-2.5 px-4 text-xs font-black bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-300 rounded-xl border-2 border-black">取消</button>
+          <button type="submit" id="btnSaveDetail" class="nfs-btn-green text-xs font-nfs px-4 py-2.5 rounded-xl font-black">💾 儲存修改</button>
+        </div>
       </div>
     </form>
-
-    <div class="p-4 border-t-2 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 flex justify-between items-center space-x-2">
-      <button type="button" id="btnDeleteDetailExpense" class="nfs-btn-red text-xs font-nfs px-3 py-2.5 rounded-xl font-black">🗑️ 刪除</button>
-      <div class="flex space-x-2">
-        <button type="button" onclick="closeExpenseDetailModal()" class="py-2.5 px-4 text-xs font-black bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-300 rounded-xl border-2 border-black">取消</button>
-        <button type="submit" form="editExpenseForm" id="btnSaveDetail" class="nfs-btn-green text-xs font-nfs px-4 py-2.5 rounded-xl font-black">💾 儲存修改</button>
-      </div>
-    </div>
   </aside>
 
   <!-- MODALS -->
   <div id="driverRegisterModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
     <div class="bg-white dark:bg-slate-900 w-full max-w-xs rounded-3xl p-5 border-4 border-black shadow-[6px_6px_0px_#facc15]">
       <h3 class="text-lg font-nfs font-black text-yellow-500 dark:text-yellow-400 mb-3 tracking-wider">🏁 註冊成為新車手</h3>
-      <p class="text-xs font-bold text-slate-500 dark:text-slate-400 mb-3">請輸入您的車手代號/暱稱，註冊後系統將生成您的專屬 Pass Key！</p>
+      <p class="text-xs font-bold text-slate-500 dark:text-slate-400 mb-3">請輸入您的車手代號/暱稱，註冊後系統將生成您的專屬 Driver License！</p>
       <input type="text" id="registerDriverName" placeholder="例如：SPEED_DEMON" class="w-full border-2 border-black rounded-xl p-2.5 text-sm font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white mb-4 outline-none shadow-[2px_2px_0px_#000]">
       <div class="flex space-x-2">
         <button onclick="closeDriverRegisterModal()" class="w-1/2 py-2 text-xs font-black bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-300 rounded-xl border-2 border-black">取消</button>
@@ -486,9 +490,9 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
   <div id="tokenModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
     <div class="bg-white dark:bg-slate-900 w-full max-w-xs rounded-3xl p-5 border-4 border-black shadow-[6px_6px_0px_#facc15] text-center">
       <h3 class="text-xl font-nfs font-black text-slate-900 dark:text-yellow-400 mb-1">🏁 車手招募完成！</h3>
-      <p class="text-xs font-bold text-slate-500 dark:text-slate-400 mb-3">請將專屬 Pass Key 傳送給該車手：</p>
+      <p class="text-xs font-bold text-slate-500 dark:text-slate-400 mb-3">請將專屬 Driver License 傳送給該車手：</p>
       <div id="newTokenDisplay" class="bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-yellow-400 border-2 border-black font-mono font-black text-xs p-3 rounded-xl mb-3 select-all break-all"></div>
-      <button onclick="copyTokenToClipboard()" id="btnCopyToken" class="nfs-btn-yellow w-full py-2 text-xs font-nfs text-lg font-black rounded-xl mb-2">📋 複製 PASS KEY</button>
+      <button onclick="copyTokenToClipboard()" id="btnCopyToken" class="nfs-btn-yellow w-full py-2 text-xs font-nfs text-lg font-black rounded-xl mb-2">📋 複製 Driver License</button>
       <button onclick="closeTokenModal()" class="nfs-btn-green w-full py-2 text-xs font-nfs text-lg font-black rounded-xl">完成</button>
     </div>
   </div>
@@ -674,6 +678,10 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
       document.getElementById('apiModal').classList.remove('hidden');
     }
 
+    function closeApiModal() {
+      document.getElementById('apiModal').classList.add('hidden');
+    }
+
     function saveApiUrl() {
       const url = document.getElementById('apiUrlInput').value.trim();
       if (!url.startsWith('https://script.google.com')) {
@@ -681,7 +689,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
       }
       gasApiUrl = url;
       localStorage.setItem('GAS_API_URL', url);
-      document.getElementById('apiModal').classList.add('hidden');
+      closeApiModal();
       if (currentToken) verifyAndLoad(currentToken);
     }
 
@@ -871,6 +879,13 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
         closeExpenseDrawer();
         closeExpenseDetailModal();
         closeDriverRegisterModal();
+        closeManageCrewModal();
+        closeCreateGroupModal();
+        closeApiModal();
+        closeMemberModal();
+        closeTokenModal();
+        closeSettleModal();
+        closeCalcModal();
       }
     });
 
@@ -955,11 +970,11 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
       const name = document.getElementById('registerDriverName').value.trim();
       if (!name) return alert('請輸入車手代號/暱稱！');
 
+      closeDriverRegisterModal(); // 按下後立即關閉
       showLoading();
       callGas('registerDriver', { name: name })
         .then((res) => {
           hideLoading();
-          closeDriverRegisterModal();
           if (res && res.token) {
             document.getElementById('newTokenDisplay').innerText = res.token;
             document.getElementById('tokenModal').classList.remove('hidden');
@@ -978,8 +993,8 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
       const tokenText = document.getElementById('newTokenDisplay').innerText;
       navigator.clipboard.writeText(tokenText).then(() => {
         const btn = document.getElementById('btnCopyToken');
-        btn.innerText = '✅ PASS KEY COPIED!';
-        setTimeout(() => btn.innerText = '📋 複製 PASS KEY', 2000);
+        btn.innerText = '✅ Driver License COPIED!';
+        setTimeout(() => btn.innerText = '📋 複製 Driver License', 2000);
       });
     }
 
@@ -993,6 +1008,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
         .map(id => id.trim().toUpperCase())
         .filter(id => id.length > 0);
 
+      closeCreateGroupModal(); // 按下後立即關閉
       showLoading();
       callGas('createGroupWithCreator', { 
         groupName: name, 
@@ -1002,7 +1018,6 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
         .then((groups) => {
           hideLoading();
           renderGroupList(groups);
-          closeCreateGroupModal();
         })
         .catch((err) => { hideLoading(); alert('建立車隊失敗：' + err.message); });
     }
@@ -1011,6 +1026,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
       const name = document.getElementById('newMemberName').value.trim();
       if (!name) return alert('請輸入車手代號');
 
+      closeMemberModal(); // 按下後立即關閉
       showLoading();
       callGas('addMemberToGroup', { adminToken: currentToken, groupId: currentGroupId, newMemberName: name })
         .then((res) => {
@@ -1018,7 +1034,6 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
           document.getElementById('newTokenDisplay').innerText = res.token;
           document.getElementById('tokenModal').classList.remove('hidden');
           document.getElementById('newMemberName').value = '';
-          closeMemberModal();
         })
         .catch((err) => { hideLoading(); alert('招募成員失敗：' + err.message); });
     }
@@ -1190,7 +1205,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
       }
     }
 
-    // 新增消費提交
+    // 新增消費提交 (按下後立即關閉抽屜)
     function submitExpense(e) {
       if (e) e.preventDefault();
       
@@ -1214,7 +1229,8 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
       const submitBtn = document.getElementById('btnSubmit');
       if (submitBtn) submitBtn.disabled = true;
 
-      // 觸發競速動畫特效
+      // 按下後立即關閉抽屜
+      closeExpenseDrawer();
       showLoading();
 
       const payload = {
@@ -1235,7 +1251,6 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
         .then((data) => {
           hideLoading();
           if (submitBtn) submitBtn.disabled = false;
-          closeExpenseDrawer();
           renderApp(data);
           document.getElementById('expenseForm').reset();
           document.getElementById('amountDisplay').value = '0';
@@ -1250,21 +1265,21 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
         });
     }
 
-    // 刪除消費
+    // 刪除消費 (按下後立即關閉抽屜)
     function handleDeleteExpense(expenseId) {
       if (!confirm('確定要刪除這筆開銷紀錄？')) return;
       
       const deleteBtn = document.getElementById('btnDeleteDetailExpense');
       if (deleteBtn) deleteBtn.disabled = true;
 
-      // 觸發競速動畫特效
+      // 按下後立即關閉抽屜
+      closeExpenseDetailModal();
       showLoading();
 
       callGas('deleteExpense', { token: currentToken, groupId: currentGroupId, expenseId })
         .then((data) => {
           hideLoading();
           if (deleteBtn) deleteBtn.disabled = false;
-          closeExpenseDetailModal();
           renderApp(data);
         })
         .catch((err) => { 
@@ -1426,11 +1441,9 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
       overlay.classList.remove('pointer-events-auto');
       drawer.classList.remove('translate-y-0');
       drawer.classList.add('translate-y-full');
-
-      currentEditingExpenseId = null;
     }
 
-    // 儲存修改提交
+    // 儲存修改提交 (按下後立即關閉抽屜)
     function saveDetailShares(e) {
       if (e) e.preventDefault();
       if (!currentEditingExpenseId) return;
@@ -1455,7 +1468,8 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
       const saveBtn = document.getElementById('btnSaveDetail');
       if (saveBtn) saveBtn.disabled = true;
 
-      // 觸發競速動畫特效
+      // 按下後立即關閉抽屜
+      closeExpenseDetailModal();
       showLoading();
 
       callGas('updateExpenseShares', {
@@ -1473,7 +1487,6 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
       .then((data) => {
         hideLoading();
         if (saveBtn) saveBtn.disabled = false;
-        closeExpenseDetailModal();
         renderApp(data);
       })
       .catch((err) => {
@@ -1481,6 +1494,8 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
         if (saveBtn) saveBtn.disabled = false;
         alert('更新失敗：' + err.message);
       });
+	  
+	  currentEditingExpenseId = null;
     }
 
     // 分區顯示：戰報 (我的戰報 vs 其他車手)
@@ -1609,6 +1624,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
       const settleBtn = document.getElementById('btnConfirmSettle');
       if (settleBtn) settleBtn.disabled = true;
 
+      // 按下後立即關閉
       closeSettleModal();
 
       showLoading();
