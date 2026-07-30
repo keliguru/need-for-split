@@ -1771,26 +1771,38 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
         if (status === '未完成分帳') statusBadgeClass = 'bg-yellow-400 text-black';
         else if (status === '未完成付款') statusBadgeClass = 'bg-red-500 text-white';
 
-        const remarkHtml = e.remark ? `<div class="text-[11px] text-slate-400 dark:text-slate-500 font-normal mt-0.5">💬 備註：${e.remark}</div>` : '';
+        const remarkHtml = e.remark ? `<span class="text-[11px] text-slate-400 dark:text-slate-500 font-normal">💬 ${e.remark}</span>` : '';
 
         return `
-          <div onclick="openExpenseDetailModal('${e.id}')" class="py-3 cursor-pointer hover:bg-slate-100/50 dark:hover:bg-slate-800/50 rounded-xl px-1 transition-colors">
-            <div class="flex justify-between items-center font-black">
-              <span class="flex items-center space-x-2">
-                <span class="text-[10px] px-2 py-0.5 rounded-md border border-black ${isPayment ? 'bg-purple-600 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-yellow-400'}">${e.category || (isPayment ? '💵 還款' : '其他')}</span>
-                <span class="text-slate-800 dark:text-slate-100">${e.desc}</span>
-                ${imgBadge}
-              </span>
-              <div class="flex items-center space-x-2">
-                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded border border-black ${statusBadgeClass}">${status}</span>
-                <span class="${isPayment ? 'text-purple-500 dark:text-purple-400' : 'text-green-600 dark:text-green-400'} text-base font-black">$${e.amount}</span>
-                <span class="text-xs text-slate-400">🔍</span>
+          <div onclick="openExpenseDetailModal('${e.id}')" class="py-3 px-2 cursor-pointer hover:bg-slate-100/50 dark:hover:bg-slate-800/50 rounded-xl transition-colors flex flex-col justify-between">
+            <!-- 上半部：核心項目資訊 -->
+            <div>
+              <div class="flex justify-between items-center font-black">
+                <div class="flex items-center space-x-2 truncate">
+                  <span class="text-[10px] px-2 py-0.5 rounded-md border border-black shrink-0 ${isPayment ? 'bg-purple-600 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-yellow-400'}">
+                    ${e.category || (isPayment ? '💵 還款' : '其他')}
+                  </span>
+                  <span class="text-slate-800 dark:text-slate-100 truncate">${e.desc}</span>
+                </div>
+                <div class="flex items-center space-x-1.5 shrink-0 ml-2">
+                  <span class="${isPayment ? 'text-purple-500 dark:text-purple-400' : 'text-green-600 dark:text-green-400'} text-base font-black">$${e.amount}</span>
+                  <span class="text-xs text-slate-400">🔍</span>
+                </div>
+              </div>
+              
+              <div class="flex justify-between text-xs text-slate-500 dark:text-slate-400 font-bold mt-1">
+                <span>${e.payer} ${isPayment ? '還給 ' + (e.participants ? e.participants[0] : '') : '買單 (' + (e.participants ? e.participants.length : 0) + ' 人分攤)'}</span>
+                <span>${e.date}</span>
               </div>
             </div>
-            ${remarkHtml}
-            <div class="flex justify-between text-xs text-slate-500 dark:text-slate-400 font-bold mt-1">
-              <span>${e.payer} ${isPayment ? '還給 ' + (e.participants ? e.participants[0] : '') : '買單 (' + (e.participants ? e.participants.length : 0) + ' 人分攤)'}</span>
-              <span>${e.date}</span>
+
+            <!-- 下半部：狀態 / 備註 / 單據（統一釘在最底部） -->
+            <div class="mt-2 pt-2 border-t border-slate-200/50 dark:border-slate-800/50 flex justify-between items-center text-xs font-bold">
+              <div class="flex items-center space-x-2 truncate">
+                ${imgBadge}
+                ${remarkHtml}
+              </div>
+              <span class="text-[10px] px-1.5 py-0.5 rounded border border-black shrink-0 ml-2 ${statusBadgeClass}">${status}</span>
             </div>
           </div>`;
       }).join('');
