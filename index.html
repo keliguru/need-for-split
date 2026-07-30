@@ -172,20 +172,38 @@
 
   <!-- PAGE 2: GROUP DASHBOARD -->
   <div id="groupDashboardView" class="max-w-md md:max-w-2xl mx-auto p-4 md:p-6 hidden">
-    <header class="flex justify-between items-center my-4">
+    <header class="flex justify-between items-center my-4 relative">
       <button onclick="backToGroupSelection()" class="nfs-btn-blue nfs-skew text-xs md:text-sm font-nfs font-black px-3 py-1.5 rounded-xl">
         <span class="nfs-skew-inside inline-block">← GARAGE</span>
       </button>
 
-      <div id="currentGroupName" class="bg-yellow-400 text-black border-2 border-black font-nfs font-black text-lg md:text-xl px-4 py-1 rounded-xl shadow-[3px_3px_0px_#000] truncate max-w-[160px] md:max-w-[260px]"></div>
+      <div id="currentGroupName" class="bg-yellow-400 text-black border-2 border-black font-nfs font-black text-lg md:text-xl px-4 py-1 rounded-xl shadow-[3px_3px_0px_#000] truncate max-w-[140px] md:max-w-[220px]"></div>
       
-      <div class="flex items-center space-x-2">
+      <div class="flex items-center space-x-2 relative">
         <button id="btnThemeDash" onclick="toggleTheme()" class="border-2 border-black px-2.5 py-1.5 rounded-xl shadow-[2px_2px_0px_#000] font-bold text-xs md:text-sm transition-colors">
           <span id="themeIconDash">🌙</span>
         </button>
-        <button id="btnManageCrew" onclick="openManageCrewModal()" class="nfs-btn-red nfs-skew text-xs md:text-sm font-nfs font-black px-3 py-1.5 rounded-xl hidden">
-          <span class="nfs-skew-inside inline-block">⚙️ CREW</span>
-        </button>
+
+        <!-- 右上角 MENU 下拉式選單 -->
+        <div class="relative">
+          <button id="btnDashMenu" onclick="toggleDashMenu()" class="nfs-btn-yellow nfs-skew text-xs md:text-sm font-nfs font-black px-3 py-1.5 rounded-xl flex items-center space-x-1">
+            <span class="nfs-skew-inside inline-block">MENU ☰</span>
+          </button>
+
+          <!-- 下拉選單卡片 -->
+          <div id="dashMenuDropdown" class="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-900 border-4 border-black rounded-2xl shadow-[6px_6px_0px_#000] z-50 hidden flex-col p-2 space-y-2 transition-all">
+            <!-- 戰報輸出 -->
+            <button onclick="exportReport(); toggleDashMenu();" class="nfs-btn-green nfs-skew text-xs md:text-sm font-nfs font-black px-3 py-2 rounded-xl text-left w-full flex items-center justify-between">
+              <span class="nfs-skew-inside inline-block">📊 戰報輸出</span>
+            </span >
+            </button>
+            
+            <!-- CREW 車隊管理 (只有 ADMIN 顯示) -->
+            <button id="btnManageCrew" onclick="openManageCrewModal(); toggleDashMenu();" class="nfs-btn-red nfs-skew text-xs md:text-sm font-nfs font-black px-3 py-2 rounded-xl text-left w-full hidden flex items-center justify-between">
+              <span class="nfs-skew-inside inline-block">⚙️ CREW</span>
+            </button>
+          </div>
+        </div>
       </div>
     </header>
 
@@ -596,6 +614,27 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
     let isPulling = false;
     const PULL_THRESHOLD = 80;
 
+    // 控制 MENU 開關
+    function toggleDashMenu() {
+      const menu = document.getElementById('dashMenuDropdown');
+      if (menu) {
+        menu.classList.toggle('hidden');
+        menu.classList.toggle('flex');
+      }
+    }
+
+    // 點擊選單外部自動關閉 MENU
+    document.addEventListener('click', (e) => {
+      const menu = document.getElementById('dashMenuDropdown');
+      const btn = document.getElementById('btnDashMenu');
+      if (menu && btn && !menu.classList.contains('hidden')) {
+        if (!menu.contains(e.target) && !btn.contains(e.target)) {
+          menu.classList.add('hidden');
+          menu.classList.remove('flex');
+        }
+      }
+    });
+
     // 註冊 Service Worker (PWA 核心功能)
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
@@ -603,6 +642,76 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
           .then(reg => console.log('Service Worker 註冊成功！範疇：', reg.scope))
           .catch(err => console.error('Service Worker 註冊失敗：', err));
       });
+    }
+
+    // 新增：輸出戰報功能 (Export Report to CSV)
+    function exportReport() {
+      if (!appData) return alert('尚未加載戰報數據！');
+
+      const groupName = document.getElementById('currentGroupName').innerText || '車隊';
+      let csvContent = '\uFEFF'; // UTF-8 BOM 避免 Excel 亂碼
+
+      // 1. 車隊概況
+      csvContent += `=== NFS 車隊戰報：${groupName} ===\n`;
+      csvContent += `總支出（不含雜項/還款）,$${appData.totalGroupExpense || 0}\n\n`;
+
+      // 2. 個人戰績 (應收/應付結算)
+      csvContent += `=== 個人戰績結算 ===\n`;
+      csvContent += `成員,個人結算金額,狀態\n`;
+      if (appData.balances) {
+        for (const [name, val] of Object.entries(appData.balances)) {
+          const rounded = Math.round(val * 10) / 10;
+          let status = '已結清';
+          if (rounded > 0) status = `應收 $${rounded}`;
+          else if (rounded < 0) status = `應付 $${Math.abs(rounded)}`;
+          csvContent += `"${name}","${rounded}","${status}"\n`;
+        }
+      }
+      csvContent += `\n`;
+
+      // 3. 最佳還款路線
+      csvContent += `=== 最佳還款路線 ===\n`;
+      csvContent += `付款人,收款人,還款金額\n`;
+      if (appData.settlements && appData.settlements.length > 0) {
+        appData.settlements.forEach(s => {
+          csvContent += `"${s.from}","${s.to}","$${s.amount}"\n`;
+        });
+      } else {
+        csvContent += `無欠款,無欠款,0\n`;
+      }
+      csvContent += `\n`;
+
+      // 4. 明細紀錄 (Race Logs)
+      csvContent += `=== 明細紀錄 (Race Logs) ===\n`;
+      csvContent += `日期,類別,項目說明,買單車手,總金額,分攤車手,狀態,備註\n`;
+
+      if (appData.expenses && appData.expenses.length > 0) {
+        appData.expenses.forEach(e => {
+          const isPayment = e.type === 'PAYMENT';
+          const category = e.category || (isPayment ? '💵 還款' : '其他');
+          const desc = (e.desc || '').replace(/"/g, '""');
+          const payer = e.payer || '';
+          const amount = e.amount || 0;
+          const participants = (e.participants || []).join('; ');
+          const status = isPayment ? '已全部付款' : getExpenseStatus(e);
+          const remark = (e.remark || '').replace(/"/g, '""');
+          const date = e.date || '';
+
+          csvContent += `"${date}","${category}","${desc}","${payer}","${amount}","${participants}","${status}","${remark}"\n`;
+        });
+      }
+
+      // 下載 Blob 檔案
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      
+      const today = new Date().toISOString().split('T')[0];
+      link.setAttribute('download', `${groupName}_NFS戰報_${today}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
 
     // 初始化下拉更新監聽器
@@ -927,9 +1036,17 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
       }
 
       if (currentUser && currentUser.isAdmin) {
-        document.getElementById('btnManageCrew').classList.remove('hidden');
+        const crewBtn = document.getElementById('btnManageCrew');
+        if (crewBtn) {
+          crewBtn.classList.remove('hidden');
+          crewBtn.classList.add('flex');
+        }
       } else {
-        document.getElementById('btnManageCrew').classList.add('hidden');
+        const crewBtn = document.getElementById('btnManageCrew');
+        if (crewBtn) {
+          crewBtn.classList.add('hidden');
+          crewBtn.classList.remove('flex');
+        }
       }
 
       renderStats(data);
