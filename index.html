@@ -60,9 +60,37 @@
 
     @keyframes revEngine { 0%, 100% { transform: scale(1) rotate(-2deg); } 50% { transform: scale(1.08) rotate(2deg); } }
     .animate-rev { animation: revEngine 0.4s infinite ease-in-out; }
+
+    /* 下拉更新 Pull-To-Refresh 容器樣式 */
+    #ptrContainer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 0;
+      overflow: hidden;
+      transition: height 0.2s ease, opacity 0.2s ease;
+      z-index: 40;
+      pointer-events: none;
+      opacity: 0;
+    }
+    #ptrContainer.pulling {
+      transition: none;
+    }
   </style>
 </head>
 <body class="dark min-h-screen pb-24 select-none">
+
+  <!-- 下拉更新指示器 -->
+  <div id="ptrContainer" class="flex justify-center items-center">
+    <div id="ptrContent" class="bg-yellow-400 text-black border-2 border-black px-4 py-1.5 rounded-2xl shadow-[3px_3px_0px_#000] font-nfs font-black text-sm flex items-center space-x-2">
+      <span id="ptrIcon">⬇️</span>
+      <span id="ptrText">下拉更新數據...</span>
+    </div>
+  </div>
 
   <!-- Loading Overlay -->
   <div id="loadingOverlay" class="fixed inset-0 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center z-50 hidden">
@@ -562,6 +590,12 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
     let activeSettleData = null;
     let currentEditingExpenseId = null;
 
+    // 下拉刷新 (Pull-To-Refresh) 全局變數
+    let touchStartY = 0;
+    let touchMoveY = 0;
+    let isPulling = false;
+    const PULL_THRESHOLD = 80;
+
     // 註冊 Service Worker (PWA 核心功能)
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
@@ -569,6 +603,75 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
           .then(reg => console.log('Service Worker 註冊成功！範疇：', reg.scope))
           .catch(err => console.error('Service Worker 註冊失敗：', err));
       });
+    }
+
+    // 初始化下拉更新監聽器
+    function initPullToRefresh() {
+      const ptrContainer = document.getElementById('ptrContainer');
+      const ptrIcon = document.getElementById('ptrIcon');
+      const ptrText = document.getElementById('ptrText');
+
+      window.addEventListener('touchstart', (e) => {
+        const dashView = document.getElementById('groupDashboardView');
+        if (dashView.classList.contains('hidden')) return;
+        if (window.scrollY > 0) return;
+
+        touchStartY = e.touches[0].clientY;
+        isPulling = true;
+      }, { passive: true });
+
+      window.addEventListener('touchmove', (e) => {
+        if (!isPulling) return;
+        touchMoveY = e.touches[0].clientY;
+        const pullDistance = touchMoveY - touchStartY;
+
+        if (pullDistance > 0 && window.scrollY === 0) {
+          ptrContainer.classList.add('pulling');
+          ptrContainer.style.opacity = '1';
+          
+          const height = Math.min(pullDistance * 0.5, PULL_THRESHOLD + 20);
+          ptrContainer.style.height = `${height}px`;
+
+          if (height >= PULL_THRESHOLD) {
+            ptrIcon.innerText = '🏎️💨';
+            ptrText.innerText = '鬆開以更新賽道數據！';
+          } else {
+            ptrIcon.innerText = '⬇️';
+            ptrText.innerText = '下拉更新數據...';
+          }
+        }
+      }, { passive: true });
+
+      window.addEventListener('touchend', () => {
+        if (!isPulling) return;
+        isPulling = false;
+        ptrContainer.classList.remove('pulling');
+
+        const pullDistance = touchMoveY - touchStartY;
+        if (pullDistance * 0.5 >= PULL_THRESHOLD && window.scrollY === 0) {
+          ptrIcon.innerText = '⚡';
+          ptrText.innerText = '正在加載最新戰報...';
+          ptrContainer.style.height = '60px';
+
+          if (typeof loadGroupData === 'function') {
+            loadGroupData();
+          }
+          
+          setTimeout(() => {
+            resetPtr();
+          }, 1000);
+        } else {
+          resetPtr();
+        }
+        
+        touchStartY = 0;
+        touchMoveY = 0;
+      });
+
+      function resetPtr() {
+        ptrContainer.style.height = '0px';
+        ptrContainer.style.opacity = '0';
+      }
     }
 
     // 判斷訂單 STATUS
@@ -597,6 +700,8 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
 
     window.onload = function() {
       applyTheme(currentTheme);
+      initPullToRefresh();
+
       if (!gasApiUrl && typeof google === 'undefined') {
         openApiModal();
       } else if (currentToken) {
@@ -970,7 +1075,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
       const name = document.getElementById('registerDriverName').value.trim();
       if (!name) return alert('請輸入車手代號/暱稱！');
 
-      closeDriverRegisterModal(); // 按下後立即關閉
+      closeDriverRegisterModal();
       showLoading();
       callGas('registerDriver', { name: name })
         .then((res) => {
@@ -1008,7 +1113,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
         .map(id => id.trim().toUpperCase())
         .filter(id => id.length > 0);
 
-      closeCreateGroupModal(); // 按下後立即關閉
+      closeCreateGroupModal();
       showLoading();
       callGas('createGroupWithCreator', { 
         groupName: name, 
@@ -1026,7 +1131,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
       const name = document.getElementById('newMemberName').value.trim();
       if (!name) return alert('請輸入車手代號');
 
-      closeMemberModal(); // 按下後立即關閉
+      closeMemberModal();
       showLoading();
       callGas('addMemberToGroup', { adminToken: currentToken, groupId: currentGroupId, newMemberName: name })
         .then((res) => {
@@ -1205,7 +1310,6 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
       }
     }
 
-    // 新增消費提交 (按下後立即關閉抽屜)
     function submitExpense(e) {
       if (e) e.preventDefault();
       
@@ -1229,7 +1333,6 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
       const submitBtn = document.getElementById('btnSubmit');
       if (submitBtn) submitBtn.disabled = true;
 
-      // 按下後立即關閉抽屜
       closeExpenseDrawer();
       showLoading();
 
@@ -1265,14 +1368,12 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
         });
     }
 
-    // 刪除消費 (按下後立即關閉抽屜)
     function handleDeleteExpense(expenseId) {
       if (!confirm('確定要刪除這筆開銷紀錄？')) return;
       
       const deleteBtn = document.getElementById('btnDeleteDetailExpense');
       if (deleteBtn) deleteBtn.disabled = true;
 
-      // 按下後立即關閉抽屜
       closeExpenseDetailModal();
       showLoading();
 
@@ -1443,7 +1544,6 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
       drawer.classList.add('translate-y-full');
     }
 
-    // 儲存修改提交 (按下後立即關閉抽屜)
     function saveDetailShares(e) {
       if (e) e.preventDefault();
       if (!currentEditingExpenseId) return;
@@ -1468,7 +1568,6 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
       const saveBtn = document.getElementById('btnSaveDetail');
       if (saveBtn) saveBtn.disabled = true;
 
-      // 按下後立即關閉抽屜
       closeExpenseDetailModal();
       showLoading();
 
@@ -1498,7 +1597,6 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
 	  currentEditingExpenseId = null;
     }
 
-    // 分區顯示：戰報 (我的戰報 vs 其他車手)
     function renderBalances(balances) {
       const container = document.getElementById('balanceList');
       if (!balances || Object.keys(balances).length === 0) {
@@ -1547,7 +1645,6 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
       `;
     }
 
-    // 分區顯示：最佳甩尾結算路線 (與我有關 vs 其他成員)
     function renderSettlements(settlements) {
       const container = document.getElementById('settlementList');
       if (!settlements || settlements.length === 0) {
@@ -1624,7 +1721,6 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs font-mono
       const settleBtn = document.getElementById('btnConfirmSettle');
       if (settleBtn) settleBtn.disabled = true;
 
-      // 按下後立即關閉
       closeSettleModal();
 
       showLoading();
