@@ -1955,7 +1955,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
 
     function closeSettleModal() {
       document.getElementById('settleModal').classList.add('hidden');
-      activeSettleData = null;
+      //activeSettleData = null;
     }
 
 	function confirmSettle() {
@@ -1999,10 +1999,11 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
 		  renderApp(data);
 		})
 		.catch((err) => { 
-		  hideLoading(); 
+		  hideLoading();
 		  if (settleBtn) settleBtn.disabled = false;
 		  alert('還款失敗：' + (err.message || err)); 
 		});
+		
 	}
 
     function filterFeed() {
