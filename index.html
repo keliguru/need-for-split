@@ -1958,41 +1958,52 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
       activeSettleData = null;
     }
 
-    function confirmSettle() {
-      if (!activeSettleData) return;
-      const amount = parseFloat(document.getElementById('settleAmountInput').value);
-      if (isNaN(amount) || amount <= 0) return alert('請輸入正確的金額');
+	function confirmSettle() {
+	  if (!activeSettleData) return;
+	  const amount = parseFloat(document.getElementById('settleAmountInput').value);
+	  if (isNaN(amount) || amount <= 0) return alert('請輸入正確的金額');
 
-      const settleBtn = document.getElementById('btnConfirmSettle');
-      if (settleBtn) settleBtn.disabled = true;
+	  const settleBtn = document.getElementById('btnConfirmSettle');
+	  if (settleBtn) settleBtn.disabled = true;
 
-      closeSettleModal();
-      showLoading();
+	  closeSettleModal();
+	  showLoading();
 
-      const payload = {
-        token: state.token,
-        groupId: state.currentGroup,
-        category: '💵 還款',
-        desc: `【${activeSettleData.from}】還款給【${activeSettleData.to}】`,
-        amount: amount,
-        payer: activeSettleData.from,
-        shares: { [activeSettleData.to]: amount },
-        type: 'PAYMENT',
-        date: new Date().toISOString().split('T')[0]
-      };
+	  // 取得台灣/香港當地的 YYYY-MM-DD 日期，避免 UTC 時間差問題
+	  const now = new Date();
+	  const localDate = new Date(now.getTime() - (now.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
 
-      callGas('addTransaction', payload)
-        .then((data) => {
-          hideLoading();
-          if (settleBtn) settleBtn.disabled = false;
-          renderApp(data);
-        })
-        .catch((err) => { 
-          hideLoading(); 
-          if (settleBtn) settleBtn.disabled = false;
-          alert('還款失敗：' + err.message); 
-        });
-    }
+	  // 整理要發送的資料 payload (清理掉重複的 action 避免重複包裝)
+	  const payload = {
+		token: state.token,
+		groupId: state.currentGroup,
+		category: '💵 還款',
+		desc: `【${activeSettleData.from}】還款給【${activeSettleData.to}】`,
+		amount: amount,
+		payer: activeSettleData.from,
+		shares: { [activeSettleData.to]: amount },
+		type: 'PAYMENT',
+		date: localDate
+	  };
+
+	  // 呼叫 callGas API
+	  callGas('addTransaction', payload)
+		.then((data) => {
+		  hideLoading();
+		  if (settleBtn) settleBtn.disabled = false;
+		  // 檢查回傳資料是否有錯
+		  if (data && data.error) {
+			alert('還款失敗：' + data.error);
+			return;
+		  }
+		  renderApp(data);
+		})
+		.catch((err) => { 
+		  hideLoading(); 
+		  if (settleBtn) settleBtn.disabled = false;
+		  alert('還款失敗：' + (err.message || err)); 
+		});
+	}
 
     function filterFeed() {
       if (state.appData && state.appData.expenses) {
