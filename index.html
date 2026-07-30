@@ -262,7 +262,7 @@
           <option value="🎟️ 娛樂">🎟️ 氮氣補給</option>
           <option value="🛒 購物">🛒 改裝零件</option>
           <option value="💡 雜項">💡 雜項開銷</option>
-          <option value="還款">💵 還款紀錄</option>
+          <option value="💵 還款">💵 還款紀錄</option>
         </select>
       </div>
       <div id="expensesFeed" class="divide-y-2 divide-slate-200 dark:divide-slate-800 text-sm md:text-base font-bold">
@@ -310,6 +310,7 @@
               <option value="🎟️ 娛樂">🎟️ 氮氣補給</option>
               <option value="🛒 購物">🛒 改裝零件</option>
               <option value="💡 雜項">💡 雜項開銷</option>
+              <option value="💵 還款">💵 還款</option>
             </select>
           </div>
           <div>
@@ -402,6 +403,7 @@
               <option value="🎟️ 娛樂">🎟️ 氮氣補給</option>
               <option value="🛒 購物">🛒 改裝零件</option>
               <option value="💡 雜項">💡 雜項開銷</option>
+              <option value="💵 還款">💵 還款</option>
             </select>
           </div>
           <div>
@@ -808,8 +810,10 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
           ptrText.innerText = '正在加載最新戰報...';
           ptrContainer.style.height = '60px';
 
-          if (typeof loadGroupData === 'function') {
+          if (typeof loadGroupData === 'function' && state.currentGroup) {
             loadGroupData();
+          } else if (typeof loadMyGroups === 'function') {
+            loadMyGroups();
           }
           
           setTimeout(() => {
@@ -861,20 +865,23 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
       if (!state.apiUrl && typeof google === 'undefined') {
         openApiModal();
       } else if (state.token) {
-        // 使用 Web Storage 實現 Optimistic UI / Cache 載入
+        // 使用 Web Storage 實現 Optimistic UI / Cache 載入，並預設先顯示 GroupSelection
         const cachedAppData = localStorage.getItem(`NFS_CACHE_${state.token}`);
         if (cachedAppData) {
           try {
             const cache = JSON.parse(cachedAppData);
             state.currentUser = cache.currentUser;
             if (cache.appData) {
-              renderApp(cache.appData);
-              document.getElementById('loginView').classList.add('hidden');
-              document.getElementById('groupDashboardView').classList.remove('hidden');
-              document.getElementById('fabAddExpense').classList.remove('hidden');
+              state.appData = cache.appData;
             }
           } catch(e) {}
         }
+        // 強制先呈現 Group Selection, 避免多視圖疊加及 F5 重新整理白屏/錯誤
+        document.getElementById('loginView').classList.add('hidden');
+        document.getElementById('groupDashboardView').classList.add('hidden');
+        document.getElementById('fabAddExpense').classList.add('hidden');
+        document.getElementById('groupSelectionView').classList.remove('hidden');
+
         verifyAndLoad(state.token);
       }
     };
@@ -984,6 +991,8 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
             
             document.getElementById('loginView').classList.add('hidden');
             if (!state.currentGroup) {
+              document.getElementById('groupDashboardView').classList.add('hidden');
+              document.getElementById('fabAddExpense').classList.add('hidden');
               document.getElementById('groupSelectionView').classList.remove('hidden');
             }
             
@@ -1005,6 +1014,9 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
           } else {
             showError(res.message);
             localStorage.removeItem('MEMBER_TOKEN');
+            document.getElementById('groupSelectionView').classList.add('hidden');
+            document.getElementById('groupDashboardView').classList.add('hidden');
+            document.getElementById('loginView').classList.remove('hidden');
           }
         })
         .catch((err) => {
@@ -1048,7 +1060,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
 
     function renderGroupList(groups) {
       const container = document.getElementById('groupList');
-      if (groups.length === 0) {
+      if (!groups || groups.length === 0) {
         container.innerHTML = '<p class="text-xs md:text-sm font-bold text-slate-500 py-4 text-center">你目前尚未加入任何車隊群組。</p>';
         return;
       }
@@ -1079,6 +1091,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
     }
 
     function loadGroupData() {
+      if (!state.currentGroup) return backToGroupSelection();
       showLoading();
       callGas('getGroupData', { token: state.token, groupId: state.currentGroup })
         .then((data) => {
@@ -1097,16 +1110,24 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
     }
 
     function renderApp(data) {
+      if (!data) return;
       state.appData = data;
       
-      if (data && data.expenses) {
+      if (data.expenses) {
         data.totalGroupExpense = data.expenses.reduce((sum, e) => {
-          if (e.type !== 'PAYMENT' && (!e.category || !e.category.includes('雜項'))) {
+          if (e.type !== 'PAYMENT' && (!e.category || (!e.category.includes('雜項') && !e.category.includes('還款')))) {
             return sum + (parseFloat(e.amount) || 0);
           }
           return sum;
         }, 0);
+      } else {
+        data.totalGroupExpense = 0;
+        data.expenses = [];
       }
+
+      if (!data.balances) data.balances = {};
+      if (!data.settlements) data.settlements = [];
+      if (!data.members) data.members = [];
 
       if (state.currentUser && state.currentUser.isAdmin) {
         const crewBtn = document.getElementById('btnManageCrew');
@@ -1130,8 +1151,9 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
     }
 
     function renderStats(data) {
-      document.getElementById('statTotalExpense').innerText = `$${data.totalGroupExpense.toLocaleString()}`;
-      const myBal = data.balances[state.currentUser.memberName] || 0;
+      document.getElementById('statTotalExpense').innerText = `$${(data.totalGroupExpense || 0).toLocaleString()}`;
+      const myName = state.currentUser ? state.currentUser.memberName : '';
+      const myBal = (data.balances && myName) ? (data.balances[myName] || 0) : 0;
       const rounded = Math.round(myBal * 10) / 10;
       const elem = document.getElementById('statMyBalance');
 
@@ -1185,13 +1207,13 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
     });
 
     function openManageCrewModal() {
-      if (!state.appData) return;
+      if (!state.appData || !state.appData.members) return;
       const container = document.getElementById('crewMembersList');
       container.innerHTML = '';
 
       callGas('getAllSystemMembers').then(allMembers => {
         state.appData.members.forEach(member => {
-          const sysMember = allMembers.find(m => m.name === member);
+          const sysMember = (allMembers || []).find(m => m.name === member);
           const memberId = sysMember ? sysMember.id : null;
           const safeMemberName = escapeHTML(member);
 
@@ -1448,11 +1470,13 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
     function handleCheckboxChange(member, checkboxName, inputPrefix, isDetail = false) {
       const cb = document.querySelector(`input[name="${checkboxName}"][value="${member}"]`);
       const input = document.getElementById(`${inputPrefix}${member}`);
-      if (cb.checked) {
-        input.disabled = false;
-      } else {
-        input.value = "0";
-        input.disabled = true;
+      if (cb && input) {
+        if (cb.checked) {
+          input.disabled = false;
+        } else {
+          input.value = "0";
+          input.disabled = true;
+        }
       }
 
       if (isDetail) updateRemainingCalculation();
@@ -1471,6 +1495,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
 
     function renderFormOptions(members) {
       const payerSelect = document.getElementById('payer');
+      if (!members) members = [];
       payerSelect.innerHTML = members.length ? members.map(m => `<option value="${escapeHTML(m)}">${escapeHTML(m)}</option>`).join('') : '<option value="">請先招募車手</option>';
       
       if (state.currentUser && members.includes(state.currentUser.memberName)) {
@@ -1601,14 +1626,16 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
       const totalAmount = parseFloat(document.getElementById('detailAmountDisplay').value) || 0;
       let currentSharesSum = 0;
 
-      state.appData.members.forEach(m => {
-        if (m !== memberName) {
-          const inputElem = document.getElementById(`detail-share-input-${m}`);
-          if (inputElem) {
-            currentSharesSum += parseFloat(inputElem.value) || 0;
+      if (state.appData && state.appData.members) {
+        state.appData.members.forEach(m => {
+          if (m !== memberName) {
+            const inputElem = document.getElementById(`detail-share-input-${m}`);
+            if (inputElem) {
+              currentSharesSum += parseFloat(inputElem.value) || 0;
+            }
           }
-        }
-      });
+        });
+      }
 
       const remaining = Math.max(0, Math.round((totalAmount - currentSharesSum) * 10) / 10);
       const targetInput = document.getElementById(`detail-share-input-${memberName}`);
@@ -1626,6 +1653,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
     }
 
     function openExpenseDetailModal(expenseId) {
+      if (!state.appData || !state.appData.expenses) return;
       const exp = state.appData.expenses.find(e => e.id === expenseId);
       if (!exp) return;
 
@@ -1637,7 +1665,8 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
       document.getElementById('detailAmountDisplay').value = exp.amount || 0;
 
       const payerSelect = document.getElementById('detailPayer');
-      payerSelect.innerHTML = state.appData.members.map(m => `<option value="${escapeHTML(m)}">${escapeHTML(m)}</option>`).join('');
+      const members = state.appData.members || [];
+      payerSelect.innerHTML = members.map(m => `<option value="${escapeHTML(m)}">${escapeHTML(m)}</option>`).join('');
       payerSelect.value = exp.payer;
 
       detailBase64Image = exp.imageUrl || '';
@@ -1665,7 +1694,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
       const partGroup = document.getElementById('detailParticipantsGroup');
       const shares = exp.shares || {};
 
-      partGroup.innerHTML = state.appData.members.map(m => {
+      partGroup.innerHTML = members.map(m => {
         const shareVal = parseFloat(shares[m]) || 0;
         const isChecked = shares.hasOwnProperty(m) && shareVal >= 0 && (exp.participants && exp.participants.includes(m));
         const isMe = state.currentUser && m === state.currentUser.memberName;
@@ -1719,15 +1748,17 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
       const totalAmount = parseFloat(document.getElementById('detailAmountDisplay').value) || 0;
       let currentSharesSum = 0;
 
-      state.appData.members.forEach(member => {
-        const cb = document.querySelector(`input[name="detailParts"][value="${member}"]`);
-        if (cb && cb.checked) {
-          const inputElem = document.getElementById(`detail-share-input-${member}`);
-          if (inputElem) {
-            currentSharesSum += parseFloat(inputElem.value) || 0;
+      if (state.appData && state.appData.members) {
+        state.appData.members.forEach(member => {
+          const cb = document.querySelector(`input[name="detailParts"][value="${member}"]`);
+          if (cb && cb.checked) {
+            const inputElem = document.getElementById(`detail-share-input-${member}`);
+            if (inputElem) {
+              currentSharesSum += parseFloat(inputElem.value) || 0;
+            }
           }
-        }
-      });
+        });
+      }
 
       const remaining = Math.round((totalAmount - currentSharesSum) * 10) / 10;
       const remainingElem = document.getElementById('detailRemainingAmount');
@@ -1906,7 +1937,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
       if (otherSettlements.length > 0) {
         html += `
           <div class="space-y-2">
-            <div class="text-[10px] md:text-xs font-black text-slate-400">🏁 其他成員還款路線</div>
+            <div class="text-[10px] md:text-xs font-black text-slate-400">👥 其他車手的還款事項</div>
             ${otherSettlements.map(s => createItemCard(s, false)).join('')}
           </div>
         `;
@@ -1916,7 +1947,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
     }
 
     function openSettleModal(from, to, amount) {
-      activeSettleData = { from, to };
+      activeSettleData = { from, to, amount };
       document.getElementById('settleInfo').innerText = `【${from}】還款給【${to}】`;
       document.getElementById('settleAmountInput').value = amount;
       document.getElementById('settleModal').classList.remove('hidden');
@@ -1930,36 +1961,37 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
     function confirmSettle() {
       if (!activeSettleData) return;
       const amount = parseFloat(document.getElementById('settleAmountInput').value);
-      if (!amount || amount <= 0) return alert('請輸入有效的還款金額！');
+      if (isNaN(amount) || amount <= 0) return alert('請輸入正確的金額');
 
-      const { from, to } = activeSettleData;
-      
       const settleBtn = document.getElementById('btnConfirmSettle');
       if (settleBtn) settleBtn.disabled = true;
 
       closeSettleModal();
-
       showLoading();
-      callGas('addTransaction', {
+
+      const payload = {
         token: state.token,
         groupId: state.currentGroup,
-        desc: `${from} 還款給 ${to}`, 
-        amount: amount, 
-        payer: from, 
-        shares: { [to]: amount },
-        type: 'PAYMENT', 
+        category: '💵 還款',
+        desc: `【${activeSettleData.from}】還款給【${activeSettleData.to}】`,
+        amount: amount,
+        payer: activeSettleData.from,
+        shares: { [activeSettleData.to]: amount },
+        type: 'PAYMENT',
         date: new Date().toISOString().split('T')[0]
-      })
-      .then((data) => {
-        hideLoading();
-        if (settleBtn) settleBtn.disabled = false;
-        renderApp(data);
-      })
-      .catch((err) => { 
-        hideLoading(); 
-        if (settleBtn) settleBtn.disabled = false;
-        alert('還款失敗：' + err.message); 
-      });
+      };
+
+      callGas('addTransaction', payload)
+        .then((data) => {
+          hideLoading();
+          if (settleBtn) settleBtn.disabled = false;
+          renderApp(data);
+        })
+        .catch((err) => { 
+          hideLoading(); 
+          if (settleBtn) settleBtn.disabled = false;
+          alert('還款失敗：' + err.message); 
+        });
     }
 
     function filterFeed() {
@@ -1969,62 +2001,76 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
     }
 
     function renderFeed(expenses) {
-      const filter = document.getElementById('filterCategory').value;
-      const filtered = filter === 'ALL' 
-        ? expenses 
-        : (filter === '還款' 
-            ? expenses.filter(e => e.type === 'PAYMENT')
-            : expenses.filter(e => e.category === filter));
-      const feed = document.getElementById('expensesFeed');
-      
-      if (!filtered || filtered.length === 0) {
-        feed.innerHTML = '<p class="text-slate-500 py-3 text-center text-xs md:text-sm font-bold">尚無競速日誌紀錄</p>';
+      const container = document.getElementById('expensesFeed');
+      const catFilter = document.getElementById('filterCategory').value;
+
+      if (!expenses || expenses.length === 0) {
+        container.innerHTML = '<p class="text-xs md:text-sm text-slate-500 py-4 text-center">賽道上尚無任何明細紀錄 🏎️💨</p>';
         return;
       }
 
-      feed.innerHTML = filtered.map(e => {
-        const isPayment = e.type === 'PAYMENT';
-        const imgBadge = e.imageUrl 
-          ? `<span class="inline-flex items-center text-[10px] md:text-xs bg-yellow-400 text-black border border-black font-black px-1.5 py-0.5 rounded-md">🧾 單據</span>` 
-          : '';
+      let filtered = expenses;
+      if (catFilter !== 'ALL') {
+        filtered = expenses.filter(e => {
+          if (catFilter === '💵 還款' || catFilter === '還款') {
+            return e.type === 'PAYMENT' || (e.category && e.category.includes('還款'));
+          }
+          return e.category === catFilter;
+        });
+      }
 
-        const status = isPayment ? '已全部付款' : getExpenseStatus(e);
-        let statusBadgeClass = 'bg-green-500 text-white';
-        if (status === '未完成分帳') statusBadgeClass = 'bg-yellow-400 text-black';
-        else if (status === '未完成付款') statusBadgeClass = 'bg-red-500 text-white';
+      if (filtered.length === 0) {
+        container.innerHTML = '<p class="text-xs md:text-sm text-slate-500 py-4 text-center">無符合該類別的明細紀錄。</p>';
+        return;
+      }
 
-        const safeDesc = escapeHTML(e.desc);
-        const safePayer = escapeHTML(e.payer);
-        const safeRemark = escapeHTML(e.remark);
-        const remarkHtml = safeRemark ? `<span class="text-[11px] md:text-xs text-slate-400 dark:text-slate-500 font-normal">💬 ${safeRemark}</span>` : '';
+      container.innerHTML = filtered.map(exp => {
+        const isPayment = exp.type === 'PAYMENT';
+        const isExpense = !isPayment;
+        
+        let statusBadge = '';
+        if (isExpense) {
+          const status = getExpenseStatus(exp);
+          if (status === '未完成分帳') {
+            statusBadge = '<span class="text-[10px] md:text-xs font-bold px-1.5 py-0.5 bg-yellow-400 text-black border border-black rounded shadow-[1px_1px_0px_#000]">未完成分帳</span>';
+          } else if (status === '未完成付款') {
+            statusBadge = '<span class="text-[10px] md:text-xs font-bold px-1.5 py-0.5 bg-red-500 text-white border border-black rounded shadow-[1px_1px_0px_#000]">未完成付款</span>';
+          } else {
+            statusBadge = '<span class="text-[10px] md:text-xs font-bold px-1.5 py-0.5 bg-green-500 text-white border border-black rounded shadow-[1px_1px_0px_#000]">已結清</span>';
+          }
+        }
+
+        const categoryText = escapeHTML(exp.category || (isPayment ? '💵 還款' : '💡 雜項'));
+        const descText = escapeHTML(exp.desc || '');
+        const payerText = escapeHTML(exp.payer || '');
+        const remarkText = escapeHTML(exp.remark || '');
+        const dateText = escapeHTML(exp.date || '');
 
         return `
-          <div onclick="openExpenseDetailModal('${escapeHTML(e.id)}')" class="py-3 px-2 cursor-pointer hover:bg-slate-100/50 dark:hover:bg-slate-800/50 rounded-xl transition-colors flex flex-col justify-between active:scale-[0.99]">
-            <!-- 上半部：核心項目資訊 -->
-            <div>
-              <div class="flex justify-between items-center font-black">
-                <div class="flex items-center space-x-2 truncate">
-                  <span class="text-[10px] md:text-xs px-2 py-0.5 rounded-md border border-black shrink-0 ${isPayment ? 'bg-purple-600 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-yellow-400'}">
-                    ${escapeHTML(e.category || (isPayment ? '💵 還款' : '其他'))}
-                  </span>
-                  <span class="text-slate-800 dark:text-slate-100 text-sm md:text-base truncate">${safeDesc}</span>
-                </div>
-                <div class="flex items-center space-x-1.5 shrink-0 ml-2">
-                  <span class="${isPayment ? 'text-purple-500 dark:text-purple-400' : 'text-yellow-500 dark:text-yellow-400'} text-base md:text-lg">$${e.amount}</span>
-                  ${imgBadge}
-                </div>
+          <div onclick="openExpenseDetailModal('${escapeHTML(exp.id)}')" 
+               class="py-3 flex justify-between items-center cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors px-1 rounded-xl">
+            <div class="space-y-1 max-w-[65%]">
+              <div class="flex items-center space-x-1.5 flex-wrap gap-y-1">
+                <span class="text-[10px] md:text-xs font-black bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-yellow-400 border border-black px-1.5 py-0.5 rounded shadow-[1px_1px_0px_#000]">
+                  ${categoryText}
+                </span>
+                <span class="text-xs md:text-sm font-black text-slate-900 dark:text-white truncate">
+                  ${descText}
+                </span>
+                ${statusBadge}
               </div>
+              <div class="text-[10px] md:text-xs text-slate-500 dark:text-slate-400 font-bold flex items-center space-x-2">
+                <span>🏎️ ${payerText} 先付</span>
+                <span>•</span>
+                <span>📅 ${dateText}</span>
+              </div>
+              ${remarkText ? `<div class="text-[10px] md:text-xs text-yellow-600 dark:text-yellow-400 font-bold italic">💬 ${remarkText}</div>` : ''}
             </div>
 
-            <!-- 下半部：買單者與狀態標籤 -->
-            <div class="flex justify-between items-center mt-2 pt-1 border-t border-slate-100 dark:border-slate-800/60 text-xs text-slate-500 dark:text-slate-400">
-              <div class="flex items-center space-x-2 truncate">
-                <span>買單：<b class="text-slate-700 dark:text-slate-300 font-bold">${safePayer}</b></span>
-                ${remarkHtml}
+            <div class="text-right">
+              <div class="font-mono text-base md:text-lg font-black ${isPayment ? 'text-green-500' : 'text-slate-900 dark:text-yellow-400'}">
+                $${(parseFloat(exp.amount) || 0).toLocaleString()}
               </div>
-              <span class="text-[10px] md:text-xs font-black px-2 py-0.5 rounded-md border border-black shrink-0 shadow-[1px_1px_0px_#000] ${statusBadgeClass}">
-                ${status}
-              </span>
             </div>
           </div>
         `;
