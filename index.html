@@ -80,9 +80,23 @@
     #ptrContainer.pulling {
       transition: none;
     }
+
+    /* 骨架屏載入動畫 */
+    @keyframes pulseSkeleton {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    .skeleton-loader {
+      animation: pulseSkeleton 1.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
   </style>
 </head>
 <body class="dark min-h-screen pb-24 select-none">
+
+  <!-- 離線提示橫幅 (Offline Notice) -->
+  <div id="offlineNotice" class="hidden fixed top-0 inset-x-0 bg-red-600 text-white font-black text-xs md:text-sm py-2 px-4 text-center z-50 border-b-2 border-black shadow-[0px_4px_0px_#000]">
+    ⚠️ 目前處於離線狀態，無法同步賽道數據。
+  </div>
 
   <!-- 下拉更新指示器 -->
   <div id="ptrContainer" class="flex justify-center items-center">
@@ -195,7 +209,6 @@
             <!-- 戰報輸出 -->
             <button onclick="exportReport(); toggleDashMenu();" class="nfs-btn-green nfs-skew text-xs md:text-sm font-nfs font-black px-3 py-2 rounded-xl text-left w-full flex items-center justify-between">
               <span class="nfs-skew-inside inline-block">📊 戰報輸出</span>
-            </span >
             </button>
             
             <!-- CREW 車隊管理 (只有 ADMIN 顯示) -->
@@ -317,10 +330,12 @@
 
         <div>
           <label class="block text-xs md:text-sm font-black text-slate-500 dark:text-slate-400 mb-1">總消費金額 ($) <span class="text-yellow-500 font-normal">(可填 0 元建立，再由成員自行輸入)</span></label>
-          <div class="relative">
-            <input type="text" id="amountDisplay" readonly value="0" onclick="openCalcModal('amountDisplay')" 
-                   class="w-full border-3 border-black rounded-2xl p-3 text-right font-mono text-3xl md:text-4xl font-black bg-yellow-400 text-black cursor-pointer shadow-[4px_4px_0px_#ea3526] focus:outline-none">
-            <span class="absolute left-3 top-4 text-xs md:text-sm font-black text-black/70">點擊開啟計算機 🔢</span>
+          <div class="relative flex items-center">
+            <input type="number" step="any" id="amountDisplay" value="0"
+                   class="w-full border-3 border-black rounded-2xl p-3 pr-12 text-right font-mono text-3xl md:text-4xl font-black bg-yellow-400 text-black shadow-[4px_4px_0px_#ea3526] focus:outline-none">
+            <button type="button" onclick="openCalcModal('amountDisplay')" class="absolute right-3 bg-black text-yellow-400 rounded-xl p-1.5 border border-black hover:scale-105 active:scale-95 transition-transform" title="開啟計算機">
+              🔢
+            </button>
           </div>
         </div>
 
@@ -410,10 +425,12 @@
 
         <div>
           <label class="block text-xs md:text-sm font-black text-slate-500 dark:text-slate-400 mb-1">總消費金額 ($)</label>
-          <div class="relative">
-            <input type="text" id="detailAmountDisplay" readonly value="0" onclick="openCalcModal('detailAmountDisplay')" 
-                   class="w-full border-3 border-black rounded-2xl p-3 text-right font-mono text-3xl md:text-4xl font-black bg-yellow-400 text-black cursor-pointer shadow-[4px_4px_0px_#ea3526] focus:outline-none">
-            <span class="absolute left-3 top-4 text-xs md:text-sm font-black text-black/70">點擊開啟計算機 🔢</span>
+          <div class="relative flex items-center">
+            <input type="number" step="any" id="detailAmountDisplay" value="0" onchange="updateRemainingCalculation()" 
+                   class="w-full border-3 border-black rounded-2xl p-3 pr-12 text-right font-mono text-3xl md:text-4xl font-black bg-yellow-400 text-black shadow-[4px_4px_0px_#ea3526] focus:outline-none">
+            <button type="button" onclick="openCalcModal('detailAmountDisplay')" class="absolute right-3 bg-black text-yellow-400 rounded-xl p-1.5 border border-black hover:scale-105 active:scale-95 transition-transform" title="開啟計算機">
+              🔢
+            </button>
           </div>
         </div>
 
@@ -549,10 +566,12 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
       <p id="settleInfo" class="text-xs md:text-sm font-bold text-slate-700 dark:text-slate-300 mb-3"></p>
       
       <label class="block text-xs md:text-sm font-black text-slate-500 dark:text-slate-400 mb-1">還款金額 ($)</label>
-      <div class="relative mb-4">
-        <input type="text" id="settleAmountInput" readonly value="0" onclick="openCalcModal('settleAmountInput')"
-               class="w-full border-2 border-black rounded-xl p-2.5 text-base md:text-lg font-mono font-black bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-yellow-400 text-right cursor-pointer outline-none shadow-[2px_2px_0px_#000]">
-        <span class="absolute left-3 top-3 text-[10px] md:text-xs font-black text-slate-400">點擊開啟計算機 🔢</span>
+      <div class="relative mb-4 flex items-center">
+        <input type="number" step="any" id="settleAmountInput" value="0"
+               class="w-full border-2 border-black rounded-xl p-2.5 pr-10 text-base md:text-lg font-mono font-black bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-yellow-400 text-right outline-none shadow-[2px_2px_0px_#000]">
+        <button type="button" onclick="openCalcModal('settleAmountInput')" class="absolute right-2 bg-black text-yellow-400 rounded-lg p-1 text-xs border border-black hover:scale-105 active:scale-95 transition-transform" title="開啟計算機">
+          🔢
+        </button>
       </div>
       
       <div class="flex space-x-2">
@@ -595,18 +614,54 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
   </div>
 
   <script>
-    let gasApiUrl = localStorage.getItem('GAS_API_URL') || '';
-    let currentToken = localStorage.getItem('MEMBER_TOKEN') || null;
-    let currentTheme = localStorage.getItem('THEME') || 'dark';
-    let currentUser = null;
-    let currentGroupId = null;
-    let appData = null;
+    // 模組化狀態管理 (AppState)
+    const state = {
+      apiUrl: localStorage.getItem('GAS_API_URL') || '',
+      token: localStorage.getItem('MEMBER_TOKEN') || null,
+      theme: localStorage.getItem('THEME') || 'dark',
+      currentUser: null,
+      currentGroup: null,
+      appData: null
+    };
+
     let calcExpr = '0';
     let activeCalcTargetId = 'amountDisplay';
     let currentBase64Image = "";
     let detailBase64Image = "";
     let activeSettleData = null;
     let currentEditingExpenseId = null;
+
+    // 安全 escapeHTML 函式 (防 XSS)
+    function escapeHTML(str) {
+      return String(str || '').replace(/[&<>"']/g, m => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[m]));
+    }
+
+    // 安全計算機 eval 代替方案 (safeEval)
+    function safeEval(expr) {
+      if (!/^[0-9+\-*/. ]+$/.test(expr)) return 0;
+      try {
+        return Function(`'use strict'; return (${expr})`)();
+      } catch (e) {
+        return 0;
+      }
+    }
+
+    // 離線狀態監聽 (Offline Listener)
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+
+    function updateOnlineStatus() {
+      const notice = document.getElementById('offlineNotice');
+      if (notice) {
+        if (!navigator.onLine) {
+          notice.classList.remove('hidden');
+        } else {
+          notice.classList.add('hidden');
+        }
+      }
+    }
 
     // 下拉刷新 (Pull-To-Refresh) 全局變數
     let touchStartY = 0;
@@ -644,22 +699,22 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
       });
     }
 
-    // 新增：輸出戰報功能 (Export Report to CSV)
+    // 輸出戰報功能 (Export Report to CSV)
     function exportReport() {
-      if (!appData) return alert('尚未加載戰報數據！');
+      if (!state.appData) return alert('尚未加載戰報數據！');
 
       const groupName = document.getElementById('currentGroupName').innerText || '車隊';
       let csvContent = '\uFEFF'; // UTF-8 BOM 避免 Excel 亂碼
 
       // 1. 車隊概況
       csvContent += `=== NFS 車隊戰報：${groupName} ===\n`;
-      csvContent += `總支出（不含雜項/還款）,$${appData.totalGroupExpense || 0}\n\n`;
+      csvContent += `總支出（不含雜項/還款）,$${state.appData.totalGroupExpense || 0}\n\n`;
 
       // 2. 個人戰績 (應收/應付結算)
       csvContent += `=== 個人戰績結算 ===\n`;
       csvContent += `成員,個人結算金額,狀態\n`;
-      if (appData.balances) {
-        for (const [name, val] of Object.entries(appData.balances)) {
+      if (state.appData.balances) {
+        for (const [name, val] of Object.entries(state.appData.balances)) {
           const rounded = Math.round(val * 10) / 10;
           let status = '已結清';
           if (rounded > 0) status = `應收 $${rounded}`;
@@ -672,8 +727,8 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
       // 3. 最佳還款路線
       csvContent += `=== 最佳還款路線 ===\n`;
       csvContent += `付款人,收款人,還款金額\n`;
-      if (appData.settlements && appData.settlements.length > 0) {
-        appData.settlements.forEach(s => {
+      if (state.appData.settlements && state.appData.settlements.length > 0) {
+        state.appData.settlements.forEach(s => {
           csvContent += `"${s.from}","${s.to}","$${s.amount}"\n`;
         });
       } else {
@@ -685,8 +740,8 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
       csvContent += `=== 明細紀錄 (Race Logs) ===\n`;
       csvContent += `日期,類別,項目說明,買單車手,總金額,分攤車手,狀態,備註\n`;
 
-      if (appData.expenses && appData.expenses.length > 0) {
-        appData.expenses.forEach(e => {
+      if (state.appData.expenses && state.appData.expenses.length > 0) {
+        state.appData.expenses.forEach(e => {
           const isPayment = e.type === 'PAYMENT';
           const category = e.category || (isPayment ? '💵 還款' : '其他');
           const desc = (e.desc || '').replace(/"/g, '""');
@@ -808,20 +863,35 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
     }
 
     window.onload = function() {
-      applyTheme(currentTheme);
+      updateOnlineStatus();
+      applyTheme(state.theme);
       initPullToRefresh();
 
-      if (!gasApiUrl && typeof google === 'undefined') {
+      if (!state.apiUrl && typeof google === 'undefined') {
         openApiModal();
-      } else if (currentToken) {
-        verifyAndLoad(currentToken);
+      } else if (state.token) {
+        // 使用 Web Storage 實現 Optimistic UI / Cache 載入
+        const cachedAppData = localStorage.getItem(`NFS_CACHE_${state.token}`);
+        if (cachedAppData) {
+          try {
+            const cache = JSON.parse(cachedAppData);
+            state.currentUser = cache.currentUser;
+            if (cache.appData) {
+              renderApp(cache.appData);
+              document.getElementById('loginView').classList.add('hidden');
+              document.getElementById('groupDashboardView').classList.remove('hidden');
+              document.getElementById('fabAddExpense').classList.remove('hidden');
+            }
+          } catch(e) {}
+        }
+        verifyAndLoad(state.token);
       }
     };
 
     function toggleTheme() {
-      currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
-      localStorage.setItem('THEME', currentTheme);
-      applyTheme(currentTheme);
+      state.theme = state.theme === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('THEME', state.theme);
+      applyTheme(state.theme);
     }
 
     function applyTheme(theme) {
@@ -845,34 +915,20 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
       
       if(el1) el1.innerText = text;
       if(el2) el2.innerText = text;
-      if(el3) el3.innerText = currentTheme === 'light' ? '☀️' : '🌙';
-
-      const btn1 = document.getElementById('btnThemeLogin');
-      const btn2 = document.getElementById('btnThemeGroup');
-      const btn3 = document.getElementById('btnThemeDash');
-
-      const btnClassLight = "bg-white text-slate-900 border-2 border-black";
-      const btnClassDark = "bg-slate-800 text-yellow-400 border-2 border-black";
-
-      [btn1, btn2, btn3].forEach(btn => {
-        if (btn) {
-          if (currentTheme === 'light') {
-            btn.className = `${btnClassLight} ${btn.id === 'btnThemeDash' ? 'px-2.5 py-1.5' : 'px-3 py-1'} rounded-xl shadow-[2px_2px_0px_#000] font-black text-xs md:text-sm hover:opacity-90 active:translate-y-0.5 transition-colors`;
-          } else {
-            btn.className = `${btnClassDark} ${btn.id === 'btnThemeDash' ? 'px-2.5 py-1.5' : 'px-3 py-1'} rounded-xl shadow-[2px_2px_0px_#000] font-black text-xs md:text-sm hover:opacity-90 active:translate-y-0.5 transition-colors`;
-          }
-        }
-      });
+      if(el3) el3.innerText = state.theme === 'light' ? '☀️' : '🌙';
     }
 
     function callGas(action, payload = {}) {
+      if (!navigator.onLine) {
+        return Promise.reject(new Error('目前處於離線狀態，無法同步賽道數據。'));
+      }
       return new Promise((resolve, reject) => {
         if (typeof google !== 'undefined' && google.script && google.script.run) {
           google.script.run
             .withSuccessHandler(resolve)
             .withFailureHandler(reject)[action](...Object.values(payload));
         } else {
-          fetch(gasApiUrl, {
+          fetch(state.apiUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify({ action, ...payload })
@@ -888,7 +944,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
     }
 
     function openApiModal() {
-      document.getElementById('apiUrlInput').value = gasApiUrl;
+      document.getElementById('apiUrlInput').value = state.apiUrl;
       document.getElementById('apiModal').classList.remove('hidden');
     }
 
@@ -901,21 +957,29 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
       if (!url.startsWith('https://script.google.com')) {
         return alert('請輸入有效的 Google Apps Script API 網址！');
       }
-      gasApiUrl = url;
+      state.apiUrl = url;
       localStorage.setItem('GAS_API_URL', url);
       closeApiModal();
-      if (currentToken) verifyAndLoad(currentToken);
+      if (state.token) verifyAndLoad(state.token);
     }
 
     function showLoading() { document.getElementById('loadingOverlay').classList.remove('hidden'); }
     function hideLoading() { document.getElementById('loadingOverlay').classList.add('hidden'); }
 
     function handleLogin() {
-      if (!gasApiUrl && typeof google === 'undefined') return openApiModal();
+      if (!state.apiUrl && typeof google === 'undefined') return openApiModal();
       const token = document.getElementById('tokenInput').value.trim().toUpperCase();
       if (token.length !== 20) return showError('Drive License 必須為 20 位字元！');
       showLoading();
       verifyAndLoad(token);
+    }
+
+    function showError(msg) {
+      const errElem = document.getElementById('loginError');
+      if (errElem) {
+        errElem.innerText = msg;
+        errElem.classList.remove('hidden');
+      }
     }
 
     function verifyAndLoad(token) {
@@ -923,17 +987,18 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
         .then((res) => {
           hideLoading();
           if (res.success) {
-            currentToken = token;
-            currentUser = res.member;
+            state.token = token;
+            state.currentUser = res.member;
             localStorage.setItem('MEMBER_TOKEN', token);
             
             document.getElementById('loginView').classList.add('hidden');
-            document.getElementById('groupSelectionView').classList.remove('hidden');
+            if (!state.currentGroup) {
+              document.getElementById('groupSelectionView').classList.remove('hidden');
+            }
             
-            const adminBadge = currentUser.isAdmin ? ' [👑 ADMIN]' : '';
-            
-            const memberName = currentUser.memberName || currentUser.name || 'UNKNOWN';
-            const memberId = currentUser.memberId || currentUser.id || token;
+            const adminBadge = state.currentUser.isAdmin ? ' [👑 ADMIN]' : '';
+            const memberName = escapeHTML(state.currentUser.memberName || state.currentUser.name || 'UNKNOWN');
+            const memberId = escapeHTML(state.currentUser.memberId || state.currentUser.id || token);
             
             document.getElementById('welcomeUser').innerHTML = `
               <div class="flex flex-col items-center leading-tight">
@@ -953,8 +1018,20 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
         })
         .catch((err) => {
           hideLoading();
+          if (state.appData) return; // 已由快取渲染
           showError('連線失敗，請檢查 API 網址！');
         });
+    }
+
+    function handleLogout() {
+      localStorage.removeItem('MEMBER_TOKEN');
+      state.token = null;
+      state.currentUser = null;
+      state.appData = null;
+      state.currentGroup = null;
+      document.getElementById('groupSelectionView').classList.add('hidden');
+      document.getElementById('groupDashboardView').classList.add('hidden');
+      document.getElementById('loginView').classList.remove('hidden');
     }
 
     function copyMyMemberId(id, btn) {
@@ -967,7 +1044,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
 
     function loadMyGroups() {
       showLoading();
-      callGas('getGroupsByToken', { token: currentToken })
+      callGas('getGroupsByToken', { token: state.token })
         .then((groups) => {
           hideLoading();
           renderGroupList(groups || []);
@@ -985,16 +1062,16 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
         return;
       }
       container.innerHTML = groups.map(g => `
-        <div onclick="selectGroup('${g.id}', '${g.name}')" 
+        <div onclick="selectGroup('${escapeHTML(g.id)}', '${escapeHTML(g.name)}')" 
              class="flex justify-between items-center p-4 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border-2 border-black rounded-2xl cursor-pointer shadow-[3px_3px_0px_#facc15] active:translate-y-1">
-          <span class="font-nfs font-black text-slate-900 dark:text-yellow-400 text-lg md:text-xl">🏎️ ${g.name}</span>
+          <span class="font-nfs font-black text-slate-900 dark:text-yellow-400 text-lg md:text-xl">🏎️ ${escapeHTML(g.name)}</span>
           <span class="text-xs md:text-sm font-nfs text-base md:text-lg font-black bg-red-600 text-white px-3 py-1 rounded-lg border border-black">DRIVE →</span>
         </div>
       `).join('');
     }
 
     function selectGroup(id, name) {
-      currentGroupId = id;
+      state.currentGroup = id;
       document.getElementById('currentGroupName').innerText = name;
       document.getElementById('groupSelectionView').classList.add('hidden');
       document.getElementById('groupDashboardView').classList.remove('hidden');
@@ -1003,7 +1080,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
     }
 
     function backToGroupSelection() {
-      currentGroupId = null;
+      state.currentGroup = null;
       document.getElementById('groupDashboardView').classList.add('hidden');
       document.getElementById('fabAddExpense').classList.add('hidden');
       document.getElementById('groupSelectionView').classList.remove('hidden');
@@ -1012,10 +1089,15 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
 
     function loadGroupData() {
       showLoading();
-      callGas('getGroupData', { token: currentToken, groupId: currentGroupId })
+      callGas('getGroupData', { token: state.token, groupId: state.currentGroup })
         .then((data) => {
           hideLoading();
           renderApp(data);
+          // 快取資料加速下一次載入
+          localStorage.setItem(`NFS_CACHE_${state.token}`, JSON.stringify({
+            currentUser: state.currentUser,
+            appData: data
+          }));
         })
         .catch((err) => {
           hideLoading();
@@ -1024,7 +1106,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
     }
 
     function renderApp(data) {
-      appData = data;
+      state.appData = data;
       
       if (data && data.expenses) {
         data.totalGroupExpense = data.expenses.reduce((sum, e) => {
@@ -1035,7 +1117,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
         }, 0);
       }
 
-      if (currentUser && currentUser.isAdmin) {
+      if (state.currentUser && state.currentUser.isAdmin) {
         const crewBtn = document.getElementById('btnManageCrew');
         if (crewBtn) {
           crewBtn.classList.remove('hidden');
@@ -1058,7 +1140,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
 
     function renderStats(data) {
       document.getElementById('statTotalExpense').innerText = `$${data.totalGroupExpense.toLocaleString()}`;
-      const myBal = data.balances[currentUser.memberName] || 0;
+      const myBal = data.balances[state.currentUser.memberName] || 0;
       const rounded = Math.round(myBal * 10) / 10;
       const elem = document.getElementById('statMyBalance');
 
@@ -1112,20 +1194,21 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
     });
 
     function openManageCrewModal() {
-      if (!appData) return;
+      if (!state.appData) return;
       const container = document.getElementById('crewMembersList');
       container.innerHTML = '';
 
       callGas('getAllSystemMembers').then(allMembers => {
-        appData.members.forEach(member => {
+        state.appData.members.forEach(member => {
           const sysMember = allMembers.find(m => m.name === member);
           const memberId = sysMember ? sysMember.id : null;
+          const safeMemberName = escapeHTML(member);
 
           container.innerHTML += `
             <div class="flex justify-between items-center p-2.5 bg-slate-100 dark:bg-slate-800 border-2 border-black rounded-xl shadow-[2px_2px_0px_#000]">
-              <span class="font-black text-xs md:text-sm text-slate-900 dark:text-white">🏎️ ${member}</span>
+              <span class="font-black text-xs md:text-sm text-slate-900 dark:text-white">🏎️ ${safeMemberName}</span>
               ${memberId ? `
-                <button onclick="handleRemoveMember('${memberId}', '${member}', this)" class="nfs-btn-red text-[10px] md:text-xs font-black px-2 py-1 rounded-lg">
+                <button onclick="handleRemoveMember('${escapeHTML(memberId)}', '${safeMemberName}', this)" class="nfs-btn-red text-[10px] md:text-xs font-black px-2 py-1 rounded-lg">
                   🗑️ 踢出
                 </button>
               ` : ''}
@@ -1145,8 +1228,8 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
       if (btnElem) btnElem.disabled = true;
       showLoading();
       callGas('removeMemberFromGroup', {
-        adminToken: currentToken,
-        groupId: currentGroupId,
+        adminToken: state.token,
+        groupId: state.currentGroup,
         targetMemberId: memberId
       })
       .then(data => {
@@ -1173,13 +1256,13 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
     function closeMemberModal() { document.getElementById('memberModal').classList.add('hidden'); }
     function closeTokenModal() {
       document.getElementById('tokenModal').classList.add('hidden');
-      if (currentGroupId) {
+      if (state.currentGroup) {
         loadGroupData();
       }
     }
 
     function openDriverRegisterModal() {
-      if (!gasApiUrl && typeof google === 'undefined') return openApiModal();
+      if (!state.apiUrl && typeof google === 'undefined') return openApiModal();
       document.getElementById('registerDriverName').value = '';
       document.getElementById('driverRegisterModal').classList.remove('hidden');
     }
@@ -1234,7 +1317,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
       showLoading();
       callGas('createGroupWithCreator', { 
         groupName: name, 
-        creatorToken: currentToken,
+        creatorToken: state.token,
         memberIds: memberIds 
       })
         .then((groups) => {
@@ -1250,7 +1333,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
 
       closeMemberModal();
       showLoading();
-      callGas('addMemberToGroup', { adminToken: currentToken, groupId: currentGroupId, newMemberName: name })
+      callGas('addMemberToGroup', { adminToken: state.token, groupId: state.currentGroup, newMemberName: name })
         .then((res) => {
           hideLoading();
           document.getElementById('newTokenDisplay').innerText = res.token;
@@ -1263,7 +1346,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
     function openCalcModal(targetInputId) { 
       activeCalcTargetId = targetInputId || 'amountDisplay';
       const targetElem = document.getElementById(activeCalcTargetId);
-      calcExpr = (targetElem && targetElem.value !== '') ? targetElem.value : '0';
+      calcExpr = (targetElem && targetElem.value !== '') ? String(targetElem.value) : '0';
       updateCalcDisplay();
       document.getElementById('calcModal').classList.remove('hidden'); 
     }
@@ -1276,22 +1359,18 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
     function calcClear() { calcExpr = '0'; updateCalcDisplay(); }
     function updateCalcDisplay() {
       document.getElementById('calcFormula').innerText = calcExpr;
-      try {
-        const val = eval(calcExpr);
-        document.getElementById('calcDisplay').innerText = isNaN(val) ? '0' : Math.round(val * 100) / 100;
-      } catch(e) {}
+      const val = safeEval(calcExpr);
+      document.getElementById('calcDisplay').innerText = isNaN(val) ? '0' : Math.round(val * 100) / 100;
     }
     function calcConfirm() {
-      try {
-        const val = eval(calcExpr);
-        const finalVal = isNaN(val) ? 0 : Math.round(val * 100) / 100;
-        document.getElementById(activeCalcTargetId).value = finalVal;
-        closeCalcModal();
+      const val = safeEval(calcExpr);
+      const finalVal = isNaN(val) ? 0 : Math.round(val * 100) / 100;
+      document.getElementById(activeCalcTargetId).value = finalVal;
+      closeCalcModal();
 
-        if (activeCalcTargetId === 'detailAmountDisplay' || activeCalcTargetId.startsWith('detail-share-input-')) {
-          updateRemainingCalculation();
-        }
-      } catch(e) { alert('算式不正確'); }
+      if (activeCalcTargetId === 'detailAmountDisplay' || activeCalcTargetId.startsWith('detail-share-input-')) {
+        updateRemainingCalculation();
+      }
     }
 
     function previewImage(event, imgElemId, containerElemId) {
@@ -1312,7 +1391,12 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
           canvas.width = width; canvas.height = height;
           ctx.drawImage(img, 0, 0, width, height);
           
-          const base64Res = canvas.toDataURL('image/jpeg', 0.7);
+          let base64Res = canvas.toDataURL('image/jpeg', 0.7);
+          // 限制 Base64 長度上限避免超過 GAS 請求體上限 (上限約 1.5MB)
+          if (base64Res.length > 1500000) {
+            base64Res = canvas.toDataURL('image/jpeg', 0.4);
+          }
+
           if (imgElemId === 'imgPreview') {
             currentBase64Image = base64Res;
           } else {
@@ -1338,14 +1422,26 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
 
     function splitEvenly(amountElemId, checkboxName, inputPrefix) {
       const amount = parseFloat(document.getElementById(amountElemId).value) || 0;
-      const checkboxes = document.querySelectorAll(`input[name="${checkboxName}"]:checked`);
+      const checkboxes = Array.from(document.querySelectorAll(`input[name="${checkboxName}"]:checked`));
       if (checkboxes.length === 0) return;
-      const share = (amount / checkboxes.length).toFixed(1);
+
+      const count = checkboxes.length;
+      const baseShare = Math.floor((amount / count) * 10) / 10;
+      let remainder = Math.round((amount - baseShare * count) * 10) / 10;
+
+      const payerSelectId = amountElemId === 'detailAmountDisplay' ? 'detailPayer' : 'payer';
+      const payerVal = document.getElementById(payerSelectId) ? document.getElementById(payerSelectId).value : '';
 
       document.querySelectorAll(`input[name="${checkboxName}"]`).forEach(cb => {
         const input = document.getElementById(`${inputPrefix}${cb.value}`);
         if (cb.checked) {
-          input.value = amount > 0 ? share : "0";
+          let assignedShare = baseShare;
+          // 將殘餘尾數補到買單者或第一個選中的車手
+          if (remainder > 0 && (cb.value === payerVal || (!checkboxes.some(c => c.value === payerVal) && cb === checkboxes[0]))) {
+            assignedShare = Math.round((baseShare + remainder) * 10) / 10;
+            remainder = 0;
+          }
+          input.value = amount > 0 ? assignedShare : "0";
           input.disabled = false;
         } else {
           input.value = "0";
@@ -1384,24 +1480,25 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
 
     function renderFormOptions(members) {
       const payerSelect = document.getElementById('payer');
-      payerSelect.innerHTML = members.length ? members.map(m => `<option value="${m}">${m}</option>`).join('') : '<option value="">請先招募車手</option>';
+      payerSelect.innerHTML = members.length ? members.map(m => `<option value="${escapeHTML(m)}">${escapeHTML(m)}</option>`).join('') : '<option value="">請先招募車手</option>';
       
-      if (currentUser && members.includes(currentUser.memberName)) {
-        payerSelect.value = currentUser.memberName;
+      if (state.currentUser && members.includes(state.currentUser.memberName)) {
+        payerSelect.value = state.currentUser.memberName;
       }
 
       const partGroup = document.getElementById('participantsGroup');
       partGroup.innerHTML = members.length ? members.map(m => {
         const isChecked = 'checked'; 
+        const safeName = escapeHTML(m);
         return `
         <div class="flex items-center justify-between border-2 border-black p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white shadow-[2px_2px_0px_#000]">
           <label class="flex items-center space-x-2 cursor-pointer text-xs md:text-sm font-black">
-            <input type="checkbox" name="parts" value="${m}" ${isChecked} onchange="handleCheckboxChange('${m}', 'parts', 'share-input-')" class="w-4 h-4 rounded text-red-600 focus:ring-0 accent-red-600">
-            <span>${m}</span>
+            <input type="checkbox" name="parts" value="${safeName}" ${isChecked} onchange="handleCheckboxChange('${safeName}', 'parts', 'share-input-')" class="w-4 h-4 rounded text-red-600 focus:ring-0 accent-red-600">
+            <span>${safeName}</span>
           </label>
           <div class="flex items-center space-x-1">
             <span class="text-xs md:text-sm font-bold text-yellow-500 dark:text-yellow-400">$</span>
-            <input type="text" id="share-input-${m}" readonly value="0" onclick="openCalcModal('share-input-${m}')" class="w-20 md:w-24 bg-white dark:bg-slate-900 text-slate-900 dark:text-yellow-400 text-xs md:text-sm font-mono font-black border border-black rounded-lg px-2 py-1 text-right focus:outline-none cursor-pointer">
+            <input type="number" step="any" id="share-input-${safeName}" value="0" class="w-20 md:w-24 bg-white dark:bg-slate-900 text-slate-900 dark:text-yellow-400 text-xs md:text-sm font-mono font-black border border-black rounded-lg px-2 py-1 text-right focus:outline-none">
           </div>
         </div>
       `;
@@ -1454,8 +1551,8 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
       showLoading();
 
       const payload = {
-        token: currentToken,
-        groupId: currentGroupId,
+        token: state.token,
+        groupId: state.currentGroup,
         category: document.getElementById('category').value,
         desc: document.getElementById('desc').value,
         remark: document.getElementById('remark').value,
@@ -1494,7 +1591,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
       closeExpenseDetailModal();
       showLoading();
 
-      callGas('deleteExpense', { token: currentToken, groupId: currentGroupId, expenseId })
+      callGas('deleteExpense', { token: state.token, groupId: state.currentGroup, expenseId })
         .then((data) => {
           hideLoading();
           if (deleteBtn) deleteBtn.disabled = false;
@@ -1511,7 +1608,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
       const totalAmount = parseFloat(document.getElementById('detailAmountDisplay').value) || 0;
       let currentSharesSum = 0;
 
-      appData.members.forEach(m => {
+      state.appData.members.forEach(m => {
         if (m !== memberName) {
           const inputElem = document.getElementById(`detail-share-input-${m}`);
           if (inputElem) {
@@ -1536,7 +1633,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
     }
 
     function openExpenseDetailModal(expenseId) {
-      const exp = appData.expenses.find(e => e.id === expenseId);
+      const exp = state.appData.expenses.find(e => e.id === expenseId);
       if (!exp) return;
 
       currentEditingExpenseId = expenseId;
@@ -1547,7 +1644,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
       document.getElementById('detailAmountDisplay').value = exp.amount || 0;
 
       const payerSelect = document.getElementById('detailPayer');
-      payerSelect.innerHTML = appData.members.map(m => `<option value="${m}">${m}</option>`).join('');
+      payerSelect.innerHTML = state.appData.members.map(m => `<option value="${escapeHTML(m)}">${escapeHTML(m)}</option>`).join('');
       payerSelect.value = exp.payer;
 
       detailBase64Image = exp.imageUrl || '';
@@ -1575,29 +1672,30 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
       const partGroup = document.getElementById('detailParticipantsGroup');
       const shares = exp.shares || {};
 
-      partGroup.innerHTML = appData.members.map(m => {
+      partGroup.innerHTML = state.appData.members.map(m => {
         const shareVal = parseFloat(shares[m]) || 0;
         const isChecked = shares.hasOwnProperty(m) && shareVal >= 0 && (exp.participants && exp.participants.includes(m));
-        const isMe = currentUser && m === currentUser.memberName;
+        const isMe = state.currentUser && m === state.currentUser.memberName;
+        const safeName = escapeHTML(m);
 
         return `
           <div class="flex items-center justify-between border-2 border-black p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white shadow-[2px_2px_0px_#000]">
             <div class="flex items-center space-x-2">
               <label class="flex items-center space-x-1.5 cursor-pointer text-xs md:text-sm font-black">
-                <input type="checkbox" name="detailParts" value="${m}" ${isChecked ? 'checked' : ''} onchange="handleCheckboxChange('${m}', 'detailParts', 'detail-share-input-', true)" class="w-4 h-4 rounded text-red-600 focus:ring-0 accent-red-600">
-                <span>${m}</span>
+                <input type="checkbox" name="detailParts" value="${safeName}" ${isChecked ? 'checked' : ''} onchange="handleCheckboxChange('${safeName}', 'detailParts', 'detail-share-input-', true)" class="w-4 h-4 rounded text-red-600 focus:ring-0 accent-red-600">
+                <span>${safeName}</span>
               </label>
               ${isMe ? `
-                <button type="button" onclick="fillRemainingForUser('${m}')" class="text-[10px] md:text-xs bg-blue-500 text-white px-1.5 py-0.5 rounded border border-black font-black hover:opacity-90">
+                <button type="button" onclick="fillRemainingForUser('${safeName}')" class="text-[10px] md:text-xs bg-blue-500 text-white px-1.5 py-0.5 rounded border border-black font-black hover:opacity-90">
                   ⚡ 填入個人餘額
                 </button>
               ` : ''}
             </div>
             <div class="flex items-center space-x-1">
               <span class="text-xs md:text-sm font-bold text-yellow-500 dark:text-yellow-400">$</span>
-              <input type="text" id="detail-share-input-${m}" readonly value="${shareVal}" ${isChecked ? '' : 'disabled'}
-                     onclick="openCalcModal('detail-share-input-${m}')"
-                     class="w-20 md:w-24 bg-white dark:bg-slate-900 text-slate-900 dark:text-yellow-400 text-xs md:text-sm font-mono font-black border border-black rounded-lg px-2 py-1 text-right focus:outline-none cursor-pointer">
+              <input type="number" step="any" id="detail-share-input-${safeName}" value="${shareVal}" ${isChecked ? '' : 'disabled'}
+                     onchange="updateRemainingCalculation()"
+                     class="w-20 md:w-24 bg-white dark:bg-slate-900 text-slate-900 dark:text-yellow-400 text-xs md:text-sm font-mono font-black border border-black rounded-lg px-2 py-1 text-right focus:outline-none">
             </div>
           </div>
         `;
@@ -1625,7 +1723,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
       const totalAmount = parseFloat(document.getElementById('detailAmountDisplay').value) || 0;
       let currentSharesSum = 0;
 
-      appData.members.forEach(member => {
+      state.appData.members.forEach(member => {
         const cb = document.querySelector(`input[name="detailParts"][value="${member}"]`);
         if (cb && cb.checked) {
           const inputElem = document.getElementById(`detail-share-input-${member}`);
@@ -1689,8 +1787,8 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
       showLoading();
 
       callGas('updateExpenseShares', {
-        token: currentToken,
-        groupId: currentGroupId,
+        token: state.token,
+        groupId: state.currentGroup,
         expenseId: currentEditingExpenseId,
         category: document.getElementById('detailCategory').value,
         desc: document.getElementById('detailDesc').value,
@@ -1721,7 +1819,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
         return;
       }
 
-      const myName = currentUser ? currentUser.memberName : null;
+      const myName = state.currentUser ? state.currentUser.memberName : null;
       let myHtml = '';
       let othersHtml = '';
 
@@ -1731,10 +1829,11 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
         if (rounded > 0) { colorClass = 'text-green-500 font-black'; statusText = `應收 $${rounded}`; }
         else if (rounded < 0) { colorClass = 'text-red-500 font-black'; statusText = `應付 $${Math.abs(rounded)}`; }
 
+        const safeName = escapeHTML(name);
         const itemHtml = `
           <div class="flex justify-between items-center py-2 ${name === myName ? 'bg-yellow-400/10 -mx-1 px-2 rounded-xl border border-yellow-400/50' : ''}">
             <span class="font-black text-slate-800 dark:text-slate-200">
-              ${name === myName ? '🙋‍♂️ ' + name + ' (我)' : '🏎️ ' + name}
+              ${name === myName ? '🙋‍♂️ ' + safeName + ' (我)' : '🏎️ ' + safeName}
             </span>
             <span class="${colorClass}">${statusText}</span>
           </div>`;
@@ -1769,7 +1868,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
         return;
       }
 
-      const myName = currentUser ? currentUser.memberName : null;
+      const myName = state.currentUser ? state.currentUser.memberName : null;
       const mySettlements = [];
       const otherSettlements = [];
 
@@ -1781,17 +1880,21 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
         }
       });
 
-      const createItemCard = (s, isMySettlement = false) => `
+      const createItemCard = (s, isMySettlement = false) => {
+        const safeFrom = escapeHTML(s.from);
+        const safeTo = escapeHTML(s.to);
+        return `
         <div class="flex justify-between items-center bg-slate-100 dark:bg-slate-800 border-2 ${isMySettlement ? 'border-yellow-400' : 'border-black'} p-2.5 rounded-xl text-xs md:text-sm font-black shadow-[2px_2px_0px_#000]">
           <span class="text-slate-800 dark:text-slate-200">
-            🏎️ <b>${s.from === myName ? '我' : s.from}</b> ➔ <b>${s.to === myName ? '我' : s.to}</b> 
+            🏎️ <b>${s.from === myName ? '我' : safeFrom}</b> ➔ <b>${s.to === myName ? '我' : safeTo}</b> 
             <b class="text-red-500">$${s.amount}</b>
           </span>
-          <button onclick="openSettleModal('${s.from}', '${s.to}', ${s.amount})" class="nfs-btn-green text-[10px] md:text-xs font-nfs px-2 py-1 rounded-lg">
+          <button onclick="openSettleModal('${safeFrom}', '${safeTo}', ${s.amount})" class="nfs-btn-green text-[10px] md:text-xs font-nfs px-2 py-1 rounded-lg">
             DRIFT 還款
           </button>
         </div>
       `;
+      };
 
       let html = '';
 
@@ -1842,8 +1945,8 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
 
       showLoading();
       callGas('addTransaction', {
-        token: currentToken,
-        groupId: currentGroupId,
+        token: state.token,
+        groupId: state.currentGroup,
         desc: `${from} 還款給 ${to}`, 
         amount: amount, 
         payer: from, 
@@ -1861,6 +1964,12 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
         if (settleBtn) settleBtn.disabled = false;
         alert('還款失敗：' + err.message); 
       });
+    }
+
+    function filterFeed() {
+      if (state.appData && state.appData.expenses) {
+        renderFeed(state.appData.expenses);
+      }
     }
 
     function renderFeed(expenses) {
@@ -1888,18 +1997,21 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
         if (status === '未完成分帳') statusBadgeClass = 'bg-yellow-400 text-black';
         else if (status === '未完成付款') statusBadgeClass = 'bg-red-500 text-white';
 
-        const remarkHtml = e.remark ? `<span class="text-[11px] md:text-xs text-slate-400 dark:text-slate-500 font-normal">💬 ${e.remark}</span>` : '';
+        const safeDesc = escapeHTML(e.desc);
+        const safePayer = escapeHTML(e.payer);
+        const safeRemark = escapeHTML(e.remark);
+        const remarkHtml = safeRemark ? `<span class="text-[11px] md:text-xs text-slate-400 dark:text-slate-500 font-normal">💬 ${safeRemark}</span>` : '';
 
         return `
-          <div onclick="openExpenseDetailModal('${e.id}')" class="py-3 px-2 cursor-pointer hover:bg-slate-100/50 dark:hover:bg-slate-800/50 rounded-xl transition-colors flex flex-col justify-between">
+          <div onclick="openExpenseDetailModal('${escapeHTML(e.id)}')" class="py-3 px-2 cursor-pointer hover:bg-slate-100/50 dark:hover:bg-slate-800/50 rounded-xl transition-colors flex flex-col justify-between active:scale-[0.99]">
             <!-- 上半部：核心項目資訊 -->
             <div>
               <div class="flex justify-between items-center font-black">
                 <div class="flex items-center space-x-2 truncate">
                   <span class="text-[10px] md:text-xs px-2 py-0.5 rounded-md border border-black shrink-0 ${isPayment ? 'bg-purple-600 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-yellow-400'}">
-                    ${e.category || (isPayment ? '💵 還款' : '其他')}
+                    ${escapeHTML(e.category || (isPayment ? '💵 還款' : '其他'))}
                   </span>
-                  <span class="text-slate-800 dark:text-slate-100 text-sm md:text-base truncate">${e.desc}</span>
+                  <span class="text-slate-800 dark:text-slate-100 text-sm md:text-base truncate">${safeDesc}</span>
                 </div>
                 <div class="flex items-center space-x-1.5 shrink-0 ml-2">
                   <span class="${isPayment ? 'text-purple-500 dark:text-purple-400' : 'text-green-600 dark:text-green-400'} text-base md:text-lg font-black">$${e.amount}</span>
@@ -1908,34 +2020,26 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
               </div>
               
               <div class="flex justify-between text-xs md:text-sm text-slate-500 dark:text-slate-400 font-bold mt-1">
-                <span>${e.payer} ${isPayment ? '還給 ' + (e.participants ? e.participants[0] : '') : '買單 (' + (e.participants ? e.participants.length : 0) + ' 人分攤)'}</span>
-                <span>${e.date}</span>
+                <span>買單：<b class="text-slate-800 dark:text-slate-200">${safePayer}</b></span>
+                <span class="text-[10px] md:text-xs text-slate-400">${escapeHTML(e.date || '')}</span>
               </div>
             </div>
 
-            <!-- 下半部：狀態 / 備註 / 單據（統一釘在最底部） -->
-            <div class="mt-2 pt-2 border-t border-slate-200/50 dark:border-slate-800/50 flex justify-between items-center text-xs md:text-sm font-bold">
-              <div class="flex items-center space-x-2 truncate">
-                ${imgBadge}
+            <!-- 下半部：備註與狀態標籤 -->
+            <div class="flex justify-between items-center mt-2 pt-1 border-t border-slate-100 dark:border-slate-800/50">
+              <div>
                 ${remarkHtml}
               </div>
-              <span class="text-[10px] md:text-xs px-1.5 py-0.5 rounded border border-black shrink-0 ml-2 ${statusBadgeClass}">${status}</span>
+              <div class="flex items-center space-x-1">
+                ${imgBadge}
+                <span class="text-[10px] md:text-xs font-bold px-2 py-0.5 rounded-md border border-black ${statusBadgeClass}">
+                  ${status}
+                </span>
+              </div>
             </div>
-          </div>`;
+          </div>
+        `;
       }).join('');
-    }
-
-    function filterFeed() { if (appData) renderFeed(appData.expenses); }
-
-    function handleLogout() {
-      localStorage.removeItem('MEMBER_TOKEN');
-      location.reload();
-    }
-
-    function showError(msg) {
-      const err = document.getElementById('loginError');
-      err.innerText = msg;
-      err.classList.remove('hidden');
     }
   </script>
 </body>
