@@ -410,6 +410,16 @@
             <label class="block text-xs md:text-sm font-black text-slate-500 dark:text-slate-400 mb-1">買單車手 (Payer)</label>
             <select id="detailPayer" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-sm font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none shadow-[2px_2px_0px_#000]"></select>
           </div>
+		  
+		<!-- 新增：付款狀態手動切換選單 -->
+        <div>
+          <label class="block text-xs md:text-sm font-black text-slate-500 dark:text-slate-400 mb-1">付款狀態 (Status)</label>
+          <select id="expenseStatus" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-sm font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-yellow-400 focus:outline-none shadow-[2px_2px_0px_#000]">
+            <option value="未完成付款">⏳ 未完成付款</option>
+            <option value="已完成付款">✅ 已完成付款</option>
+          </select>
+        </div>
+		  
         </div>
 
         <div>
@@ -846,15 +856,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
         return '未完成分帳';
       }
 
-      const paidShares = exp.paidShares || {}; 
-      const isAllPaid = Object.keys(shares).every(m => {
-        if (m === exp.payer) return true;
-        const due = shares[m] || 0;
-        const paid = paidShares[m] || 0;
-        return paid >= due;
-      });
-
-      return isAllPaid ? '已全部付款' : '未完成付款';
+      return exp.status;
     }
 
     window.onload = function() {
@@ -1663,6 +1665,7 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
       document.getElementById('detailDesc').value = exp.desc || '';
       document.getElementById('detailRemark').value = exp.remark || '';
       document.getElementById('detailAmountDisplay').value = exp.amount || 0;
+	  document.getElementById('expenseStatus').value = exp.status || '未完成付款';
 
       const payerSelect = document.getElementById('detailPayer');
       const members = state.appData.members || [];
@@ -1812,6 +1815,8 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
 
       closeExpenseDetailModal();
       showLoading();
+	  
+	  console.log(document.getElementById('expenseStatus').value)
 
       callGas('updateExpenseShares', {
         token: state.token,
@@ -1823,7 +1828,8 @@ MEM-1002" class="w-full border-2 border-black rounded-xl p-2.5 text-xs md:text-s
         payer: document.getElementById('detailPayer').value,
         amount: amount,
         shares: updatedShares,
-        imageBase64: detailBase64Image
+        imageBase64: detailBase64Image,
+		status: document.getElementById('expenseStatus') ? document.getElementById('expenseStatus').value : '未完成付款'
       })
       .then((data) => {
         hideLoading();
