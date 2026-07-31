@@ -280,12 +280,12 @@ function applyTheme(theme) {
 	document.body.classList.remove('dark');
 	document.body.classList.add('light');
 	document.documentElement.classList.remove('dark');
-	updateThemeIcons('☀️ 賽道光明');
+	updateThemeIcons('☀️ 【日】Sol');
   } else {
 	document.body.classList.remove('light');
 	document.body.classList.add('dark');
 	document.documentElement.classList.add('dark');
-	updateThemeIcons('🌙 賽道暗黑');
+	updateThemeIcons('🌙 【夜】Eclipse');
   }
 }
 
