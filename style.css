@@ -1,0 +1,49 @@
+body { font-family: 'Fredoka', system-ui, sans-serif; transition: background-color 0.3s, color 0.3s; }
+
+body.dark {
+  background-color: #0f172a;
+  background-image: radial-gradient(rgba(234, 179, 8, 0.15) 2px, transparent 2px), linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 24px 24px, 40px 40px; color: #f8fafc;
+}
+
+body.light {
+  background-color: #f1f5f9;
+  background-image: radial-gradient(rgba(15, 23, 42, 0.1) 2px, transparent 2px), linear-gradient(to right, rgba(0,0,0,0.03) 1px, transparent 1px);
+  background-size: 24px 24px, 40px 40px; color: #0f172a;
+}
+
+.font-nfs { font-family: 'Teko', sans-serif; letter-spacing: 1px; text-transform: uppercase; }
+.nfs-skew { transform: skewX(-6deg); }
+.nfs-skew-inside { transform: skewX(6deg); }
+
+.nfs-btn-red { background: linear-gradient(135deg, #ff1e27 0%, #b91c1c 100%); color: #fff; border: 3px solid #000; box-shadow: 4px 4px 0px #000; }
+.nfs-btn-red:active { transform: translateY(2px) skewX(-6deg); box-shadow: 2px 2px 0px #000; }
+
+.nfs-btn-yellow { background: linear-gradient(135deg, #facc15 0%, #ca8a04 100%); color: #000; border: 3px solid #000; box-shadow: 4px 4px 0px #000; }
+.nfs-btn-yellow:active { transform: translateY(2px) skewX(-6deg); box-shadow: 2px 2px 0px #000; }
+
+.nfs-btn-green { background: linear-gradient(135deg, #22c55e 0%, #15803d 100%); color: #fff; border: 3px solid #000; box-shadow: 4px 4px 0px #000; }
+.nfs-btn-blue { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: #fff; border: 3px solid #000; box-shadow: 4px 4px 0px #000; }
+
+.fab-btn { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.fab-btn:hover { transform: scale(1.08) skewX(-6deg); }
+.fab-btn:active { transform: scale(0.95) skewX(-6deg); }
+
+@keyframes revEngine { 0%, 100% { transform: scale(1) rotate(-2deg); } 50% { transform: scale(1.08) rotate(2deg); } }
+.animate-rev { animation: revEngine 0.4s infinite ease-in-out; }
+
+#ptrContainer {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  display: flex; align-items: center; justify-content: center;
+  height: 0; overflow: hidden;
+  transition: height 0.2s ease, opacity 0.2s ease;
+  z-index: 40; pointer-events: none; opacity: 0;
+}
+#ptrContainer.pulling { transition: none; }
+
+@keyframes pulseSkeleton {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.skeleton-loader { animation: pulseSkeleton 1.2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
